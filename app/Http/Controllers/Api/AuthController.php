@@ -77,9 +77,23 @@ class AuthController extends Controller
         ], 201);
     }
 
-    public function verifyToken(Request $request) {
+    public function verifyToken(Request $request)
+    {
         return Response::success([
             'success' => JwtHelper::verify($request->token) ? 1 : 0
         ]);
+    }
+
+    public function info(Request $request)
+    {
+        if (!JwtHelper::verify($request->token)) {
+            return Response::badRequest(['success' => 0, 'message' => 'Token đã hết hạn hoặc không chính xác']);
+        }
+        $payload = JwtHelper::decode($request->token);
+        $user = Users::select(['username', 'phone', 'fullname', 'id', 'present_phone'])->whereId($payload['id'])->first();
+        if (!$user) {
+            return Response::badRequest(['success' => 0, 'message' => 'Người dùng không tồn tại!']);
+        }
+        return Response::badRequest(['success' => 1, 'message' => 'Success!', 'user' => $user]);
     }
 }
