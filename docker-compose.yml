@@ -1,0 +1,61 @@
+version: '3.8'
+
+services:
+  ak_admin_nginx:
+    container_name: ak_admin_nginx
+    image: nginx:latest
+    ports:
+      - "80:80"
+    volumes:
+      - .:/app
+      - ./.docker/nginx.conf:/etc/nginx/conf.d/default.conf
+    depends_on:
+      - ak_admin_app
+    networks:
+      - ak_admin_network
+
+  ak_admin_app:
+    container_name: ak_admin_app
+    build:
+      context: .
+      dockerfile: ./.docker/Dockerfile
+    working_dir: /app
+    volumes:
+      - .:/app
+      - ./.docker/php.ini:/usr/local/etc/php/php.ini
+    networks:
+      - ak_admin_network
+
+  ak_admin_database:
+    container_name: ak_admin_database
+    image: library/mysql:8.0
+    command: --default-authentication-plugin=mysql_native_password
+    environment:
+      MYSQL_ROOT_PASSWORD: cdmllove
+      MYSQL_DATABASE: ak_admin_db
+    volumes:
+      - ak_admin_data:/var/lib/mysql
+      - ./.docker/mysql.cnf:/etc/mysql/conf.d/custom.cnf
+    networks:
+      - ak_admin_network
+
+  ak_admin_phpmyadmin:
+    container_name: ak_admin_phpmyadmin
+    depends_on:
+      - ak_admin_database
+    image: phpmyadmin/phpmyadmin:latest
+    ports:
+      - '7001:80'
+    environment:
+      ak_admin_database: database
+      MYSQL_ROOT_PASSWORD: cdmllove
+    networks:
+      - ak_admin_network
+
+volumes:
+  ak_admin_data:
+    driver: local
+
+networks:
+  ak_admin_network:
+    driver: bridge
