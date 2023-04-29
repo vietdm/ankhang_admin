@@ -2,6 +2,8 @@
 
 namespace App\Helpers;
 
+use GuzzleHttp\Client;
+
 class Telegram {
     public static function pushMgs($mgs) {
         try {
