@@ -5,5 +5,5 @@ use App\Http\Controllers\Api\UserController as ApiUserController;
 use Illuminate\Support\Facades\Route;
 
 Route::post('/auth/login', [ApiAuthController::class, 'login']);
-Route::put('/auth/register', [ApiAuthController::class, 'register']);
+Route::post('/auth/register', [ApiAuthController::class, 'register']);
 Route::get('/present/name', [ApiUserController::class, 'presentName']);
