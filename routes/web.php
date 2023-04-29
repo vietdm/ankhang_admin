@@ -3,5 +3,5 @@
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
-    throw new HttpException('', 400);
+    return response()->json(['status' => 'OK']);
 });
