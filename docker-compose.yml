@@ -47,7 +47,7 @@ services:
     ports:
       - '7001:80'
     environment:
-      ak_admin_database: database
+      PMA_HOST: ak_admin_database
       MYSQL_ROOT_PASSWORD: cdmllove
     networks:
       - ak_admin_network

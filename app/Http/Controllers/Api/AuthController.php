@@ -47,11 +47,20 @@ class AuthController extends Controller
             ]);
         }
 
+        $userWithPresentPhone = Users::wherePresentPhone($request->present_phone)->first();
+        if (!$userWithPresentPhone) {
+            return Response::badRequest([
+                'success' => false,
+                'message' => 'Người giới thiệu không tồn tại!'
+            ]);
+        }
+
         $newUser = new Users();
         $newUser->username = $request->username;
         $newUser->phone = $request->phone;
         $newUser->fullname = $request->fullname;
         $newUser->password = bcrypt($request->password);
+        $newUser->present_phone = $request->present_phone;
         $newUser->save();
 
         return Response::success([

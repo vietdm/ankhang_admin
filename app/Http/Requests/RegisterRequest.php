@@ -13,6 +13,7 @@ class RegisterRequest extends BaseRequest
             'phone' => 'required',
             'fullname' => 'required',
             'password' => 'required',
+            'present_phone' => 'required',
         ];
     }
 }
