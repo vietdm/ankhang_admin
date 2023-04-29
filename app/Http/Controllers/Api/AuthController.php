@@ -29,7 +29,8 @@ class AuthController extends Controller
         ]);
     }
 
-    public function register(RegisterRequest $request) {
+    public function register(RegisterRequest $request): JsonResponse
+    {
         $userWithUsername = Users::whereUsername($request->username)->first();
         if (!!$userWithUsername) {
             return Response::badRequest([
