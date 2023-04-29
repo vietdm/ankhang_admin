@@ -20,15 +20,15 @@ class OrderController extends Controller
         $order->note = $request->note ?? '';
         $order->save();
 
-        $mgs = "
-            Có đơn hàng mới!
-            ==============
-            Họ tên: $request->name,
-            Số điện thoại: $request->phone,
-            Địa chỉ: $request->address,
-            Ghi chú: $request->note,
-            Đơn hàng: $request->order
-        ";
+        $mgs = <<<text
+Có đơn hàng mới!
+==============
+Họ tên: $request->name,
+Số điện thoại: $request->phone,
+Địa chỉ: $request->address,
+Ghi chú: $request->note,
+Đơn hàng: $request->order
+text;
 
         Telegram::pushMgs($mgs);
         return Response::success([]);
