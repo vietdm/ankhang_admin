@@ -3,8 +3,8 @@
 namespace App\Helpers;
 
 class Response {
-    public static function success($data) {
-        return response()->json($data);
+    public static function success($data, $code = 200) {
+        return response()->json($data, $code);
     }
 
     public static function badRequest($data) {

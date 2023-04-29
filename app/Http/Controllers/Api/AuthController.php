@@ -57,6 +57,6 @@ class AuthController extends Controller
         return Response::success([
             'success' => true,
             'message' => 'Tạo tài khoản thành công, vui lòng đăng nhập lại!'
-        ]);
+        ], 201);
     }
 }
