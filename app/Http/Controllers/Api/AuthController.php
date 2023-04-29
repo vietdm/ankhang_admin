@@ -9,6 +9,7 @@ use App\Http\Requests\LoginRequest;
 use App\Http\Requests\RegisterRequest;
 use App\Models\Users;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 
 class AuthController extends Controller
@@ -74,5 +75,11 @@ class AuthController extends Controller
             'success' => true,
             'message' => 'Tạo tài khoản thành công, vui lòng đăng nhập lại!'
         ], 201);
+    }
+
+    public function verifyToken(Request $request) {
+        return Response::success([
+            'success' => JwtHelper::verify($request->token) ? 1 : 0
+        ]);
     }
 }
