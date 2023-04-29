@@ -9,6 +9,7 @@ use App\Http\Requests\LoginRequest;
 use App\Http\Requests\RegisterRequest;
 use App\Models\Users;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\Hash;
 
 class AuthController extends Controller
 {
@@ -19,6 +20,12 @@ class AuthController extends Controller
             return Response::badRequest([
                 'success' => false,
                 'message' => 'Người dùng không tồn tại!'
+            ]);
+        }
+        if (!Hash::check($request->password, $user->password)) {
+            return Response::badRequest([
+                'success' => false,
+                'message' => 'Mật khẩu không chính xác!'
             ]);
         }
         $token = JwtHelper::encode(['id' => $user->id]);
