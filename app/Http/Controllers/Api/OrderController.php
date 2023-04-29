@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Helpers\Response;
+use App\Helpers\Telegram;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\OrderRequest;
 use App\Models\Orders;
@@ -18,6 +19,18 @@ class OrderController extends Controller
         $order->address = $request->address;
         $order->note = $request->note;
         $order->save();
+
+        $mgs = "
+            Có đơn hàng mới!
+            ==============
+            Họ tên: $request->name,
+            Số điện thoại: $request->phone,
+            Địa chỉ: $request->address,
+            Ghi chú: $request->note,
+            Đơn hàng: $request->order
+        ";
+
+        Telegram::pushMgs($mgs);
         return Response::success([]);
     }
 }
