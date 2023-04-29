@@ -47,7 +47,7 @@ class AuthController extends Controller
             ]);
         }
 
-        $userWithPresentPhone = Users::wherePresentPhone($request->present_phone)->first();
+        $userWithPresentPhone = Users::wherePhone($request->present_phone)->first();
         if (!$userWithPresentPhone) {
             return Response::badRequest([
                 'success' => false,
