@@ -17,7 +17,7 @@ class OrderController extends Controller
         $order->name = $request->name;
         $order->phone = $request->phone;
         $order->address = $request->address;
-        $order->note = $request->note;
+        $order->note = $request->note ?? '';
         $order->save();
 
         $mgs = "
