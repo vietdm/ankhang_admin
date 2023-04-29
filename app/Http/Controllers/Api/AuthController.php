@@ -94,6 +94,6 @@ class AuthController extends Controller
         if (!$user) {
             return Response::badRequest(['success' => 0, 'message' => 'Người dùng không tồn tại!']);
         }
-        return Response::badRequest(['success' => 1, 'message' => 'Success!', 'user' => $user]);
+        return Response::success(['success' => 1, 'message' => 'Success!', 'user' => $user]);
     }
 }
