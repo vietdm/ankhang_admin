@@ -11,6 +11,7 @@ use App\Models\Orders;
 class OrderController extends Controller
 {
     public function order(OrderRequest $request) {
+        $userOrder = gettype($request->order) == 'string' ? $request->order : json_encode($request->order);
         $order = new Orders();
         $order->order = gettype($request->order) == 'string' ? $request->order : json_encode($request->order);
         $order->user_id = $request->user_id;
@@ -27,7 +28,7 @@ Họ tên: $request->name,
 Số điện thoại: $request->phone,
 Địa chỉ: $request->address,
 Ghi chú: $request->note,
-Đơn hàng: $request->order
+Đơn hàng: $userOrder
 text;
 
         Telegram::pushMgs($mgs);
