@@ -90,7 +90,7 @@ class AuthController extends Controller
             return Response::badRequest(['success' => 0, 'message' => 'Token đã hết hạn hoặc không chính xác']);
         }
         $payload = JwtHelper::decode($request->token);
-        $user = Users::select(['username', 'phone', 'fullname', 'id', 'present_phone'])->whereId($payload['id'])->first();
+        $user = Users::select(['username', 'phone', 'fullname', 'id', 'present_phone', 'address'])->whereId($payload['id'])->first();
         if (!$user) {
             return Response::badRequest(['success' => 0, 'message' => 'Người dùng không tồn tại!']);
         }
