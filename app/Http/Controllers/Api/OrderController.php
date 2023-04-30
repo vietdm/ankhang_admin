@@ -7,6 +7,7 @@ use App\Helpers\Telegram;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\OrderRequest;
 use App\Models\Orders;
+use App\Models\Users;
 
 class OrderController extends Controller
 {
@@ -20,6 +21,12 @@ class OrderController extends Controller
         $order->address = $request->address;
         $order->note = $request->note ?? '';
         $order->save();
+
+        $user = Users::whereId($request->user_id)->first();
+        if ($user) {
+            $user->address = $order->address;
+            $user->save();
+        }
 
         $mgs = <<<text
 Có đơn hàng mới!
