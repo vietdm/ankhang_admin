@@ -181,9 +181,43 @@ class AuthController extends Controller
             ]);
         }
 
-        $recordForgot->delete();
+        $tokenChangePassword = bcrypt($recordForgot->token . $recordForgot->ttl);
+
+        $recordForgot->token_change_password = $tokenChangePassword;
+        $recordForgot->save();
+
         Response::success([
-            'message' => 'Mã xác nhận chính xác!'
+            'message' => 'Mã xác nhận chính xác!',
+            'token' => $tokenChangePassword
+        ]);
+    }
+
+    public function forgotChangePassword(Request $request) {
+        $token = $request->token;
+        $newPassword = $request->new_password;
+
+        $recordForgot = ForgotPassword::whereTokenChangePassword($token)->first();
+        if ($recordForgot == null) {
+            return Response::badRequest([
+                'message' => 'Yêu cầu không tồn tại, vui lòng thực hiện lại',
+                'step' => 1
+            ]);
+        }
+
+        $user = Users::whereId($recordForgot->user_id)->first();
+        if (!$user) {
+            return Response::badRequest([
+                'message' => 'Người dùng không tồn tại!',
+                'step' => 1
+            ]);
+        }
+
+        $user->password = bcrypt($newPassword);
+        $user->save();
+
+        $recordForgot->delete();
+        return Response::success([
+            'message' => 'Thay đổi mật khẩu thành công, vui lòng đăng nhập lại!'
         ]);
     }
 }
