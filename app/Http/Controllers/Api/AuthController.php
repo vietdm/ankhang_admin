@@ -118,6 +118,7 @@ class AuthController extends Controller
 
     public function info(Request $request): JsonResponse
     {
+        $request->user->password = '';
         return Response::success(['success' => 1, 'message' => 'Success!', 'user' => $request->user]);
     }
 }
