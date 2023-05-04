@@ -15,4 +15,10 @@ class ProductController extends Controller
             'products' => Products::all()
         ]);
     }
+
+    public function getOne($id) {
+        return Response::success([
+            'product' => Products::whereId($id)->first()
+        ]);
+    }
 }

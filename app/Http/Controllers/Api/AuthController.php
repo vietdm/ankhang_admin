@@ -8,6 +8,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\LoginRequest;
 use App\Http\Requests\RegisterRequest;
 use App\Models\Users;
+use App\Models\UserTree;
 use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -93,6 +94,13 @@ class AuthController extends Controller
             $newUser->password = bcrypt($request->password);
             $newUser->present_phone = $request->present_phone;
             $newUser->save();
+
+            //$newTree = new UserTree();
+            //$newTree->user_id = $newUser->id;
+            //$newTree->user_parent_id = $userWithPresentPhone->id;
+            //$newTree->tree = json_encode([]);
+            //$newTree->save();
+
             DB::commit();
             return Response::success([
                 'success' => true,

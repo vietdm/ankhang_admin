@@ -13,5 +13,6 @@ Route::post('/auth/token/verify', [ApiAuthController::class, 'verifyToken']);
 Route::post('/auth/info', [ApiAuthController::class, 'info']);
 Route::get('/present/name', [ApiUserController::class, 'presentName']);
 Route::get('/products', [ApiProductController::class, 'lists']);
+Route::get('/product/{id}', [ApiProductController::class, 'getOne']);
 Route::post('/telegram/put/message', [ApiSocialController::class, 'pushMessageTelegram']);
 Route::post('/order', [ApiOrderController::class, 'order']);
