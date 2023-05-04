@@ -148,6 +148,7 @@ class AuthController extends Controller
             Mail::to($user->email)->send(new MailForgotPassword(['url' => $token]));
             return Response::success(['success' => true, 'message' => 'Vui lòng kiểm tra email!']);
         } catch (Exception $exception) {
+            dd($exception->getMessage());
             return Response::badRequest(['success' => false, 'message' => 'Gửi mail không thành công!']);
         }
     }
