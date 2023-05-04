@@ -186,7 +186,7 @@ class AuthController extends Controller
         $recordForgot->token_change_password = $tokenChangePassword;
         $recordForgot->save();
 
-        Response::success([
+        return Response::success([
             'message' => 'Mã xác nhận chính xác!',
             'token' => $tokenChangePassword
         ]);
