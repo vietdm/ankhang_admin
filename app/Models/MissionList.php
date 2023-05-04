@@ -10,4 +10,8 @@ class MissionList extends Model
     use HasFactory;
 
     protected $table = 'mission_list';
+
+    protected $casts = [
+        'content' => 'array'
+    ];
 }
