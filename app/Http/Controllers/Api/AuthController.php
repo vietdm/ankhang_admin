@@ -136,7 +136,7 @@ class AuthController extends Controller
         $newForgotPassword = new ForgotPassword();
         $newForgotPassword->user_id = $user->id;
         $newForgotPassword->token = $token;
-        $newForgotPassword->ttl = Carbon::now()->timestamp;
+        $newForgotPassword->ttl = Carbon::now()->addMinutes(10)->timestamp;
         $newForgotPassword->save();
 
         try {
@@ -172,6 +172,15 @@ class AuthController extends Controller
                 'message' => 'Mã xác nhận không chính xác!'
             ]);
         }
+
+        if (Carbon::now()->timestamp < $recordForgot->ttl) {
+            $recordForgot->delete();
+            return Response::badRequest([
+                'message' => 'Mã xác nhận đã hết hiệu lực',
+                'step' => 1
+            ]);
+        }
+
         $recordForgot->delete();
         Response::success([
             'message' => 'Mã xác nhận chính xác!'
