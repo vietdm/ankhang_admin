@@ -128,7 +128,7 @@ class AuthController extends Controller
 
     public function forgot(Request $request) {
         $phone = $request->phone;
-        $user = Users::wherePhone($phone)->orWhereEmail($phone)->first();
+        $user = Users::wherePhone($phone)->orWhere('email', $phone)->first();
         if (!$user) {
             return Response::badRequest(['success' => false, 'message' => 'Người dùng không tồn tại!']);
         }
