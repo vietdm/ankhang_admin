@@ -10,8 +10,8 @@ class ApiAuthMiddleware
 {
     public function handle(Request $request, Closure $next): Response
     {
-        //$token = $request->bearerToken();
-        //dd($token);
+        $token = $request->bearerToken();
+        dd($token);
         return $next($request);
     }
 }
