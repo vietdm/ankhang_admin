@@ -181,7 +181,7 @@ class AuthController extends Controller
             ]);
         }
 
-        $tokenChangePassword = bcrypt($recordForgot->token . $recordForgot->ttl);
+        $tokenChangePassword = sha1($recordForgot->token . $recordForgot->ttl);
 
         $recordForgot->token_change_password = $tokenChangePassword;
         $recordForgot->save();
