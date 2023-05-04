@@ -11,12 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('user_tree', function (Blueprint $table) {
-            $table->id();
-            $table->integer('user_id');
-            $table->integer('user_parent_id');
-            $table->json('tree');
-            $table->timestamps();
+        Schema::table('users', function (Blueprint $table) {
+            $table->integer('parent_id')->after('present_phone');
         });
     }
 
@@ -25,6 +21,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('user_tree');
+        Schema::table('users', function (Blueprint $table) {
+            $table->dropColumn('parent_id');
+        });
     }
 };
