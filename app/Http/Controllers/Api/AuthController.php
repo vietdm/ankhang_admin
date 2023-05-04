@@ -26,19 +26,16 @@ class AuthController extends Controller
         $user = Users::wherePhone($request->phone)->first();
         if (!$user) {
             return Response::badRequest([
-                'success' => false,
                 'message' => 'Người dùng không tồn tại!'
             ]);
         }
         if (!Hash::check($request->password, $user->password)) {
             return Response::badRequest([
-                'success' => false,
                 'message' => 'Mật khẩu không chính xác!'
             ]);
         }
         $token = JwtHelper::encode(['id' => $user->id]);
         return Response::success([
-            'success' => true,
             'message' => 'Đăng nhập thành công!',
             'token' => $token
         ]);
@@ -49,7 +46,6 @@ class AuthController extends Controller
         $userWithUsername = Users::whereUsername($request->username)->first();
         if (!!$userWithUsername) {
             return Response::badRequest([
-                'success' => false,
                 'message' => 'Tên tài khoản đã tồn tại!'
             ]);
         }
@@ -57,7 +53,6 @@ class AuthController extends Controller
         $userWithEmail = Users::whereEmail($request->email)->first();
         if (!!$userWithEmail) {
             return Response::badRequest([
-                'success' => false,
                 'message' => 'Email đã được sử dụng!'
             ]);
         }
@@ -65,7 +60,6 @@ class AuthController extends Controller
         $userWithCCCD = Users::whereCccd($request->cccd)->first();
         if (!!$userWithCCCD) {
             return Response::badRequest([
-                'success' => false,
                 'message' => 'Số CMT/CCCD đã được sử dụng!'
             ]);
         }
@@ -73,7 +67,6 @@ class AuthController extends Controller
         $userWithPhone = Users::wherePhone($request->phone)->first();
         if (!!$userWithPhone) {
             return Response::badRequest([
-                'success' => false,
                 'message' => 'Số điện thoại đã được sử dụng!'
             ]);
         }
@@ -81,7 +74,6 @@ class AuthController extends Controller
         $userWithPresentPhone = Users::wherePhone($request->present_phone)->first();
         if (!$userWithPresentPhone) {
             return Response::badRequest([
-                'success' => false,
                 'message' => 'Người giới thiệu không tồn tại!'
             ]);
         }
@@ -101,13 +93,11 @@ class AuthController extends Controller
 
             DB::commit();
             return Response::success([
-                'success' => true,
                 'message' => 'Tạo tài khoản thành công, vui lòng đăng nhập lại!'
             ], 201);
         } catch  (Exception|PDOException $e) {
             DB::rollBack();
             return Response::badRequest([
-                'success' => false,
                 'message' => 'Tạo tài không thành công, vui lòng liên hệ quản trị viên!'
             ], 201);
         }
@@ -123,17 +113,17 @@ class AuthController extends Controller
     public function info(Request $request): JsonResponse
     {
         $request->user->password = '';
-        return Response::success(['success' => 1, 'message' => 'Success!', 'user' => $request->user]);
+        return Response::success(['message' => 'Success!', 'user' => $request->user]);
     }
 
     public function forgot(Request $request) {
         $phone = $request->phone;
         $user = Users::wherePhone($phone)->orWhere('email', $phone)->first();
         if (!$user) {
-            return Response::badRequest(['success' => false, 'message' => 'Người dùng không tồn tại!']);
+            return Response::badRequest(['message' => 'Người dùng không tồn tại!']);
         }
         if (empty($user->email)) {
-            return Response::badRequest(['success' => false, 'message' => 'Không tìm thấy email của người dùng này!']);
+            return Response::badRequest(['message' => 'Không tìm thấy email của người dùng này!']);
         }
 
         $token = sprintf("%06d", mt_rand(1, 999999));
@@ -151,17 +141,40 @@ class AuthController extends Controller
 
         try {
             Mail::to($user->email)->send(new MailForgotPassword($token));
-            return Response::success(['success' => true, 'message' => 'Vui lòng kiểm tra email!']);
+            return Response::success(['message' => 'Vui lòng kiểm tra email!']);
         } catch (Exception $exception) {
-            return Response::badRequest(['success' => false, 'message' => 'Gửi mail không thành công!']);
+            return Response::badRequest(['message' => 'Gửi mail không thành công!']);
         }
     }
 
-    public function verifyForgot(Request $request) {
-        $token = $request->get('_token');
-        $recordForgot = ForgotPassword::whereToken($token)->first();
-        if (!$recordForgot) {
-        //
+    public function forgotConfirm(Request $request) {
+        $token = $request->get('token');
+        $phone = $request->get('phone');
+
+        $user = Users::wherePhone($phone)->orWhere('email', $phone)->first();
+        if (!$user) {
+            return Response::badRequest(['message' => 'Người dùng không tồn tại!']);
         }
+        if (empty($user->email)) {
+            return Response::badRequest(['message' => 'Không tìm thấy email của người dùng này!']);
+        }
+
+        $recordForgot = ForgotPassword::whereUserId($user->id)->first();
+        if ($recordForgot == null) {
+            return Response::badRequest([
+                'message' => 'Yêu cầu không tồn tại, vui lòng thực hiện lại',
+                'step' => 1
+            ]);
+        }
+
+        if ($token != $recordForgot->token) {
+            return Response::badRequest([
+                'message' => 'Mã xác nhận không chính xác!'
+            ]);
+        }
+        $recordForgot->delete();
+        Response::success([
+            'message' => 'Mã xác nhận chính xác!'
+        ]);
     }
 }

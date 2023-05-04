@@ -14,12 +14,10 @@ class UserController extends Controller
         $userWithPhone = Users::wherePhone($phone)->first();
         if(!$userWithPhone) {
             return Response::badRequest([
-                'success' => false,
                 'message' => 'Not found!'
             ]);
         }
         return Response::success([
-            'success' => true,
             'message' => 'Success!',
             'name' => $userWithPhone->fullname
         ]);
