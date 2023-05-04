@@ -118,23 +118,6 @@ class AuthController extends Controller
 
     public function info(Request $request): JsonResponse
     {
-        if (!JwtHelper::verify($request->token)) {
-            return Response::badRequest(['success' => 0, 'message' => 'Token đã hết hạn hoặc không chính xác']);
-        }
-        $payload = JwtHelper::decode($request->token);
-        $user = Users::select([
-            'username',
-            'email',
-            'cccd',
-            'phone',
-            'fullname',
-            'id',
-            'present_phone',
-            'address'
-        ])->whereId($payload['id'])->first();
-        if (!$user) {
-            return Response::badRequest(['success' => 0, 'message' => 'Người dùng không tồn tại!']);
-        }
-        return Response::success(['success' => 1, 'message' => 'Success!', 'user' => $user]);
+        return Response::success(['success' => 1, 'message' => 'Success!', 'user' => $request->user]);
     }
 }
