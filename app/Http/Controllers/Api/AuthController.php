@@ -145,7 +145,7 @@ class AuthController extends Controller
         $newForgotPassword->save();
 
         try {
-            Mail::to($user->email)->send(new MailForgotPassword(['token' => $token]));
+            Mail::to($user->email)->send(new MailForgotPassword($token));
             return Response::success(['success' => true, 'message' => 'Vui lòng kiểm tra email!']);
         } catch (Exception $exception) {
             dd($exception->getMessage());
