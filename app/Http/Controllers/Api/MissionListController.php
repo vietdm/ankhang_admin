@@ -17,7 +17,7 @@ class MissionListController extends Controller
         $userId = $request->user->id;
         $missionWithTypeOfUser = Mission::whereType($type)
             ->whereUserId($userId)
-            ->whereDate(Carbon::now()->format('Y-m-d'))
+            ->where('date', Carbon::now()->format('Y-m-d'))
             ->get();
         $missionList = MissionList::whereType($type)->get()->random(1)->values();
         return Response::success([
