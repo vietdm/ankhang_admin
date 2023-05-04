@@ -7,6 +7,7 @@ use App\Http\Controllers\Api\ProductController as ApiProductController;
 use App\Http\Controllers\Api\SocialController as ApiSocialController;
 use App\Http\Controllers\Api\OrderController as ApiOrderController;
 use App\Http\Controllers\Api\MissionListController as ApiMissionListController;
+use App\Http\Controllers\Api\MissionController as ApiMissionController;
 
 Route::post('/auth/login', [ApiAuthController::class, 'login']);
 Route::post('/auth/register', [ApiAuthController::class, 'register']);
@@ -24,4 +25,5 @@ Route::middleware('api.auth')->group(function() {
     Route::post('/telegram/put/message', [ApiSocialController::class, 'pushMessageTelegram']);
     Route::post('/order', [ApiOrderController::class, 'order']);
     Route::get('/mission-list/{type}', [ApiMissionListController::class, 'list']);
+    Route::post('/mission/update', [ApiMissionController::class, 'update']);
 });
