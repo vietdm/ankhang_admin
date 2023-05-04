@@ -138,6 +138,11 @@ class AuthController extends Controller
 
         $token = sprintf("%06d", mt_rand(1, 999999));
 
+        $oldRequestForgot = ForgotPassword::whereUserId($user->id);
+        if ($oldRequestForgot != null) {
+            $oldRequestForgot->delete();
+        }
+
         $newForgotPassword = new ForgotPassword();
         $newForgotPassword->user_id = $user->id;
         $newForgotPassword->token = $token;
@@ -148,7 +153,6 @@ class AuthController extends Controller
             Mail::to($user->email)->send(new MailForgotPassword($token));
             return Response::success(['success' => true, 'message' => 'Vui lòng kiểm tra email!']);
         } catch (Exception $exception) {
-            dd($exception->getMessage());
             return Response::badRequest(['success' => false, 'message' => 'Gửi mail không thành công!']);
         }
     }
