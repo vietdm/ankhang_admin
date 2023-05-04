@@ -7,12 +7,16 @@ use App\Helpers\Response;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\LoginRequest;
 use App\Http\Requests\RegisterRequest;
+use App\Mail\ForgotPassword as MailForgotPassword;
+use App\Models\ForgotPassword;
 use App\Models\Users;
+use Carbon\Carbon;
 use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Mail;
 use PDOException;
 
 class AuthController extends Controller
@@ -120,5 +124,39 @@ class AuthController extends Controller
     {
         $request->user->password = '';
         return Response::success(['success' => 1, 'message' => 'Success!', 'user' => $request->user]);
+    }
+
+    public function forgot(Request $request) {
+        $phone = $request->phone;
+        $user = Users::wherePhone($phone)->orWhereEmail($phone)->first();
+        if (!$user) {
+            return Response::badRequest(['success' => false, 'message' => 'Người dùng không tồn tại!']);
+        }
+        if (empty($user->email)) {
+            return Response::badRequest(['success' => false, 'message' => 'Không tìm thấy email của người dùng này!']);
+        }
+
+        $token = sprintf("%06d", mt_rand(1, 999999));
+
+        $newForgotPassword = new ForgotPassword();
+        $newForgotPassword->user_id = $user->id;
+        $newForgotPassword->token = $token;
+        $newForgotPassword->ttl = Carbon::now()->timestamp;
+        $newForgotPassword->save();
+
+        try {
+            Mail::to($user->email)->send(new MailForgotPassword(['url' => $token]));
+            return Response::success(['success' => true, 'message' => 'Vui lòng kiểm tra email!']);
+        } catch (Exception $exception) {
+            return Response::badRequest(['success' => false, 'message' => 'Gửi mail không thành công!']);
+        }
+    }
+
+    public function verifyForgot(Request $request) {
+        $token = $request->get('_token');
+        $recordForgot = ForgotPassword::whereToken($token)->first();
+        if (!$recordForgot) {
+        //
+        }
     }
 }
