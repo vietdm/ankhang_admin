@@ -173,7 +173,7 @@ class AuthController extends Controller
             ]);
         }
 
-        if (Carbon::now()->timestamp < $recordForgot->ttl) {
+        if (Carbon::now()->timestamp > $recordForgot->ttl) {
             $recordForgot->delete();
             return Response::badRequest([
                 'message' => 'Mã xác nhận đã hết hiệu lực',
