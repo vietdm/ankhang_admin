@@ -43,6 +43,8 @@ class JwtHelper
     {
         // split the jwt
         $tokenParts = explode('.', $token);
+        if (count($tokenParts) != 3) return false;
+
         $header = base64_decode($tokenParts[0]);
         $payload = base64_decode($tokenParts[1]);
         $signature_provided = $tokenParts[2];

@@ -14,7 +14,7 @@ class ApiAuthMiddleware
     public function handle(Request $request, Closure $next): Response
     {
         $token = $request->bearerToken();
-        if (!JwtHelper::verify($token)) {
+        if (!JwtHelper::verify($token ?? '')) {
             return HelperResponse::Unauthorized([
                 'success' => 0,
                 'message' => 'Token đã hết hạn hoặc không chính xác'
