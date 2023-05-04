@@ -21,7 +21,7 @@ class MissionListController extends Controller
             ->get();
         $missionList = MissionList::whereType($type)->get()->random(1)->values();
         return Response::success([
-            'count_done' => $missionWithTypeOfUser->count(),
+            'limit' => 5 - $missionWithTypeOfUser->count(),
             'mission' => $missionList
         ]);
     }
