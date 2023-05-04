@@ -33,6 +33,6 @@ class MissionController extends Controller
         $userMoney->akg_point += 1000;
         $userMoney->save();
 
-        return Response::success(['message' => 'Đã nhận được 1000 điểm thưởng', 'limit' => $missionWithTypeOfUser->count() - 1]);
+        return Response::success(['message' => 'Đã nhận được 1000 điểm thưởng', 'limit' => 5 - $missionWithTypeOfUser->count() - 1]);
     }
 }
