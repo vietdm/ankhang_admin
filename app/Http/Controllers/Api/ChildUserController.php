@@ -7,7 +7,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Users;
 
-class OrderController extends Controller
+class ChildUserController extends Controller
 {
     /**
      * Model
