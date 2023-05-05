@@ -9,16 +9,6 @@ use App\Models\Users;
 
 class ChildUserController extends Controller
 {
-    /**
-     * Model
-     *
-     * @return Users::class
-     */
-    public function model()
-    {
-        return Users::class;
-    }
-
     public function childUsers(Request $request) {
         $userParam = Users::findOrFail($request->userId);
 
