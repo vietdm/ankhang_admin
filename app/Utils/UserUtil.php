@@ -4,7 +4,7 @@ namespace App\Utils;
 
 use App\Models\Users;
 
-class User {
+class UserUtil {
     public static function getTreeUser($userRoot) {
         $allUser = Users::select(['id', 'email', 'phone', 'fullname', 'present_phone'])->where('present_phone', $userRoot['phone'])->get();
         foreach ($allUser as $user) {

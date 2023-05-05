@@ -22,14 +22,9 @@ Route::get('/product/{id}', [ApiProductController::class, 'getOne']);
 
 Route::middleware('api.auth')->group(function() {
     Route::post('/auth/info', [ApiAuthController::class, 'info']);
+    Route::get('/user/tree', [ApiUserController::class, 'getTree']);
     Route::post('/telegram/put/message', [ApiSocialController::class, 'pushMessageTelegram']);
     Route::post('/order', [ApiOrderController::class, 'order']);
     Route::get('/mission-list/{type}', [ApiMissionListController::class, 'list']);
     Route::post('/mission/update', [ApiMissionController::class, 'update']);
-});
-
-Route::get('test', function() {
-    $user = \App\Models\Users::select(['id', 'email', 'phone', 'fullname', 'present_phone'])->whereId(1)->first()->toArray();
-    $userTree = \App\Utils\User::getTreeUser($user);
-    dd($userTree);
 });
