@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Helpers\BuildTree;
 
 class Users extends Model
 {
@@ -17,4 +18,28 @@ class Users extends Model
     const LEVEL_GIAM_DOC_CAP_CAO = 'giam_doc_cap_cao';
 
     protected $table = 'users';
+
+    public function getChildUsersAttribute()
+    {
+        $allUsers = Users::get();
+        $parentPhone = $this->phone;
+
+        return Users::buildTree($allUsers, $parentPhone);
+    }
+
+    public function buildTree($elements, $parentPhone) {
+        $branch = array();
+
+        foreach ($elements as $element) {
+            if ($element->present_phone == $parentPhone) {
+                $children = Users::buildTree($elements, $element->phone);
+                if ($children) {
+                    $element['children'] = $children;
+                }
+                $branch[] = $element;
+            }
+        }
+
+        return $branch;
+    }
 }
