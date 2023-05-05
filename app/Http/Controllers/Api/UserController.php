@@ -26,7 +26,7 @@ class UserController extends Controller
 
     public function getTree(Request $request) {
         $userId = $request->user->id;
-        $user = Users::select(['id', 'email', 'phone', 'fullname', 'present_phone'])->whereId(1)->first()->toArray();
+        $user = Users::select(['id', 'email', 'phone', 'fullname', 'present_phone'])->whereId($userId)->first()->toArray();
         $userTree = UserUtil::getTreeUser($user);
         return Response::success([
             'tree' => $userTree
