@@ -10,6 +10,7 @@ use App\Http\Controllers\Api\MissionListController as ApiMissionListController;
 use App\Http\Controllers\Api\MissionController as ApiMissionController;
 
 Route::post('/auth/login', [ApiAuthController::class, 'login']);
+Route::post('/__/____', [ApiAuthController::class, 'getPhoneByUsername']);
 Route::post('/auth/register', [ApiAuthController::class, 'register']);
 Route::post('/auth/forgot', [ApiAuthController::class, 'forgot']);
 Route::post('/auth/forgot/confirm', [ApiAuthController::class, 'forgotConfirm']);

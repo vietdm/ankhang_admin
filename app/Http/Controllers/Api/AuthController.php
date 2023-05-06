@@ -42,6 +42,19 @@ class AuthController extends Controller
         ]);
     }
 
+    public function getPhoneByUsername(Request $request) {
+        $username = $request->username;
+        $user = Users::whereUsername($username)->first();
+        if (!$user) {
+            return Response::badRequest([
+                'message' => 'Người giới thiệu không tồn tại'
+            ]);
+        }
+        return Response::success([
+            'phone' => $user->phone
+        ]);
+    }
+
     public function register(RegisterRequest $request): JsonResponse
     {
         $userWithUsername = Users::whereUsername($request->username)->first();
