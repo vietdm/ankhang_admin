@@ -9,6 +9,7 @@ use App\Http\Requests\LoginRequest;
 use App\Http\Requests\RegisterRequest;
 use App\Mail\ForgotPassword as MailForgotPassword;
 use App\Models\ForgotPassword;
+use App\Models\UserMoney;
 use App\Models\Users;
 use Carbon\Carbon;
 use Exception;
@@ -112,7 +113,9 @@ class AuthController extends Controller
 
     public function info(Request $request): JsonResponse
     {
+        $userMoneu = UserMoney::whereUserId($request->user->id)->first();
         $request->user->password = '';
+        $request->user->akg_point = $userMoneu ? $userMoneu->akg_point : 0;
         return Response::success(['message' => 'Success!', 'user' => $request->user]);
     }
 
