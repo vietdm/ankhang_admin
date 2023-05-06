@@ -26,6 +26,7 @@ Route::middleware('api.auth')->group(function() {
     Route::get('/user/tree', [ApiUserController::class, 'getTree']);
     Route::post('/telegram/put/message', [ApiSocialController::class, 'pushMessageTelegram']);
     Route::post('/order', [ApiOrderController::class, 'order']);
+    Route::post('/order', [ApiOrderController::class, 'history']);
     Route::get('/mission-list/{type}', [ApiMissionListController::class, 'list']);
     Route::post('/mission/update', [ApiMissionController::class, 'update']);
 });

@@ -41,4 +41,10 @@ text;
         Telegram::pushMgs($mgs);
         return Response::success([]);
     }
+
+    public function history(){
+        return Response::success([
+            'history' => Orders::orderBy('id', 'DESC')->get()
+        ]);
+    }
 }
