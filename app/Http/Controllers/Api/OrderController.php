@@ -47,15 +47,19 @@ text;
     public function history(Request $request){
         $products = [];
         $orders = Orders::whereUserId($request->user->id)->orderBy('id', 'DESC')->get()->toArray();
-        foreach ($orders as $key => $order) {
+        foreach ($orders as &$order) {
+            foreach ($order['order'] as &$or) {
+                if (isset($products[$or['id']])) {
+                    $or['product'] = $products[$or['id']];
+                } else {
+                    $product = Products::whereId($or['id'])->first();
+                    $products[$or['id']] = $product;
+                    $or['product'] = $products[$or['id']];
+                }
+            }
+
             //foreach ($order->order as $k => $o) {
-            //    if (isset($products[$o['id']])) {
-            //        $order->order[$k]->product = $products[$o['id']];
-            //    } else {
-            //        $product = Products::whereId($o['id'])->first();
-            //        $products[$o['id']] = $product;
-            //        $order->order[$k]->product = $product;
-            //    }
+
             //}
             //$orders[$key] = $order;
         }
