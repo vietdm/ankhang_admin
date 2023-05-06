@@ -48,6 +48,7 @@ text;
         $products = [];
         $orders = Orders::whereUserId($request->user->id)->orderBy('id', 'DESC')->get();
         foreach ($orders as $key => $order) {
+            dd($order->order);
             foreach ($order->order as $k => $o) {
                 if (isset($products[$o['id']])) {
                     $order->order[$k]->product = $products[$o['id']];
@@ -60,7 +61,7 @@ text;
             $orders[$key] = $order;
         }
         return Response::success([
-            'history' => Orders::whereUserId($request->user->id)->orderBy('id', 'DESC')->get()
+            'history' => $orders
         ]);
     }
 }
