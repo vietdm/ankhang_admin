@@ -46,9 +46,9 @@ text;
 
     public function history(Request $request){
         $products = [];
-        $orders = Orders::whereUserId($request->user->id)->orderBy('id', 'DESC')->get();
+        $orders = Orders::whereUserId($request->user->id)->orderBy('id', 'DESC')->get()->toArray();
         foreach ($orders as $key => $order) {
-            dd($order->order);
+            dd($order['order']);
             foreach ($order->order as $k => $o) {
                 if (isset($products[$o['id']])) {
                     $order->order[$k]->product = $products[$o['id']];
