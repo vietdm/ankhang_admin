@@ -8,6 +8,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\OrderRequest;
 use App\Models\Orders;
 use App\Models\Users;
+use Illuminate\Http\Request;
 
 class OrderController extends Controller
 {
@@ -42,9 +43,9 @@ text;
         return Response::success([]);
     }
 
-    public function history(){
+    public function history(Request $request){
         return Response::success([
-            'history' => Orders::orderBy('id', 'DESC')->get()
+            'history' => Orders::whereUserId($request->user->id)->orderBy('id', 'DESC')->get()
         ]);
     }
 }
