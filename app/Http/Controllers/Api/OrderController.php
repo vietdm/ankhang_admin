@@ -48,13 +48,13 @@ text;
         $products = [];
         $orders = Orders::whereUserId($request->user->id)->orderBy('id', 'DESC')->get();
         foreach ($orders as $key => $order) {
-            foreach ($order as $k => $o) {
+            foreach ($order['order'] as $k => $o) {
                 if (isset($products[$o['id']])) {
-                    $order[$k]['product'] = $products[$o['id']];
+                    $order['order'][$k]['product'] = $products[$o['id']];
                 } else {
                     $product = Products::whereId($or['id'])->first();
                     $products[$o['id']] = $product;
-                    $order[$k]['product'] = $product;
+                    $order['order'][$k]['product'] = $product;
                 }
             }
             $orders[$key] = $order;
