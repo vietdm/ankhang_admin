@@ -52,7 +52,7 @@ text;
                 if (isset($products[$o['id']])) {
                     $order['order'][$k]['product'] = $products[$o['id']];
                 } else {
-                    $product = Products::whereId($or['id'])->first();
+                    $product = Products::whereId($o['id'])->first();
                     $products[$o['id']] = $product;
                     $order['order'][$k]['product'] = $product;
                 }
