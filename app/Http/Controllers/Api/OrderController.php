@@ -47,14 +47,14 @@ text;
     public function history(Request $request){
         $products = [];
         $order = Orders::whereUserId($request->user->id)->orderBy('id', 'DESC')->get();
-        foreach ($order as $k => $o) {
+        foreach ($order['order'] as $k => $o) {
             if (isset($products[$o['id']])) {
-                $order[$k]['product'] = $products[$o['id']];
+                $order['order'][$k]['product'] = $products[$o['id']];
                 continue;
             }
             $product = Products::whereId($o['id'])->first();
             $products[$o['id']] = $product;
-            $order[$k]['product'] = $product;
+            $order['order'][$k]['product'] = $product;
         }
         return Response::success([
             'history' => Orders::whereUserId($request->user->id)->orderBy('id', 'DESC')->get()
