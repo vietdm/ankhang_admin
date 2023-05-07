@@ -45,34 +45,34 @@ class Orders extends Model
                 'money_bonus' => $pricePayed * 0.1,
                 'time_bonus' => Carbon::now()->format('Y-m-d H:i:s')
             ]);
-        }
 
-        //trả thưởng cho F2
-        $userParentF2 = Users::with(['user_money'])->wherePhone($userParentF1->present_phone)->first();
-        if ($userParentF2) {
-            $userParentF2->user_money->money_bonus += $pricePayed * 0.05;
-            $userParentF2->user_money->save();
-            $totalBonusPercent -= 0.05;
-            HistoryBonus::insert([
-                'user_id' => $userParentF2->id,
-                'money_bonus' => $pricePayed * 0.05,
-                'time_bonus' => Carbon::now()->format('Y-m-d H:i:s')
-            ]);
-        }
+            //trả thưởng cho F2
+            $userParentF2 = Users::with(['user_money'])->wherePhone($userParentF1->present_phone)->first();
+            if ($userParentF2) {
+                $userParentF2->user_money->money_bonus += $pricePayed * 0.05;
+                $userParentF2->user_money->save();
+                $totalBonusPercent -= 0.05;
+                HistoryBonus::insert([
+                    'user_id' => $userParentF2->id,
+                    'money_bonus' => $pricePayed * 0.05,
+                    'time_bonus' => Carbon::now()->format('Y-m-d H:i:s')
+                ]);
 
-        //trả thưởng cho F3
-        $userParentF3 = Users::with(['user_money'])->wherePhone($userParentF2->present_phone)->first();
-        if ($userParentF3) {
-            $userParentF3->user_money->money_bonus += $pricePayed * 0.05;
-            $userParentF3->user_money->save();
-            $totalBonusPercent -= 0.05;
-            HistoryBonus::insert([
-                'user_id' => $userParentF3->id,
-                'money_bonus' => $pricePayed * 0.05,
-                'time_bonus' => Carbon::now()->format('Y-m-d H:i:s')
-            ]);
+                //trả thưởng cho F3
+                $userParentF3 = Users::with(['user_money'])->wherePhone($userParentF2->present_phone)->first();
+                if ($userParentF3) {
+                    $userParentF3->user_money->money_bonus += $pricePayed * 0.05;
+                    $userParentF3->user_money->save();
+                    $totalBonusPercent -= 0.05;
+                    HistoryBonus::insert([
+                        'user_id' => $userParentF3->id,
+                        'money_bonus' => $pricePayed * 0.05,
+                        'time_bonus' => Carbon::now()->format('Y-m-d H:i:s')
+                    ]);
+                }
+            }
         }
-
+        
         //trả % cho VIP
         if ($totalBonusPercent > 0) {
             $userParentVip = Users::with(['user_money'])->whereUsername('VIP')->first();
