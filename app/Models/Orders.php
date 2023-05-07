@@ -84,7 +84,8 @@ class Orders extends Model
             HistoryBonus::insert([
                 'user_id' => $userParentVip->id,
                 'money_bonus' => $pricePayed * $totalBonusPercent,
-                'time_bonus' => Carbon::now()->format('Y-m-d H:i:s')
+                'time_bonus' => Carbon::now()->format('Y-m-d H:i:s'),
+                'date_bonus' => Carbon::now()->format('Y-m-d'),
             ]);
         }
     }
