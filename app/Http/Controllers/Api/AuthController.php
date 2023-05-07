@@ -24,7 +24,7 @@ class AuthController extends Controller
 {
     public function login(LoginRequest $request): JsonResponse
     {
-        $user = Users::wherePhone($request->phone)->first();
+        $user = Users::wherePhone($request->phone)->orWhere('username', $request->phone)->first();
         if (!$user) {
             return Response::badRequest([
                 'message' => 'Người dùng không tồn tại!'
