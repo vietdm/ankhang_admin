@@ -32,4 +32,13 @@ class UserController extends Controller
             'tree' => $userTree
         ]);
     }
+
+    public function getChild($id) {
+        $user = Users::select(['phone'])->whereId($id)->first();
+        if (!$user) {
+            return Response::success(['child' => []]);
+        }
+        $child = Users::select(['id', 'fullname'])->wherePresentPhone($user->phone)->get()->toArray();
+        return Response::success(['child' => $child]);
+    }
 }
