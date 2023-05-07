@@ -81,7 +81,7 @@ class UserController extends Controller
 
         return Response::success([
             'money_bonus' => $userMoney->money_bonus,
-            'money_bonus_day' => $historyBonus->money_bonus_day
+            'money_bonus_day' => $historyBonus->money_bonus_day ?? 0
         ]);
     }
 }
