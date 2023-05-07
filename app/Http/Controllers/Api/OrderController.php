@@ -14,9 +14,8 @@ use Illuminate\Http\Request;
 class OrderController extends Controller
 {
     public function order(OrderRequest $request) {
-        $userOrder = gettype($request->order) == 'string' ? $request->order : json_encode($request->order);
         $order = new Orders();
-        $order->order = gettype($request->order) == 'string' ? $request->order : json_encode($request->order);
+        $order->order = $request->order;
         $order->user_id = $request->user_id;
         $order->name = $request->name;
         $order->phone = $request->phone;
@@ -29,6 +28,8 @@ class OrderController extends Controller
             $user->address = $order->address;
             $user->save();
         }
+
+        $userOrder = gettype($request->order) == 'string' ? $request->order : json_encode($request->order);
 
         $mgs = <<<text
 Có đơn hàng mới!
@@ -57,11 +58,6 @@ text;
                     $or['product'] = $products[$or['id']];
                 }
             }
-
-            //foreach ($order->order as $k => $o) {
-
-            //}
-            //$orders[$key] = $order;
         }
         return Response::success([
             'history' => $orders
