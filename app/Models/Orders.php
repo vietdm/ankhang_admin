@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -38,24 +39,44 @@ class Orders extends Model
         $userParentF1->user_money->money_bonus += $pricePayed * 0.1;
         $userParentF1->user_money->save();
         $totalBonusPercent -= 0.1;
+        HistoryBonus::insert([
+            'user_id' => $userParentF1->id,
+            'money_bonus' => $pricePayed * 0.1,
+            'time_bonus' => Carbon::now()->format('Y-m-d H:i:s')
+        ]);
 
         //trả thưởng cho F2
         $userParentF2 = Users::with(['user_money'])->wherePhone($userParentF1->present_phone)->first();
         $userParentF2->user_money->money_bonus += $pricePayed * 0.05;
         $userParentF2->user_money->save();
         $totalBonusPercent -= 0.05;
+        HistoryBonus::insert([
+            'user_id' => $userParentF2->id,
+            'money_bonus' => $pricePayed * 0.05,
+            'time_bonus' => Carbon::now()->format('Y-m-d H:i:s')
+        ]);
 
         //trả thưởng cho F3
         $userParentF3 = Users::with(['user_money'])->wherePhone($userParentF2->present_phone)->first();
         $userParentF3->user_money->money_bonus += $pricePayed * 0.05;
         $userParentF3->user_money->save();
         $totalBonusPercent -= 0.05;
+        HistoryBonus::insert([
+            'user_id' => $userParentF3->id,
+            'money_bonus' => $pricePayed * 0.05,
+            'time_bonus' => Carbon::now()->format('Y-m-d H:i:s')
+        ]);
 
         //trả % cho VIP
         if ($totalBonusPercent > 0) {
             $userParentVip = Users::with(['user_money'])->whereUsername('VIP')->first();
             $userParentVip->user_money->money_bonus += $pricePayed * $totalBonusPercent;
             $userParentVip->user_money->save();
+            HistoryBonus::insert([
+                'user_id' => $userParentVip->id,
+                'money_bonus' => $pricePayed * $totalBonusPercent,
+                'time_bonus' => Carbon::now()->format('Y-m-d H:i:s')
+            ]);
         }
     }
 }
