@@ -27,7 +27,7 @@ class UserController extends Controller
     public function getTree(Request $request) {
         $userId = $request->user->id;
         $user = Users::select(['id', 'phone', 'fullname'])->whereId($userId)->first()->toArray();
-        $userTree = [$user];
+        $userTree = [...$user];
 
         //get level 1
         $userLevel1 = Users::select(['id', 'phone', 'fullname'])->wherePresentPhone($user['phone'])->get()->toArray();
@@ -39,10 +39,10 @@ class UserController extends Controller
             //get level 3
             foreach ($userLevel2 as $userlv2) {
                 $userLevel3 = Users::select(['id', 'phone', 'fullname'])->wherePresentPhone($userlv2['phone'])->get()->toArray();
-                $userLevel2['children'] = $userLevel3;
+                $userLevel2['children'][] = $userLevel3;
             }
 
-            $userLevel1['children'] = $userLevel2;
+            $userLevel1['children'][] = $userLevel2;
         }
 
         $userTree['children'] = $userLevel1;
