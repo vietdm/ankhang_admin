@@ -39,10 +39,10 @@ class UserController extends Controller
             //get level 3
             foreach ($userLevel2 as $key2 => $userlv2) {
                 $userLevel3 = Users::select(['id', 'phone', 'fullname'])->wherePresentPhone($userlv2['phone'])->get()->toArray();
-                $userLevel2[$key2]['children'][] = $userLevel3;
+                $userLevel2[$key2]['children'] = [...$userLevel3];
             }
 
-            $userLevel1[$key1]['children'][] = $userLevel2;
+            $userLevel1[$key1]['children'] = [...$userLevel2];
         }
 
         $userTree['children'] = $userLevel1;
