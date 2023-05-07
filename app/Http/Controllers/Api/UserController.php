@@ -26,19 +26,19 @@ class UserController extends Controller
 
     public function getTree(Request $request) {
         $userId = $request->user->id;
-        $user = Users::select(['id', 'phone', 'fullname'])->whereId($userId)->first()->toArray();
+        $user = Users::select(['id', 'phone', 'username'])->whereId($userId)->first()->toArray();
         $userTree = [...$user];
 
         //get level 1
-        $userLevel1 = Users::select(['id', 'phone', 'fullname'])->wherePresentPhone($user['phone'])->get()->toArray();
+        $userLevel1 = Users::select(['id', 'phone', 'username'])->wherePresentPhone($user['phone'])->get()->toArray();
 
         //get level2
         foreach ($userLevel1 as $key1 => $userlv1) {
-            $userLevel2 = Users::select(['id', 'phone', 'fullname'])->wherePresentPhone($userlv1['phone'])->get()->toArray();
+            $userLevel2 = Users::select(['id', 'phone', 'username'])->wherePresentPhone($userlv1['phone'])->get()->toArray();
 
             //get level 3
             foreach ($userLevel2 as $key2 => $userlv2) {
-                $userLevel3 = Users::select(['id', 'phone', 'fullname'])->wherePresentPhone($userlv2['phone'])->get()->toArray();
+                $userLevel3 = Users::select(['id', 'phone', 'username'])->wherePresentPhone($userlv2['phone'])->get()->toArray();
                 $userLevel2[$key2]['children'] = [...$userLevel3];
             }
 
