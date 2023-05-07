@@ -33,16 +33,16 @@ class UserController extends Controller
         $userLevel1 = Users::select(['id', 'phone', 'fullname'])->wherePresentPhone($user['phone'])->get()->toArray();
 
         //get level2
-        foreach ($userLevel1 as $userlv1) {
+        foreach ($userLevel1 as $key1 => $userlv1) {
             $userLevel2 = Users::select(['id', 'phone', 'fullname'])->wherePresentPhone($userlv1['phone'])->get()->toArray();
 
             //get level 3
-            foreach ($userLevel2 as $userlv2) {
+            foreach ($userLevel2 as $key2 => $userlv2) {
                 $userLevel3 = Users::select(['id', 'phone', 'fullname'])->wherePresentPhone($userlv2['phone'])->get()->toArray();
-                $userLevel2['children'][] = $userLevel3;
+                $userLevel2[$key2]['children'][] = $userLevel3;
             }
 
-            $userLevel1['children'][] = $userLevel2;
+            $userLevel1[$key1]['children'][] = $userLevel2;
         }
 
         $userTree['children'] = $userLevel1;
