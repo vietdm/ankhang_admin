@@ -79,12 +79,12 @@ class UserController extends Controller
             ->groupBy('user_id')
             ->first();
 
-        $userTree = UserUtil::getTreeUser($request->user);
+        //$userTree = UserUtil::getTreeUser($request->user);
 
         return Response::success([
             'money_bonus' => $userMoney->money_bonus,
             'money_bonus_day' => $historyBonus->money_bonus_day ?? 0,
-            'tree' => $userTree
+            //'tree' => $userTree
         ]);
     }
 }
