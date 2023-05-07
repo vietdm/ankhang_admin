@@ -24,7 +24,7 @@ Route::get('/product/{id}', [ApiProductController::class, 'getOne']);
 Route::middleware('api.auth')->group(function () {
     Route::post('/auth/info', [ApiAuthController::class, 'info']);
     Route::get('/user/tree', [ApiUserController::class, 'getTree']);
-    Route::get('/user/dashboard', [ApiUserController::class, 'getDashboardData']);
+    Route::post('/user/dashboard', [ApiUserController::class, 'getDashboardData']);
     Route::get('/user/child/{id}', [ApiUserController::class, 'getChild']);
     Route::post('/telegram/put/message', [ApiSocialController::class, 'pushMessageTelegram']);
     Route::post('/order', [ApiOrderController::class, 'order']);
