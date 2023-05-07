@@ -35,8 +35,9 @@ class OrderController extends Controller
         }, []);
 
         $products = Products::whereIn('id', array_values($order))->get()->toArray();
+        $textOrder = '';
         foreach ($products as $index => $product) {
-            $textOrder = "=========";
+            $textOrder .= "=========";
             $textOrder .= "\r\nĐơn hàng " . ($index + 1);
             $textOrder .= "\r\nTên sản phẩm: " . $product['title'];
             $textOrder .= "\r\nSố lượng: " . $order[$product['id']];
