@@ -43,7 +43,8 @@ class Orders extends Model
             HistoryBonus::insert([
                 'user_id' => $userParentF1->id,
                 'money_bonus' => $pricePayed * 0.1,
-                'time_bonus' => Carbon::now()->format('Y-m-d H:i:s')
+                'time_bonus' => Carbon::now()->format('Y-m-d H:i:s'),
+                'date_bonus' => Carbon::now()->format('Y-m-d'),
             ]);
 
             //trả thưởng cho F2
@@ -55,7 +56,8 @@ class Orders extends Model
                 HistoryBonus::insert([
                     'user_id' => $userParentF2->id,
                     'money_bonus' => $pricePayed * 0.05,
-                    'time_bonus' => Carbon::now()->format('Y-m-d H:i:s')
+                    'time_bonus' => Carbon::now()->format('Y-m-d H:i:s'),
+                    'date_bonus' => Carbon::now()->format('Y-m-d'),
                 ]);
 
                 //trả thưởng cho F3
@@ -67,12 +69,13 @@ class Orders extends Model
                     HistoryBonus::insert([
                         'user_id' => $userParentF3->id,
                         'money_bonus' => $pricePayed * 0.05,
-                        'time_bonus' => Carbon::now()->format('Y-m-d H:i:s')
+                        'time_bonus' => Carbon::now()->format('Y-m-d H:i:s'),
+                        'date_bonus' => Carbon::now()->format('Y-m-d'),
                     ]);
                 }
             }
         }
-        
+
         //trả % cho VIP
         if ($totalBonusPercent > 0) {
             $userParentVip = Users::with(['user_money'])->whereUsername('VIP')->first();
