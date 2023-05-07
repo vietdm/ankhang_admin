@@ -76,7 +76,7 @@ class UserController extends Controller
             DB::raw('SUM(money_bonus) AS money_bonus_day')
         ])->whereUserId($userId)
             ->whereDateBonus(Carbon::now()->format('Y-m-d'))
-            ->groupBy('id')
+            ->groupBy('user_id')
             ->first();
 
         return Response::success([
