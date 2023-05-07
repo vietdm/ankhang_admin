@@ -42,7 +42,8 @@ class AuthController extends Controller
         ]);
     }
 
-    public function getPhoneByUsername(Request $request) {
+    public function getPhoneByUsername(Request $request)
+    {
         $username = $request->username;
         $user = Users::whereUsername($username)->first();
         if (!$user) {
@@ -104,12 +105,13 @@ class AuthController extends Controller
             $newUser->present_phone = $request->present_phone;
             $newUser->parent_id = $userWithPresentPhone->id;
             $newUser->save();
+            $newUser->createMoney();
 
             DB::commit();
             return Response::success([
                 'message' => 'Tạo tài khoản thành công, vui lòng đăng nhập lại!'
             ], 201);
-        } catch  (Exception|PDOException $e) {
+        } catch (Exception|PDOException $e) {
             DB::rollBack();
             return Response::badRequest([
                 'message' => 'Tạo tài không thành công, vui lòng liên hệ quản trị viên!'
@@ -132,7 +134,8 @@ class AuthController extends Controller
         return Response::success(['message' => 'Success!', 'user' => $request->user]);
     }
 
-    public function forgot(Request $request) {
+    public function forgot(Request $request)
+    {
         $phone = $request->phone;
         $user = Users::wherePhone($phone)->orWhere('email', $phone)->first();
         if (!$user) {
@@ -163,7 +166,8 @@ class AuthController extends Controller
         }
     }
 
-    public function forgotConfirm(Request $request) {
+    public function forgotConfirm(Request $request)
+    {
         $token = $request->get('token');
         $phone = $request->get('phone');
 
@@ -208,7 +212,8 @@ class AuthController extends Controller
         ]);
     }
 
-    public function forgotChangePassword(Request $request) {
+    public function forgotChangePassword(Request $request)
+    {
         $token = $request->token;
         $newPassword = $request->new_password;
 

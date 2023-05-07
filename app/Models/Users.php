@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Users extends Model
 {
@@ -26,7 +27,8 @@ class Users extends Model
         return Users::buildTree($allUsers, $parentPhone);
     }
 
-    public function buildTree($elements, $parentPhone) {
+    public function buildTree($elements, $parentPhone)
+    {
         $branch = array();
 
         foreach ($elements as $element) {
@@ -40,5 +42,20 @@ class Users extends Model
         }
 
         return $branch;
+    }
+
+    public function user_money(): BelongsTo
+    {
+        return $this->belongsTo(UserMoney::class, 'id', 'user_id');
+    }
+
+    public function createMoney()
+    {
+        if (UserMoney::whereUserId($this->id)->first() != null) {
+            return;
+        }
+        $newUserMoney = new UserMoney();
+        $newUserMoney->user_id = $this->id;
+        $newUserMoney->save();
     }
 }
