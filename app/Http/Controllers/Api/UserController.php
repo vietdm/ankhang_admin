@@ -75,7 +75,7 @@ class UserController extends Controller
         $historyBonus = HistoryBonus::select([
             DB::raw('SUM(money_bonus) AS money_bonus_day')
         ])->whereUserId($userId)
-            ->whereTimeBonus(Carbon::now()->format('Y-m-d'))
+            ->whereDateBonus(Carbon::now()->format('Y-m-d'))
             ->groupBy('id')
             ->first();
 
