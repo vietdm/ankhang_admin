@@ -22,7 +22,8 @@ class OrderRequest extends BaseRequest
     {
         return [
             'phone.regex' => 'Số điện thoại không đúng định dạng!',
-            'phone.min' => 'Số điện thoại không đúng định dạng!'
+            'phone.min' => 'Số điện thoại không đúng định dạng!',
+            'address.required' => 'Hãy nhập địa chỉ nhận hàng'
         ];
     }
 }
