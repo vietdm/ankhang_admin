@@ -4,16 +4,21 @@ namespace App\Http\Controllers\Api;
 
 use App\Helpers\Response;
 use App\Http\Controllers\Controller;
+use App\Models\HistoryBonus;
+use App\Models\UserMoney;
 use App\Models\Users;
 use App\Utils\UserUtil;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class UserController extends Controller
 {
-    public function presentName(Request $request) {
+    public function presentName(Request $request)
+    {
         $phone = $request->phone ?? '';
         $userWithPhone = Users::wherePhone($phone)->first();
-        if(!$userWithPhone) {
+        if (!$userWithPhone) {
             return Response::badRequest([
                 'message' => 'Not found!'
             ]);
@@ -24,7 +29,8 @@ class UserController extends Controller
         ]);
     }
 
-    public function getTree(Request $request) {
+    public function getTree(Request $request)
+    {
         $userId = $request->user->id;
         $user = Users::select(['id', 'phone', 'username'])->whereId($userId)->first()->toArray();
         $userTree = [...$user];
@@ -52,12 +58,30 @@ class UserController extends Controller
         ]);
     }
 
-    public function getChild($id) {
+    public function getChild($id)
+    {
         $user = Users::select(['phone'])->whereId($id)->first();
         if (!$user) {
             return Response::success(['child' => []]);
         }
         $child = Users::select(['id', 'fullname'])->wherePresentPhone($user->phone)->get()->toArray();
         return Response::success(['child' => $child]);
+    }
+
+    public function getDashboardData(Request $request)
+    {
+        $userId = $request->user->id;
+        $userMoney = UserMoney::whereUserId($userId)->first();
+        $historyBonus = HistoryBonus::select([
+            DB::raw('SUM(money_bonus) AS money_bonus_day')
+        ])->whereUserId($userId)
+            ->whereTimeBonus(Carbon::now()->format('Y-m-d'))
+            ->groupBy('id')
+            ->first();
+
+        return Response::success([
+            'money_bonus' => $userMoney->money_bonus,
+            'money_bonus_day' => $historyBonus->money_bonus_day
+        ]);
     }
 }
