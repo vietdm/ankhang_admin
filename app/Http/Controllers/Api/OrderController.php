@@ -38,6 +38,7 @@ class OrderController extends Controller
         $textOrder = '';
         foreach ($products as $index => $product) {
             $textOrder .= "\r\nĐơn hàng " . ($index + 1);
+            $textOrder .= "\r\nTên sản phẩm: " . $product['title'];
             $textOrder .= "\r\nSố lượng: " . $order[$product['id']];
             $textOrder .= "\r\nTổng giá: " . number_format($product['price'] * $order[$product['id']]);
         }
@@ -49,7 +50,7 @@ Họ tên: $request->name,
 Số điện thoại: $request->phone,
 Địa chỉ: $request->address,
 Ghi chú: $request->note,
-Đơn hàng: $textOrder
+$textOrder
 text;
 
         Telegram::pushMgs($mgs);
