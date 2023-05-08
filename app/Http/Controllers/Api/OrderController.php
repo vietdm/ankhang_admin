@@ -23,10 +23,10 @@ class OrderController extends Controller
         $order->address = $request->address;
         $order->note = $request->note ?? '';
 
-        $products = [];
+        $productCached = [];
         $totalPrice = 0;
         foreach ($request->order as $or) {
-            $product = $products[$or['id']] ?? ($products[$or['id']] = Products::whereId($or['id'])->first());
+            $product = $productCached[$or['id']] ?? ($productCached[$or['id']] = Products::whereId($or['id'])->first());
             $totalPrice += $product->price * (int)$or['quantity'];
         }
 
@@ -39,14 +39,10 @@ class OrderController extends Controller
             $user->save();
         }
 
-        logger($request->order);
-
         $order = array_reduce($request->order, function ($result, $ord) {
             $result[$ord['id']] = (int)$ord['quantity'];
             return $result;
         }, []);
-
-        logger($order);
 
         $products = Products::whereIn('id', array_values($order))->get()->toArray();
         $textOrder = '';
