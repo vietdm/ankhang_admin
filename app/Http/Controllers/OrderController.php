@@ -11,9 +11,15 @@ class OrderController extends Controller
     {
         $order = Orders::whereId($id)->first();
         if (!$order) {
-            dd('Order không tồn tại!');
+            echo 'Order không tồn tại!';
+            die();
+        }
+        if ($order->status != 0) {
+            echo 'Order đã được accept trước đó!';
+            die();
         }
         $order->accept();
-        dd('Done');
+        echo 'Done!';
+        die();
     }
 }

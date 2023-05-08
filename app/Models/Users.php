@@ -16,6 +16,8 @@ class Users extends Model
     const LEVEL_PHO_GIAM_DOC = 'pho_giam_doc';
     const LEVEL_GIAM_DOC = 'giam_doc';
     const LEVEL_GIAM_DOC_CAP_CAO = 'giam_doc_cap_cao';
+    const PACKAGE_STAR = 'star';
+    const PACKAGE_VIP = 'vip';
 
     protected $table = 'users';
 
