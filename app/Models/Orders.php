@@ -30,6 +30,8 @@ class Orders extends Model
         $pricePayed = $this->total_price;
 
         $userOrder = Users::whereId($this->user_id)->first();
+        $userOrder->total_buy += $pricePayed;
+        $userOrder->save();
 
         //trả thưởng cho F1
         $userParentF1 = Users::with(['user_money'])->wherePhone($userOrder->present_phone)->first();
