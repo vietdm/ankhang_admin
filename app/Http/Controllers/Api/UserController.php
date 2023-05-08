@@ -92,6 +92,25 @@ class UserController extends Controller
         ]);
     }
 
+    public function moneyCanWithdraw(Request $request)
+    {
+        $user = Users::with(['user_money'])->whereId($request->user->id)->first();
+        $priceOfOneProduct = 3000000;
+        $productKeep = [
+            Users::LEVEL_NOMAL => 0,
+            Users::LEVEL_CHUYEN_VIEN => 2,
+            Users::LEVEL_TRUONG_PHONG => 3,
+            Users::LEVEL_PHO_GIAM_DOC => 4,
+            Users::LEVEL_GIAM_DOC => 5,
+            Users::LEVEL_GIAM_DOC_CAP_CAO => 6
+        ];
+        $priceKeep = $priceOfOneProduct * $productKeep[$user->level];
+        $priceCanWithdraw = $user->user_money->money_bonus - $priceKeep;
+        return Response::success([
+            'money' => $priceCanWithdraw
+        ]);
+    }
+
     public function withdrawRequest(Request $request)
     {
         $user = Users::with(['user_money'])->whereId($request->user->id)->first();
