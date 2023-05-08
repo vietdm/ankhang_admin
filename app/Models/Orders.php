@@ -27,12 +27,9 @@ class Orders extends Model
         $this->save();
 
         $totalBonusPercent = 0.46;
+        $pricePayed = $this->total_price;
 
-        $order = $this->order[0];
-        $product = Products::whereId($order['id'])->first();
         $userOrder = Users::whereId($this->user_id)->first();
-
-        $pricePayed = $product->price * (int)$order['quantity'];
 
         //trả thưởng cho F1
         $userParentF1 = Users::with(['user_money'])->wherePhone($userOrder->present_phone)->first();
@@ -78,15 +75,15 @@ class Orders extends Model
 
         //trả % cho VIP
         if ($totalBonusPercent > 0) {
-            $userParentVip = Users::with(['user_money'])->whereUsername('VIP')->first();
-            $userParentVip->user_money->money_bonus += $pricePayed * $totalBonusPercent;
-            $userParentVip->user_money->save();
-            HistoryBonus::insert([
-                'user_id' => $userParentVip->id,
-                'money_bonus' => $pricePayed * $totalBonusPercent,
-                'time_bonus' => Carbon::now()->format('Y-m-d H:i:s'),
-                'date_bonus' => Carbon::now()->format('Y-m-d'),
-            ]);
+            //$userParentVip = Users::with(['user_money'])->whereUsername('VIP')->first();
+            //$userParentVip->user_money->money_bonus += $pricePayed * $totalBonusPercent;
+            //$userParentVip->user_money->save();
+            //HistoryBonus::insert([
+            //    'user_id' => $userParentVip->id,
+            //    'money_bonus' => $pricePayed * $totalBonusPercent,
+            //    'time_bonus' => Carbon::now()->format('Y-m-d H:i:s'),
+            //    'date_bonus' => Carbon::now()->format('Y-m-d'),
+            //]);
         }
     }
 }
