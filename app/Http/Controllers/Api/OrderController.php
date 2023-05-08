@@ -44,7 +44,7 @@ class OrderController extends Controller
             return $result;
         }, []);
 
-        $products = Products::whereIn('id', array_values($order))->get()->toArray();
+        $products = Products::whereIn('id', array_keys($order))->get()->toArray();
         $textOrder = '';
         foreach ($products as $index => $product) {
             $textOrder .= "=========";
