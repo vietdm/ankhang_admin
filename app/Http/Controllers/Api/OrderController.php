@@ -29,8 +29,8 @@ class OrderController extends Controller
             $product = $products[$or['id']] ?? ($products[$or['id']] = Products::whereId($or['id'])->first());
             $totalPrice += $product->price * (int)$or['quantity'];
         }
-        $order->total_price = $totalPrice;
 
+        $order->total_price = $totalPrice;
         $order->save();
 
         $user = Users::whereId($request->user_id)->first();
@@ -39,10 +39,14 @@ class OrderController extends Controller
             $user->save();
         }
 
+        logger($request->order);
+
         $order = array_reduce($request->order, function ($result, $ord) {
             $result[$ord['id']] = (int)$ord['quantity'];
             return $result;
         }, []);
+
+        logger($order);
 
         $products = Products::whereIn('id', array_values($order))->get()->toArray();
         $textOrder = '';
