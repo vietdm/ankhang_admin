@@ -7,10 +7,13 @@ use App\Http\Controllers\Controller;
 use App\Models\HistoryBonus;
 use App\Models\UserMoney;
 use App\Models\Users;
+use App\Models\Withdraw;
 use App\Utils\UserUtil;
 use Carbon\Carbon;
+use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use PDOException;
 
 class UserController extends Controller
 {
@@ -87,5 +90,88 @@ class UserController extends Controller
             'total_child' => $total,
             'total_sale' => $totalSale,
         ]);
+    }
+
+    public function withdrawRequest(Request $request)
+    {
+        $user = Users::with(['user_money'])->whereId($request->user->id)->first();
+        $moneyWithdraw = (int)$request->money;
+        $minWithdraw = 100000;
+        if ($moneyWithdraw < $minWithdraw) {
+            return Response::badRequest([
+                'message' => 'Số tiền rút tối thiểu là 100.000đ'
+            ]);
+        }
+
+        $priceOfOneProduct = 3000000;
+        if ($user->level == Users::LEVEL_CHUYEN_VIEN) {
+            $priceKeep = $priceOfOneProduct * 2;
+            $priceCanWithdraw = $user->user_money->money_bonus - $priceKeep;
+            if ($moneyWithdraw > $priceCanWithdraw) {
+                return Response::badRequest([
+                    'message' => 'Cấp bậc chuyên viên phải giữ tiền quay vòng tối thiểu 2 gói!'
+                ]);
+            }
+        } else if ($user->level == Users::LEVEL_TRUONG_PHONG) {
+            $priceKeep = $priceOfOneProduct * 3;
+            $priceCanWithdraw = $user->user_money->money_bonus - $priceKeep;
+            if ($moneyWithdraw > $priceCanWithdraw) {
+                return Response::badRequest([
+                    'message' => 'Cấp bậc trưởng phòng phải giữ tiền quay vòng tối thiểu 3 gói!'
+                ]);
+            }
+        } else if ($user->level == Users::LEVEL_PHO_GIAM_DOC) {
+            $priceKeep = $priceOfOneProduct * 4;
+            $priceCanWithdraw = $user->user_money->money_bonus - $priceKeep;
+            if ($moneyWithdraw > $priceCanWithdraw) {
+                return Response::badRequest([
+                    'message' => 'Cấp bậc phó giám đốc phải giữ tiền quay vòng tối thiểu 4 gói!'
+                ]);
+            }
+        } else if ($user->level == Users::LEVEL_GIAM_DOC) {
+            $priceKeep = $priceOfOneProduct * 5;
+            $priceCanWithdraw = $user->user_money->money_bonus - $priceKeep;
+            if ($moneyWithdraw > $priceCanWithdraw) {
+                return Response::badRequest([
+                    'message' => 'Cấp bậc phó giám đốc phải giữ tiền quay vòng tối thiểu 5 gói!'
+                ]);
+            }
+        } else if ($user->level == Users::LEVEL_GIAM_DOC_CAP_CAO) {
+            $priceKeep = $priceOfOneProduct * 6;
+            $priceCanWithdraw = $user->user_money->money_bonus - $priceKeep;
+            if ($moneyWithdraw > $priceCanWithdraw) {
+                return Response::badRequest([
+                    'message' => 'Cấp bậc phó giám đốc phải giữ tiền quay vòng tối thiểu 6 gói!'
+                ]);
+            }
+        } else {
+            if ($moneyWithdraw > $user->user_money->money_bonus) {
+                return Response::badRequest([
+                    'message' => 'Số tiền rút tối đang lớn hơn số tiền có thể rút'
+                ]);
+            }
+        }
+
+        DB::beginTransaction();
+        try {
+            $user->user_money->money_bonus -= $moneyWithdraw;
+            $user->user_money->save();
+
+            Withdraw::insert([
+                "user_id" => $user->id,
+                "money" => $moneyWithdraw,
+                "date" => Carbon::now()->format('Y-m-d')
+            ]);
+
+            DB::commit();
+            return Response::success([
+                'message' => 'Yêu cầu rút tiền thành công!'
+            ]);
+        } catch (Exception|PDOException $e) {
+            DB::rollBack();
+            return Response::badRequest([
+                'message' => 'Có lỗi khi tạo yêu cầu rút tiền. Vui lòng liên hệ quản trị viên!'
+            ]);
+        }
     }
 }
