@@ -128,7 +128,7 @@ class UserController extends Controller
             $priceCanWithdraw = $user->user_money->money_bonus - $priceKeep;
             if ($moneyWithdraw > $priceCanWithdraw) {
                 return Response::badRequest([
-                    'message' => 'Cấp bậc chuyên viên phải giữ tiền quay vòng tối thiểu 2 gói!'
+                    'message' => 'Không đủ tiền rút vì: Cấp bậc chuyên viên phải giữ tiền quay vòng tối thiểu 2 gói!'
                 ]);
             }
         } else if ($user->level == Users::LEVEL_TRUONG_PHONG) {
@@ -136,7 +136,7 @@ class UserController extends Controller
             $priceCanWithdraw = $user->user_money->money_bonus - $priceKeep;
             if ($moneyWithdraw > $priceCanWithdraw) {
                 return Response::badRequest([
-                    'message' => 'Cấp bậc trưởng phòng phải giữ tiền quay vòng tối thiểu 3 gói!'
+                    'message' => 'Không đủ tiền rút vì: Cấp bậc trưởng phòng phải giữ tiền quay vòng tối thiểu 3 gói!'
                 ]);
             }
         } else if ($user->level == Users::LEVEL_PHO_GIAM_DOC) {
@@ -144,7 +144,7 @@ class UserController extends Controller
             $priceCanWithdraw = $user->user_money->money_bonus - $priceKeep;
             if ($moneyWithdraw > $priceCanWithdraw) {
                 return Response::badRequest([
-                    'message' => 'Cấp bậc phó giám đốc phải giữ tiền quay vòng tối thiểu 4 gói!'
+                    'message' => 'Không đủ tiền rút vì: Cấp bậc phó giám đốc phải giữ tiền quay vòng tối thiểu 4 gói!'
                 ]);
             }
         } else if ($user->level == Users::LEVEL_GIAM_DOC) {
@@ -152,7 +152,7 @@ class UserController extends Controller
             $priceCanWithdraw = $user->user_money->money_bonus - $priceKeep;
             if ($moneyWithdraw > $priceCanWithdraw) {
                 return Response::badRequest([
-                    'message' => 'Cấp bậc phó giám đốc phải giữ tiền quay vòng tối thiểu 5 gói!'
+                    'message' => 'Không đủ tiền rút vì: Cấp bậc phó giám đốc phải giữ tiền quay vòng tối thiểu 5 gói!'
                 ]);
             }
         } else if ($user->level == Users::LEVEL_GIAM_DOC_CAP_CAO) {
@@ -160,13 +160,13 @@ class UserController extends Controller
             $priceCanWithdraw = $user->user_money->money_bonus - $priceKeep;
             if ($moneyWithdraw > $priceCanWithdraw) {
                 return Response::badRequest([
-                    'message' => 'Cấp bậc phó giám đốc phải giữ tiền quay vòng tối thiểu 6 gói!'
+                    'message' => 'Không đủ tiền rút vì: Cấp bậc phó giám đốc phải giữ tiền quay vòng tối thiểu 6 gói!'
                 ]);
             }
         } else {
             if ($moneyWithdraw > $user->user_money->money_bonus) {
                 return Response::badRequest([
-                    'message' => 'Số tiền rút tối đang lớn hơn số tiền có thể rút'
+                    'message' => 'Không đủ tiền rút vì: Số tiền rút tối đang lớn hơn số tiền có thể rút'
                 ]);
             }
         }
@@ -192,5 +192,13 @@ class UserController extends Controller
                 'message' => 'Có lỗi khi tạo yêu cầu rút tiền. Vui lòng liên hệ quản trị viên!'
             ]);
         }
+    }
+
+    public function withdrawHistory(Request $request)
+    {
+        $histories = Withdraw::whereUserId($request->user->id)->orderBy('id', 'DESC')->get()->toArray();
+        return Response::success([
+            'histories' => $histories
+        ]);
     }
 }
