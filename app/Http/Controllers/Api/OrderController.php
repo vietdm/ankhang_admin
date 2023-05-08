@@ -13,7 +13,8 @@ use Illuminate\Http\Request;
 
 class OrderController extends Controller
 {
-    public function order(OrderRequest $request) {
+    public function order(OrderRequest $request)
+    {
         $order = new Orders();
         $order->order = $request->order;
         $order->user_id = $request->user_id;
@@ -21,6 +22,15 @@ class OrderController extends Controller
         $order->phone = $request->phone;
         $order->address = $request->address;
         $order->note = $request->note ?? '';
+
+        $products = [];
+        $totalPrice = 0;
+        foreach ($request->order as $or) {
+            $product = $products[$or['id']] ?? ($products[$or['id']] = Products::whereId($or['id'])->first());
+            $totalPrice += $product->price * (int)$or['quantity'];
+        }
+        $order->total_price = $totalPrice;
+
         $order->save();
 
         $user = Users::whereId($request->user_id)->first();
@@ -59,7 +69,8 @@ text;
         return Response::success([]);
     }
 
-    public function history(Request $request){
+    public function history(Request $request)
+    {
         $products = [];
         $orders = Orders::whereUserId($request->user->id)->orderBy('id', 'DESC')->get()->toArray();
         foreach ($orders as &$order) {
