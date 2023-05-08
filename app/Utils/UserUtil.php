@@ -21,12 +21,13 @@ class UserUtil
         return $userRoot;
     }
 
-    public static function getTotalChild($userPhone, &$total = 0)
+    public static function getTotalChildAndSale($userPhone, &$total = 0, &$totalSale = 0)
     {
-        $allUser = Users::select(['phone'])->where('present_phone', $userPhone)->get();
+        $allUser = Users::select(['phone', 'total_buy'])->where('present_phone', $userPhone)->get();
         $total += $allUser->count();
         foreach ($allUser as $user) {
-            self::getTotalChild($user->phone, $total);
+            $totalSale += $user->total_buy;
+            self::getTotalChildAndSale($user->phone, $total, $totalSale);
         }
     }
 }

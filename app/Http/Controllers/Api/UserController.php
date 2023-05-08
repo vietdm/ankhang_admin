@@ -79,12 +79,13 @@ class UserController extends Controller
             ->groupBy('user_id')
             ->first();
 
-        UserUtil::getTotalChild($request->user->phone, $total);
+        UserUtil::getTotalChildAndSale($request->user->phone, $total, $totalSale);
 
         return Response::success([
             'money_bonus' => $userMoney->money_bonus,
             'money_bonus_day' => $historyBonus->money_bonus_day ?? 0,
-            'total_child' => $total
+            'total_child' => $total,
+            'total_sale' => $totalSale,
         ]);
     }
 }
