@@ -18,7 +18,9 @@ return new class extends Migration {
 
         $userChecked = [];
         foreach (Orders::all() as $order) {
+            if ($order->status == 0 || $order->status == 4) continue;
             if (in_array($order->user_id, $userChecked)) continue;
+            $userChecked[] = $order->user_id;
             $user = Users::whereId($order->user_id)->first();
             if (!$user) continue;
             $user->package_joined = Users::PACKAGE_STAR;
