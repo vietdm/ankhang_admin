@@ -10,4 +10,8 @@ class Products extends Model
     use HasFactory;
 
     protected $table = 'products';
+
+    protected $casts = [
+        'images' => 'array'
+    ];
 }
