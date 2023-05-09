@@ -9,7 +9,7 @@ class RegisterRequest extends BaseRequest
     public function rules(): array
     {
         return [
-            'username' => ['required', 'regex:/^[a-z][a-z0-9]{4,31}$/'],
+            'username' => ['required', 'regex:/^[a-z][a-z0-9]{3,31}$/'],
             'email' => ['required', 'regex:/^([a-z0-9\+_\-]+)(\.[a-z0-9\+_\-]+)*@([a-z0-9\-]+\.)+[a-z]{2,6}$/'],
             'cccd' => ['required', 'regex:/^\d{9}(\d{3})?$/'],
             'phone' => ['required', 'regex:/^(03|05|07|08|09|01[2|6|8|9])+([0-9]{8})$/', 'min:10'],
