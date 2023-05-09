@@ -42,8 +42,10 @@ class AuthController extends Controller
         }
         $token = JwtHelper::encode(['id' => $user->id]);
         return Response::success([
-            'message' => 'Đăng nhập thành công!',
-            'token' => $token
+            'message' => $user->verified == '0' ? 'Vui lòng xác nhận tài khoản trước khi sử dụng' : 'Đăng nhập thành công!',
+            'token' => $token,
+            'verified' => $user->verified,
+            'user_id' => $user->id
         ]);
     }
 
