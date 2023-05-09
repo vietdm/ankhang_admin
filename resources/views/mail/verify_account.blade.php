@@ -4,7 +4,7 @@ Xin chào,
 <br/>
 Sau 10 phút không được sử dụng thì mã sẽ tự hủy.
 <br/>
-<code style="background-color: #f3f3f3;">{{ $token }}</code>
+<code style="background-color: #f3f3f3; font-size: 32px;">{{ $token }}</code>
 <br/>
 Cảm ơn,
 <br/>
