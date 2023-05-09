@@ -8,7 +8,9 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\LoginRequest;
 use App\Http\Requests\RegisterRequest;
 use App\Mail\ForgotPassword as MailForgotPassword;
+use App\Mail\VerifyAccount as MailVerifyAccount;
 use App\Models\ForgotPassword;
+use App\Models\Otps;
 use App\Models\UserMoney;
 use App\Models\Users;
 use Carbon\Carbon;
@@ -110,15 +112,26 @@ class AuthController extends Controller
             $newUser->save();
             $newUser->createMoney();
 
+            $token = sprintf("%06d", mt_rand(1, 999999));
+            Otps::insert([
+                'user_id' => $newUser->id,
+                'token' => $token,
+                'type' => Otps::VERIFY_ACCOUNT,
+                'ttl' => Carbon::now()->addMinutes(10)->timestamp
+            ]);
+
+            Mail::to($newUser->email)->send(new MailVerifyAccount($token));
+
             DB::commit();
             return Response::success([
-                'message' => 'Tạo tài khoản thành công, vui lòng đăng nhập lại!'
+                'message' => 'Tạo tài khoản thành công!',
+                'user_id' => $newUser->id
             ], 201);
         } catch (Exception|PDOException $e) {
             DB::rollBack();
             return Response::badRequest([
                 'message' => 'Tạo tài không thành công, vui lòng liên hệ quản trị viên!'
-            ], 201);
+            ]);
         }
     }
 
@@ -242,6 +255,47 @@ class AuthController extends Controller
         $recordForgot->delete();
         return Response::success([
             'message' => 'Thay đổi mật khẩu thành công, vui lòng đăng nhập lại!'
+        ]);
+    }
+
+    public function verifyAccount(Request $request): JsonResponse
+    {
+        $userId = $request->user_id;
+        $otpCode = $request->otp_code;
+
+        if (empty($userId) || empty($otpCode)) {
+            return Response::badRequest([
+                'message' => 'Dữ liệu xác thực không đầy đủ!'
+            ]);
+        }
+
+        $user = Users::whereId($userId)->first();
+        if (!$user) {
+            return Response::badRequest([
+                'message' => 'Người dùng không tồn tại!'
+            ]);
+        }
+
+        $otpRecord = Otps::whereUserId($userId)->whereType(Otps::VERIFY_ACCOUNT)->first();
+        if (!$otpRecord) {
+            return Response::badRequest([
+                'message' => 'Mã OTP không tồn tại hoặc đã hết hạn!'
+            ]);
+        }
+
+        if (Carbon::now()->timestamp > $otpRecord->ttl) {
+            $otpRecord->delete();
+            return Response::badRequest([
+                'message' => 'Mã OTP không tồn tại hoặc đã hết hạn!'
+            ]);
+        }
+
+        $user->verified = 1;
+        $user->save();
+        $otpRecord->delete();
+
+        return Response::success([
+            'message' => 'Xác nhận tài khoản thành công!'
         ]);
     }
 }

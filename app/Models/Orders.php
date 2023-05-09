@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Utils\OrderUtil;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -21,8 +22,9 @@ class Orders extends Model
         return $this->belongsTo(Users::class, 'user_id', 'id');
     }
 
-    public function accept()
+    public function accept(): void
     {
+        //update status order
         $this->status = 1;
         $this->save();
 
@@ -33,47 +35,66 @@ class Orders extends Model
         $userOrder->total_buy += $pricePayed;
         $userOrder->save();
 
+        $levelCalc = Users::LEVEL_NOMAL;
+        $percentLevel = 0;
+
+        //$mgs
+
         //trả thưởng cho F1
         $userParentF1 = Users::with(['user_money'])->wherePhone($userOrder->present_phone)->first();
         if ($userParentF1) {
-            $userParentF1->user_money->money_bonus += $pricePayed * 0.1;
-            $userParentF1->user_money->save();
-            $totalBonusPercent -= 0.1;
-            HistoryBonus::insert([
-                'user_id' => $userParentF1->id,
-                'money_bonus' => $pricePayed * 0.1,
-                'time_bonus' => Carbon::now()->format('Y-m-d H:i:s'),
-                'date_bonus' => Carbon::now()->format('Y-m-d'),
-            ]);
+            OrderUtil::sendBonus(
+                $userParentF1,
+                $userOrder,
+                $pricePayed,
+                'F1',
+                $totalBonusPercent,
+                $levelCalc,
+                $percentLevel
+            );
 
             //trả thưởng cho F2
             $userParentF2 = Users::with(['user_money'])->wherePhone($userParentF1->present_phone)->first();
             if ($userParentF2) {
-                $userParentF2->user_money->money_bonus += $pricePayed * 0.05;
-                $userParentF2->user_money->save();
-                $totalBonusPercent -= 0.05;
-                HistoryBonus::insert([
-                    'user_id' => $userParentF2->id,
-                    'money_bonus' => $pricePayed * 0.05,
-                    'time_bonus' => Carbon::now()->format('Y-m-d H:i:s'),
-                    'date_bonus' => Carbon::now()->format('Y-m-d'),
-                ]);
+                OrderUtil::sendBonus(
+                    $userParentF2,
+                    $userOrder,
+                    $pricePayed,
+                    'F2',
+                    $totalBonusPercent,
+                    $levelCalc,
+                    $percentLevel
+                );
 
                 //trả thưởng cho F3
                 $userParentF3 = Users::with(['user_money'])->wherePhone($userParentF2->present_phone)->first();
                 if ($userParentF3) {
-                    $userParentF3->user_money->money_bonus += $pricePayed * 0.05;
-                    $userParentF3->user_money->save();
-                    $totalBonusPercent -= 0.05;
-                    HistoryBonus::insert([
-                        'user_id' => $userParentF3->id,
-                        'money_bonus' => $pricePayed * 0.05,
-                        'time_bonus' => Carbon::now()->format('Y-m-d H:i:s'),
-                        'date_bonus' => Carbon::now()->format('Y-m-d'),
-                    ]);
+                    OrderUtil::sendBonus(
+                        $userParentF3,
+                        $userOrder,
+                        $pricePayed,
+                        'F3',
+                        $totalBonusPercent,
+                        $levelCalc,
+                        $percentLevel
+                    );
+
+                    //Trả thưởng cấp bậc từ F4 trở lên
+                    if (!empty($userParentF3->present_phone)) {
+                        OrderUtil::loopSendBonusLevel(
+                            $userParentF3->present_phone,
+                            $userOrder,
+                            $pricePayed,
+                            $totalBonusPercent,
+                            $levelCalc,
+                            $percentLevel
+                        );
+                    }
                 }
             }
         }
+
+        //
 
         //trả % cho VIP
         if ($totalBonusPercent > 0) {
