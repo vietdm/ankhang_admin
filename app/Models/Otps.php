@@ -12,4 +12,12 @@ class Otps extends Model
 
     const VERIFY_ACCOUNT = 'verify_account';
     protected $table = 'otps';
+
+    public static function insertOtp($params = [])
+    {
+        if (isset($params['user_id']) && isset($params['type'])) {
+            self::whereUserId($params['user_id'])->whereType($params['type'])->delete();
+        }
+        self::insert($params);
+    }
 }

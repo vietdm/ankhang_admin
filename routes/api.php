@@ -17,6 +17,7 @@ Route::post('/auth/forgot/confirm', [ApiAuthController::class, 'forgotConfirm'])
 Route::post('/auth/forgot/change', [ApiAuthController::class, 'forgotChangePassword']);
 Route::post('/auth/token/verify', [ApiAuthController::class, 'verifyToken']);
 Route::post('/auth/account/verify', [ApiAuthController::class, 'verifyAccount']);
+Route::post('/auth/account/resend-otp', [ApiAuthController::class, 'reSendOtp']);
 
 Route::get('/present/name', [ApiUserController::class, 'presentName']);
 Route::get('/products', [ApiProductController::class, 'lists']);
