@@ -124,7 +124,7 @@ class AuthController extends Controller
 
             DB::commit();
             return Response::success([
-                'message' => 'Tạo tài khoản thành công!',
+                'message' => 'Tạo tài khoản thành công! Kiểm tra email và điền mã xác nhận',
                 'user_id' => $newUser->id
             ], 201);
         } catch (Exception|PDOException $e) {
