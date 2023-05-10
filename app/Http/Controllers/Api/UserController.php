@@ -16,6 +16,7 @@ use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use PDOException;
+use App\Mail\Withdraw as MailWithdraw;
 
 class UserController extends Controller
 {
@@ -239,6 +240,31 @@ class UserController extends Controller
         $bankInfo->save();
         return Response::success([
             'message' => 'Cập nhật thành công!'
+        ]);
+    }
+
+    public function withdrawSendOtp(Request $request)
+    {
+        $userId = $request->user_id;
+        $user = Users::whereId($userId)->first();
+        if (!$user) {
+            return Response::badRequest([
+                'message' => 'Người dùng không tồn tại!'
+            ]);
+        }
+
+        $token = sprintf("%06d", mt_rand(1, 999999));
+        Otps::insertOtp([
+            'user_id' => $user->id,
+            'token' => $token,
+            'type' => Otps::VERIFY_ACCOUNT,
+            'ttl' => Carbon::now()->addMinutes(10)->timestamp
+        ]);
+
+        Mail::to($user->email)->send(new MailWithdraw($token));
+
+        return Response::success([
+            'message' => 'Đã gửi OTP thành công! Vui lòng kiểm tra email!'
         ]);
     }
 }
