@@ -19,7 +19,6 @@ class MissionListController extends Controller
             ->whereUserId($userId)
             ->where('date', Carbon::now()->format('Y-m-d'))
             ->get();
-        logger(Carbon::now()->format('Y-m-d'));
         $missionList = MissionList::whereType($type)->get();
         return Response::success([
             'limit' => 5 - $missionWithTypeOfUser->count(),
