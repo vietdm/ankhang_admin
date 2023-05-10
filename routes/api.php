@@ -8,6 +8,7 @@ use App\Http\Controllers\Api\SocialController as ApiSocialController;
 use App\Http\Controllers\Api\OrderController as ApiOrderController;
 use App\Http\Controllers\Api\MissionListController as ApiMissionListController;
 use App\Http\Controllers\Api\MissionController as ApiMissionController;
+use App\Http\Controllers\Api\BanksController as ApiBanksController;
 
 Route::post('/auth/login', [ApiAuthController::class, 'login']);
 Route::post('/__/____', [ApiAuthController::class, 'getPhoneByUsername']);
@@ -22,6 +23,7 @@ Route::post('/auth/account/resend-otp', [ApiAuthController::class, 'reSendOtp'])
 Route::get('/present/name', [ApiUserController::class, 'presentName']);
 Route::get('/products', [ApiProductController::class, 'lists']);
 Route::get('/product/{id}', [ApiProductController::class, 'getOne']);
+Route::get('/banks', [ApiBanksController::class, 'list']);
 
 Route::middleware('api.auth')->group(function () {
     Route::post('/auth/info', [ApiAuthController::class, 'info']);
