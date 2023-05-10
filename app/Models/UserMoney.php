@@ -11,15 +11,17 @@ class UserMoney extends Model
 
     protected $table = 'user_money';
 
-    public static function createNewUserMoney($userId) {
+    public static function createNewUserMoney($userId)
+    {
         $self = new self;
         $self->user_id = $userId;
-        $self->akg_point = 0;
+        $self->cashback_point = 0;
         $self->save();
         return $self;
     }
 
-    public static function getUserMoney($userId) {
+    public static function getUserMoney($userId)
+    {
         $userMoney = self::whereUserId($userId)->first();
         return $userMoney ? $userMoney : self::createNewUserMoney($userId);
     }

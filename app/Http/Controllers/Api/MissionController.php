@@ -11,7 +11,8 @@ use Illuminate\Http\Request;
 
 class MissionController extends Controller
 {
-    public function update(Request $request) {
+    public function update(Request $request)
+    {
         $missionListId = $request->mission_list_id;
         $userId = $request->user->id;
         $missionWithTypeOfUser = Mission::whereType('video')
@@ -30,7 +31,7 @@ class MissionController extends Controller
         $mission->save();
 
         $userMoney = UserMoney::getUserMoney($userId);
-        $userMoney->akg_point += 1000;
+        $userMoney->cashback_point += 1000;
         $userMoney->save();
 
         return Response::success(['message' => 'Đã nhận được 1000 điểm thưởng', 'limit' => 5 - $missionWithTypeOfUser->count() - 1]);

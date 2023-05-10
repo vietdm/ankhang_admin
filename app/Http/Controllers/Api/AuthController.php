@@ -148,7 +148,7 @@ class AuthController extends Controller
     {
         $userMoneu = UserMoney::whereUserId($request->user->id)->first();
         $request->user->password = '';
-        $request->user->akg_point = $userMoneu ? $userMoneu->akg_point : 0;
+        $request->user->cashback_point = $userMoneu ? $userMoneu->cashback_point : 0;
         return Response::success(['message' => 'Success!', 'user' => $request->user]);
     }
 
