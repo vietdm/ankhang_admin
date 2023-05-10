@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Helpers\Response;
 use App\Http\Controllers\Controller;
+use App\Models\BankInfo;
 use App\Models\HistoryBonus;
 use App\Models\UserMoney;
 use App\Models\Users;
@@ -215,6 +216,18 @@ class UserController extends Controller
 
     public function updateBankInfo(Request $request)
     {
-        //
+        if (empty($request->bin) || empty($request->account_number) || empty($request->branch)) {
+            return Response::badRequest([
+                'message' => 'Data update không đầy đủ!'
+            ]);
+        }
+        $bankInfo = BankInfo::whereUserId($request->user->id)->first();
+        $bankInfo->bin = $request->bin;
+        $bankInfo->account_number = $request->account_number;
+        $bankInfo->branch = $request->branch;
+        $bankInfo->save();
+        return Response::success([
+            'message' => 'Cập nhật thành công!'
+        ]);
     }
 }
