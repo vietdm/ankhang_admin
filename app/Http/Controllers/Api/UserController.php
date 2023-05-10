@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Helpers\Response;
 use App\Http\Controllers\Controller;
 use App\Models\BankInfo;
+use App\Models\Banks;
 use App\Models\HistoryBonus;
 use App\Models\UserMoney;
 use App\Models\Users;
@@ -216,8 +217,11 @@ class UserController extends Controller
 
     public function getBankInfo(Request $request)
     {
+        $bank = BankInfo::whereUserId($request->user->id)->first()->toArray();
+        $bankData = Banks::whereBin($bank['bin'])->first();
+        $bank['bank_name'] = $bankData->code . ': ' . $bankData->short_name . ' - ' . $bankData->name;
         return Response::success([
-            'bank_info' => BankInfo::whereUserId($request->user->id)->first()
+            'bank_info' => $bank
         ]);
     }
 
