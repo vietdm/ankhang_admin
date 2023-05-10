@@ -118,7 +118,8 @@ class UserController extends Controller
 
     public function withdrawRequest(Request $request)
     {
-        $user = Users::with(['user_money'])->whereId($request->user->id)->first();
+        $user = $request->user;
+        $userMoney = UserMoney::whereUserId($request->user->id)->first();
         $moneyWithdraw = (int)$request->money;
         $minWithdraw = 100000;
         if ($moneyWithdraw < $minWithdraw) {
@@ -130,7 +131,7 @@ class UserController extends Controller
         $priceOfOneProduct = 3000000;
         if ($user->level == Users::LEVEL_CHUYEN_VIEN) {
             $priceKeep = $priceOfOneProduct * 2;
-            $priceCanWithdraw = $user->user_money->money_bonus - $priceKeep;
+            $priceCanWithdraw = $userMoney->money_bonus - $priceKeep;
             if ($moneyWithdraw > $priceCanWithdraw) {
                 return Response::badRequest([
                     'message' => 'Không đủ tiền rút vì: Cấp bậc chuyên viên phải giữ tiền quay vòng tối thiểu 2 gói!'
@@ -138,7 +139,7 @@ class UserController extends Controller
             }
         } else if ($user->level == Users::LEVEL_TRUONG_PHONG) {
             $priceKeep = $priceOfOneProduct * 3;
-            $priceCanWithdraw = $user->user_money->money_bonus - $priceKeep;
+            $priceCanWithdraw = $userMoney->money_bonus - $priceKeep;
             if ($moneyWithdraw > $priceCanWithdraw) {
                 return Response::badRequest([
                     'message' => 'Không đủ tiền rút vì: Cấp bậc trưởng phòng phải giữ tiền quay vòng tối thiểu 3 gói!'
@@ -146,7 +147,7 @@ class UserController extends Controller
             }
         } else if ($user->level == Users::LEVEL_PHO_GIAM_DOC) {
             $priceKeep = $priceOfOneProduct * 4;
-            $priceCanWithdraw = $user->user_money->money_bonus - $priceKeep;
+            $priceCanWithdraw = $userMoney->money_bonus - $priceKeep;
             if ($moneyWithdraw > $priceCanWithdraw) {
                 return Response::badRequest([
                     'message' => 'Không đủ tiền rút vì: Cấp bậc phó giám đốc phải giữ tiền quay vòng tối thiểu 4 gói!'
@@ -154,7 +155,7 @@ class UserController extends Controller
             }
         } else if ($user->level == Users::LEVEL_GIAM_DOC) {
             $priceKeep = $priceOfOneProduct * 5;
-            $priceCanWithdraw = $user->user_money->money_bonus - $priceKeep;
+            $priceCanWithdraw = $userMoney->money_bonus - $priceKeep;
             if ($moneyWithdraw > $priceCanWithdraw) {
                 return Response::badRequest([
                     'message' => 'Không đủ tiền rút vì: Cấp bậc phó giám đốc phải giữ tiền quay vòng tối thiểu 5 gói!'
@@ -162,24 +163,48 @@ class UserController extends Controller
             }
         } else if ($user->level == Users::LEVEL_GIAM_DOC_CAP_CAO) {
             $priceKeep = $priceOfOneProduct * 6;
-            $priceCanWithdraw = $user->user_money->money_bonus - $priceKeep;
+            $priceCanWithdraw = $userMoney->money_bonus - $priceKeep;
             if ($moneyWithdraw > $priceCanWithdraw) {
                 return Response::badRequest([
                     'message' => 'Không đủ tiền rút vì: Cấp bậc phó giám đốc phải giữ tiền quay vòng tối thiểu 6 gói!'
                 ]);
             }
         } else {
-            if ($moneyWithdraw > $user->user_money->money_bonus) {
+            if ($moneyWithdraw > $userMoney->money_bonus) {
                 return Response::badRequest([
                     'message' => 'Không đủ tiền rút vì: Số tiền rút tối đang lớn hơn số tiền có thể rút'
                 ]);
             }
         }
 
+        $otpCode = $request->otp_code;
+
+        if (empty($otpCode)) {
+            return Response::badRequest([
+                'message' => 'Không tìm thấy Mã OTP!'
+            ]);
+        }
+
+        $otpRecord = Otps::whereUserId($request->user->id)->whereType(Otps::WITHDRAW)->first();
+        if (!$otpRecord) {
+            return Response::badRequest([
+                'message' => 'Mã OTP không tồn tại hoặc đã hết hạn!'
+            ]);
+        }
+
+        if (Carbon::now()->timestamp > $otpRecord->ttl) {
+            $otpRecord->delete();
+            return Response::badRequest([
+                'message' => 'Mã OTP không tồn tại hoặc đã hết hạn!'
+            ]);
+        }
+        //
+        $otpRecord->delete();
+
         DB::beginTransaction();
         try {
-            $user->user_money->money_bonus -= $moneyWithdraw;
-            $user->user_money->save();
+            $userMoney->money_bonus -= $moneyWithdraw;
+            $userMoney->save();
 
             Withdraw::insert([
                 "user_id" => $user->id,
@@ -259,7 +284,7 @@ class UserController extends Controller
         Otps::insertOtp([
             'user_id' => $user->id,
             'token' => $token,
-            'type' => Otps::VERIFY_ACCOUNT,
+            'type' => Otps::WITHDRAW,
             'ttl' => Carbon::now()->addMinutes(10)->timestamp
         ]);
 

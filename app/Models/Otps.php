@@ -11,6 +11,7 @@ class Otps extends Model
     use HasFactory, ModelTrait;
 
     const VERIFY_ACCOUNT = 'verify_account';
+    const WITHDRAW = 'withdraw';
     protected $table = 'otps';
 
     public static function insertOtp($params = [])
