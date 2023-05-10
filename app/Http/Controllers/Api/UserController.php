@@ -99,7 +99,7 @@ class UserController extends Controller
 
     public function moneyCanWithdraw(Request $request)
     {
-        $user = Users::with(['user_money'])->whereId($request->user->id)->first();
+        $userMoney = UserMoney::whereUserId($request->user->id)->first();
         $priceOfOneProduct = 3000000;
         $productKeep = [
             Users::LEVEL_NOMAL => 0,
@@ -109,8 +109,11 @@ class UserController extends Controller
             Users::LEVEL_GIAM_DOC => 5,
             Users::LEVEL_GIAM_DOC_CAP_CAO => 6
         ];
-        $priceKeep = $priceOfOneProduct * $productKeep[$user->level];
-        $priceCanWithdraw = $user->user_money->money_bonus - $priceKeep;
+        logger($userMoney->money_bonus);
+        $priceKeep = $priceOfOneProduct * $productKeep[$request->user->level];
+        logger($priceKeep);
+        logger($request->user->level);
+        $priceCanWithdraw = $userMoney->money_bonus - $priceKeep;
         return Response::success([
             'money' => $priceCanWithdraw
         ]);
