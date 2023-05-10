@@ -201,4 +201,15 @@ class UserController extends Controller
             'histories' => $histories
         ]);
     }
+
+    public function updateNomalInfo(Request $request)
+    {
+        $fullname = trim($request->fullname ?? '');
+        if (empty($fullname)) {
+            return Response::badRequest(['message' => "Họ và tên không được trống"]);
+        }
+        $request->user->fullname = $fullname;
+        $request->user->save();
+        return Response::success(['message' => 'Cập nhật thông tin thành công!']);
+    }
 }

@@ -38,4 +38,6 @@ Route::middleware('api.auth')->group(function () {
     Route::post('/order/history', [ApiOrderController::class, 'history']);
     Route::get('/mission-list/{type}', [ApiMissionListController::class, 'list']);
     Route::post('/mission/update', [ApiMissionController::class, 'update']);
+
+    Route::post('/user/update/nomal', [ApiUserController::class, 'updateNomalInfo']);
 });
