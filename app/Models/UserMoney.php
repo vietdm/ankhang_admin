@@ -15,7 +15,7 @@ class UserMoney extends Model
     {
         $self = new self;
         $self->user_id = $userId;
-        $self->cashback_point = 0;
+        $self->reward_point = 0;
         $self->save();
         return $self;
     }

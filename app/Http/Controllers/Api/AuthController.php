@@ -146,9 +146,9 @@ class AuthController extends Controller
 
     public function info(Request $request): JsonResponse
     {
-        $userMoneu = UserMoney::whereUserId($request->user->id)->first();
+        $userMoney = UserMoney::whereUserId($request->user->id)->first();
         $request->user->password = '';
-        $request->user->cashback_point = $userMoneu ? $userMoneu->cashback_point : 0;
+        $request->user->reward_point = $userMoney ? $userMoney->reward_point : 0;
         return Response::success(['message' => 'Success!', 'user' => $request->user]);
     }
 
