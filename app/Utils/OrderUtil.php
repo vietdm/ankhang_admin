@@ -35,8 +35,9 @@ class OrderUtil
             'user_id' => $user->id,
             'from_user_id' => $userOrder->id,
             'money_bonus' => $bonus,
+            'type' => HistoryBonus::HH_TRUC_TIEP,
             'date_bonus' => Carbon::now()->format('Y-m-d'),
-            'content' => 'Thưởng hoa hồng trực tiếp'
+            'content' => 'Thưởng hoa hồng trực tiếp',
         ]);
 
         self::sendBonusLevel(
@@ -78,6 +79,7 @@ class OrderUtil
                 'from_user_id' => $userOrder->id,
                 'money_bonus' => $bonus,
                 'date_bonus' => $dateNow,
+                'type' => HistoryBonus::HH_CAP_BAC,
                 'content' => 'Thưởng hoa hồng cấp bậc Chuyên Viên'
             ]);
         }
@@ -100,6 +102,7 @@ class OrderUtil
                 'from_user_id' => $userOrder->id,
                 'money_bonus' => $bonus,
                 'date_bonus' => $dateNow,
+                'type' => HistoryBonus::HH_CAP_BAC,
                 'content' => 'Thưởng hoa hồng cấp bậc Trưởng Phòng'
             ]);
         }
@@ -121,6 +124,7 @@ class OrderUtil
                 'from_user_id' => $userOrder->id,
                 'money_bonus' => $bonus,
                 'date_bonus' => $dateNow,
+                'type' => HistoryBonus::HH_CAP_BAC,
                 'content' => 'Thưởng hoa hồng cấp bậc Phó Giám Đốc'
             ]);
         }
@@ -141,6 +145,7 @@ class OrderUtil
                 'from_user_id' => $userOrder->id,
                 'money_bonus' => $bonus,
                 'date_bonus' => $dateNow,
+                'type' => HistoryBonus::HH_CAP_BAC,
                 'content' => 'Thưởng hoa hồng cấp bậc Giám Đốc'
             ]);
         }
@@ -158,6 +163,7 @@ class OrderUtil
                 'from_user_id' => $userOrder->id,
                 'money_bonus' => $bonus,
                 'date_bonus' => $dateNow,
+                'type' => HistoryBonus::HH_CAP_BAC,
                 'content' => 'Thưởng hoa hồng cấp bậc Giám Đốc Cấp Cao'
             ]);
         }

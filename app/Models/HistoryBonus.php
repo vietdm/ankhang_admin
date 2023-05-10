@@ -10,5 +10,8 @@ class HistoryBonus extends Model
 {
     use HasFactory, ModelTrait;
 
+    const HH_TRUC_TIEP = 'truc_tiep';
+    const HH_CAP_BAC = 'cap_bac';
+
     protected $table = 'history_bonus';
 }
