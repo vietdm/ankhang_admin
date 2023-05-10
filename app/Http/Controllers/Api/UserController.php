@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Models\BankInfo;
 use App\Models\Banks;
 use App\Models\HistoryBonus;
+use App\Models\Otps;
 use App\Models\UserMoney;
 use App\Models\Users;
 use App\Models\Withdraw;
@@ -15,6 +16,7 @@ use Carbon\Carbon;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Mail;
 use PDOException;
 use App\Mail\Withdraw as MailWithdraw;
 
