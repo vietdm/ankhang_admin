@@ -41,4 +41,5 @@ Route::middleware('api.auth')->group(function () {
 
     Route::post('/user/update/nomal', [ApiUserController::class, 'updateNomalInfo']);
     Route::post('/user/update/bank', [ApiUserController::class, 'updateBankInfo']);
+    Route::get('/user/bank', [ApiUserController::class, 'getBankInfo']);
 });

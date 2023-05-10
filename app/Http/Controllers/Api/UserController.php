@@ -214,6 +214,13 @@ class UserController extends Controller
         return Response::success(['message' => 'Cập nhật thông tin thành công!']);
     }
 
+    public function getBankInfo(Request $request)
+    {
+        return Response::success([
+            'bank_info' => BankInfo::whereUserId($request->user->id)->first()
+        ]);
+    }
+
     public function updateBankInfo(Request $request)
     {
         if (empty($request->bin) || empty($request->account_number) || empty($request->branch)) {
