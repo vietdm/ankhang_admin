@@ -109,10 +109,7 @@ class UserController extends Controller
             Users::LEVEL_GIAM_DOC => 5,
             Users::LEVEL_GIAM_DOC_CAP_CAO => 6
         ];
-        logger($userMoney->money_bonus);
         $priceKeep = $priceOfOneProduct * $productKeep[$request->user->level];
-        logger($priceKeep);
-        logger($request->user->level);
         $priceCanWithdraw = $userMoney->money_bonus - $priceKeep;
         return Response::success([
             'money' => $priceCanWithdraw
