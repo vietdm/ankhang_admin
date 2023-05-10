@@ -40,7 +40,10 @@ class AuthController extends Controller
                 ]);
             }
         }
-        $token = JwtHelper::encode(['id' => $user->id]);
+        $token = JwtHelper::encode([
+            'id' => $user->id,
+            'exp' => Carbon::now()->addMonth()->timestamp
+        ]);
         return Response::success([
             'message' => $user->verified == '0' ? 'Vui lòng xác nhận tài khoản trước khi sử dụng' : 'Đăng nhập thành công!',
             'token' => $token,
