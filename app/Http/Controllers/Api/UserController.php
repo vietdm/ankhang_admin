@@ -201,6 +201,7 @@ class UserController extends Controller
         //
         $otpRecord->delete();
 
+        $bankInfo = BankInfo::whereUserId($user->id)->first();
         DB::beginTransaction();
         try {
             $userMoney->money_bonus -= $moneyWithdraw;
@@ -209,7 +210,10 @@ class UserController extends Controller
             Withdraw::insert([
                 "user_id" => $user->id,
                 "money" => $moneyWithdraw,
-                "date" => Carbon::now()->format('Y-m-d')
+                "date" => Carbon::now()->format('Y-m-d'),
+                'branch' => $bankInfo->branch,
+                'account_number' => $bankInfo->account_number,
+                'bin' => $bankInfo->bin,
             ]);
 
             DB::commit();
