@@ -212,4 +212,9 @@ class UserController extends Controller
         $request->user->save();
         return Response::success(['message' => 'Cập nhật thông tin thành công!']);
     }
+
+    public function updateBankInfo(Request $request)
+    {
+        //
+    }
 }
