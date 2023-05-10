@@ -245,7 +245,7 @@ class UserController extends Controller
 
     public function withdrawSendOtp(Request $request)
     {
-        $userId = $request->user_id;
+        $userId = $request->user->id;
         $user = Users::whereId($userId)->first();
         if (!$user) {
             return Response::badRequest([
