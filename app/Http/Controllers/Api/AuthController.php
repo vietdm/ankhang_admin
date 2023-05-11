@@ -96,8 +96,8 @@ class AuthController extends Controller
             ]);
         }
 
-        $userWithPresentPhone = Users::wherePhone($request->present_phone)->first();
-        if (!$userWithPresentPhone) {
+        $userWithPresentCode = Users::wherePhone($request->present_code)->first();
+        if (!$userWithPresentCode) {
             return Response::badRequest([
                 'message' => 'Người giới thiệu không tồn tại!'
             ]);
@@ -112,8 +112,8 @@ class AuthController extends Controller
             $newUser->phone = $request->phone;
             $newUser->fullname = $request->fullname;
             $newUser->password = bcrypt($request->password);
-            $newUser->present_phone = $request->present_phone;
-            $newUser->parent_id = $userWithPresentPhone->id;
+            $newUser->present_phone = $userWithPresentCode->phone;
+            $newUser->parent_id = $userWithPresentCode->id;
             $newUser->save();
             $newUser->createMoney();
 
