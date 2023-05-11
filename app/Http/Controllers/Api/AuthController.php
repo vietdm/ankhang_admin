@@ -82,13 +82,6 @@ class AuthController extends Controller
             ]);
         }
 
-        $userWithCCCD = Users::whereCccd($request->cccd)->first();
-        if (!!$userWithCCCD) {
-            return Response::badRequest([
-                'message' => 'Số CMT/CCCD đã được sử dụng!'
-            ]);
-        }
-
         $userWithPhone = Users::wherePhone($request->phone)->first();
         if (!!$userWithPhone) {
             return Response::badRequest([
@@ -108,7 +101,6 @@ class AuthController extends Controller
             $newUser = new Users();
             $newUser->username = $request->username;
             $newUser->email = $request->email;
-            $newUser->cccd = $request->cccd;
             $newUser->phone = $request->phone;
             $newUser->fullname = $request->fullname;
             $newUser->password = bcrypt($request->password);
