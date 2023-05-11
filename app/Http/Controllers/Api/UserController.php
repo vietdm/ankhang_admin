@@ -24,8 +24,8 @@ class UserController extends Controller
 {
     public function presentName(Request $request)
     {
-        $phone = $request->phone ?? '';
-        $userWithPhone = Users::wherePhone($phone)->first();
+        $code = $request->code ?? '';
+        $userWithPhone = Users::whereUsername($code)->first();
         if (!$userWithPhone) {
             return Response::badRequest([
                 'message' => 'Not found!'
