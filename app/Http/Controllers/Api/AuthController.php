@@ -96,7 +96,7 @@ class AuthController extends Controller
             ]);
         }
 
-        $userWithPresentCode = Users::wherePhone($request->present_code)->first();
+        $userWithPresentCode = Users::whereUsername($request->present_code)->first();
         if (!$userWithPresentCode) {
             return Response::badRequest([
                 'message' => 'Người giới thiệu không tồn tại!'
