@@ -249,12 +249,13 @@ class UserController extends Controller
 
     public function getBankInfo(Request $request)
     {
-        $bank = BankInfo::whereUserId($request->user->id)->first()->toArray();
+        $bank = BankInfo::whereUserId($request->user->id)->first();
         if (!$bank) {
             return Response::success([
                 'bank_info' => null
             ]);
         }
+        $bank = $bank->toArray();
         $bankData = Banks::whereBin($bank['bin'])->first();
         $bank['bank_name'] = $bankData->code . ': ' . $bankData->short_name . ' - ' . $bankData->name;
         return Response::success([
