@@ -134,6 +134,7 @@ class AuthController extends Controller
             ], 201);
         } catch (Exception|PDOException $e) {
             DB::rollBack();
+            logger($e->getMessage());
             return Response::badRequest([
                 'message' => 'Tạo tài không thành công, vui lòng liên hệ quản trị viên!'
             ]);
