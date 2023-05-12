@@ -22,6 +22,7 @@
     <link rel="stylesheet"
           href="https://fonts.googleapis.com/css2?family=Mulish:ital,wght@0,200;0,300;0,400;0,500;0,600;0,700;0,800;1,200;1,300;1,400;1,500;1,600;1,700;1,800&display=swap">
     <link rel="stylesheet" id="css-main" href="{{ asset('assets/css/codebase.css') }}">
+    @yield('head')
 </head>
 <body>
 <div id="page-container"
@@ -214,11 +215,8 @@
 
 <script src="{{ asset('assets/js/codebase.core.min.js') }}"></script>
 <script src="{{ asset('assets/js/codebase.app.min.js') }}"></script>
-
-<!-- Page JS Plugins -->
 <script src="{{ asset('assets/js/plugins/chartjs/Chart.bundle.min.js') }}"></script>
-
-<!-- Page JS Code -->
 <script src="{{ asset('assets/js/pages/be_pages_dashboard.min.js') }}"></script>
+@yield('script')
 </body>
 </html>

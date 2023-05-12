@@ -19,6 +19,23 @@ class Orders extends Model
         return $this->belongsTo(Users::class, 'user_id', 'id');
     }
 
+    public function product(): BelongsTo
+    {
+        return $this->belongsTo(Products::class, 'product_id', 'id');
+    }
+
+    public function statusBadge(): string
+    {
+        return match ($this->status) {
+            0 => '<span class="badge badge-info">Vừa đặt hàng</span>',
+            1 => '<span class="badge badge-success">Đã xác nhận</span>',
+            2 => '<span class="badge badge-primary">Đang vận chuyển</span>',
+            3 => '<span class="badge badge-primary">Hoàn thành</span>',
+            4 => '<span class="badge badge-error">Đã hủy</span>',
+            default => '',
+        };
+    }
+
     public function accept(): void
     {
         //update status order

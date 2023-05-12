@@ -31,8 +31,12 @@ class OrderController extends Controller
             ]);
         }
 
+        do {
+            $code = Str::random(6);
+        } while (Orders::whereCode($code)->first() != null);
+
         $order = new Orders();
-        $order->order = $request->order;
+        $order->code = $code;
         $order->user_id = $request->user_id;
         $order->name = $request->name;
         $order->phone = $request->phone;
