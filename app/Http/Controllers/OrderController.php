@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Helpers\Response;
 use App\Helpers\Telegram;
 use App\Models\Orders;
+use App\Models\Products;
 use App\Models\Users;
 use Exception;
 use Illuminate\Http\JsonResponse;
