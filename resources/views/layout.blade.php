@@ -3,21 +3,25 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
-    <title>Admin | An Khang</title>
+    <title>{{ config('info.title') }}</title>
     <meta name="author" content="pixelcave">
     <meta name="robots" content="noindex, nofollow">
 
     <!-- Icons -->
     <!-- The following icons can be replaced with your own, they are used by desktop and mobile browsers -->
-    <link rel="shortcut icon" href="assets/media/favicons/favicon.png">
-    <link rel="icon" type="image/png" sizes="192x192" href="assets/media/favicons/favicon-192x192.png">
-    <link rel="apple-touch-icon" sizes="180x180" href="assets/media/favicons/apple-touch-icon-180x180.png">
+    <link rel="shortcut icon" href="{{ asset('assets/media/favicons/favicon.png') }}">
+    <link rel="icon" type="image/png" sizes="192x192" href="{{ asset('assets/media/favicons/favicon-192x192.png') }}">
+    <link rel="apple-touch-icon" sizes="180x180"
+          href="{{ asset('assets/media/favicons/apple-touch-icon-180x180.png') }}">
     <!-- END Icons -->
 
     <!-- Stylesheets -->
     <!-- Fonts and Codebase framework -->
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Nunito+Sans:300,400,400i,600,700&display=swap">
-    <link rel="stylesheet" id="css-main" href="assets/css/codebase.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet"
+          href="https://fonts.googleapis.com/css2?family=Mulish:ital,wght@0,200;0,300;0,400;0,500;0,600;0,700;0,800;1,200;1,300;1,400;1,500;1,600;1,700;1,800&display=swap">
+    <link rel="stylesheet" id="css-main" href="{{ asset('assets/css/codebase.css') }}">
 </head>
 <body>
 <div id="page-container"
@@ -38,7 +42,8 @@
                 <!-- User Info -->
                 <div class="content-header-item">
                     <a class="img-link mr-5" href="be_pages_generic_profile.html">
-                        <img class="img-avatar img-avatar32" src="assets/media/avatars/avatar15.jpg" alt="">
+                        <img class="img-avatar img-avatar32" src="{{ asset('assets/media/avatars/avatar15.jpg') }}"
+                             alt="">
                     </a>
                     <a class="align-middle link-effect text-primary-dark font-w600"
                        href="be_pages_generic_profile.html">John Smith</a>
@@ -80,7 +85,7 @@
                         <a class="link-effect font-w700" href="index.html">
                             <i class="si si-fire text-primary"></i>
                             <span class="font-size-xl text-dual-primary-dark">An</span><span
-                                class="font-size-xl text-primary">Khang</span>
+                                    class="font-size-xl text-primary">Khang</span>
                         </a>
                     </div>
                     <!-- END Logo -->
@@ -142,9 +147,12 @@
                     </button>
                     <div class="dropdown-menu dropdown-menu-right min-width-200"
                          aria-labelledby="page-header-user-dropdown">
-                        <a class="dropdown-item" href="op_auth_signin.html">
-                            <i class="si si-logout mr-5"></i> Sign Out
-                        </a>
+                        <form action="/auth0/logout" method="POST">
+                            @csrf
+                            <button type="submit" class="dropdown-item mb-0" style="cursor: pointer">
+                                <i class="si si-logout mr-5"></i> Sign Out
+                            </button>
+                        </form>
                     </div>
                 </div>
                 <!-- END User Dropdown -->
@@ -181,7 +189,6 @@
         <!-- END Header Search -->
 
         <!-- Header Loader -->
-        <!-- Please check out the Activity page under Elements category to see examples of showing/hiding it -->
         <div id="page-header-loader" class="overlay-header bg-primary">
             <div class="content-header content-header-fullrow text-center">
                 <div class="content-header-item">
@@ -202,32 +209,16 @@
         <!-- END Page Content -->
     </main>
     <!-- END Main Container -->
-
-    <!-- Footer -->
-    <footer id="page-footer" class="opacity-0">
-        <div class="content py-20 font-size-sm clearfix">
-            <div class="float-right">
-                Crafted with <i class="fa fa-heart text-pulse"></i> by <a class="font-w600"
-                                                                          href="https://1.envato.market/ydb"
-                                                                          target="_blank">pixelcave</a>
-            </div>
-            <div class="float-left">
-                <a class="font-w600" href="https://1.envato.market/95j" target="_blank">Codebase 3.4</a> &copy; <span
-                    class="js-year-copy"></span>
-            </div>
-        </div>
-    </footer>
-    <!-- END Footer -->
 </div>
 <!-- END Page Container -->
 
-<script src="assets/js/codebase.core.min.js"></script>
-<script src="assets/js/codebase.app.min.js"></script>
+<script src="{{ asset('assets/js/codebase.core.min.js') }}"></script>
+<script src="{{ asset('assets/js/codebase.app.min.js') }}"></script>
 
 <!-- Page JS Plugins -->
-<script src="assets/js/plugins/chartjs/Chart.bundle.min.js"></script>
+<script src="{{ asset('assets/js/plugins/chartjs/Chart.bundle.min.js') }}"></script>
 
 <!-- Page JS Code -->
-<script src="assets/js/pages/be_pages_dashboard.min.js"></script>
+<script src="{{ asset('assets/js/pages/be_pages_dashboard.min.js') }}"></script>
 </body>
 </html>
