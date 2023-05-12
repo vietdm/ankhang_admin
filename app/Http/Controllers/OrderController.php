@@ -39,7 +39,7 @@ class OrderController extends Controller
         try {
             $order->accept();
 
-            $product = Products::whereIn('id', $order->product_id)->first();
+            $product = Products::where('id', $order->product_id)->first();
             $totalPrice = number_format($order->total_price);
 
             $mgs = <<<text
