@@ -20,7 +20,7 @@ class AdminAuthMiddleware
         $status = session()->get($keySession, '0');
 
         if ($status === '0') {
-            return redirect()->to('/auth0/login');
+            return redirect()->to('/auth0/login?next=' . urlencode($request->url()));
         }
 
         return $next($request);

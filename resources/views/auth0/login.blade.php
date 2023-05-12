@@ -53,7 +53,8 @@
                                     </div>
                                     <div class="form-group row">
                                         <div class="col-12">
-                                            <input type="password" class="form-control text-center" id="password" placeholder="Password"/>
+                                            <input type="password" class="form-control text-center" id="password"
+                                                   placeholder="Password"/>
                                         </div>
                                     </div>
                                     <div class="form-group text-center">
@@ -94,7 +95,9 @@
                 icon: 'success'
             });
             setTimeout(() => {
-                window.location.href = '/';
+                const url = new URL(window.location.href);
+                const next = url.searchParams.get("next");
+                window.location.href = next ?? '/';
             }, 1000);
         }).catch((error) => {
             Swal.fire({

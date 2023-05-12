@@ -26,7 +26,7 @@ return new class extends Migration {
         foreach (Orders::all() as $order) {
             //calc total price
             $totalPrice = 0;
-            foreach ($order->order as $or) {
+            foreach (json_decode($order->order, 1) as $or) {
                 $product = $products[$or['id']] ?? ($products[$or['id']] = Products::whereId($or['id'])->first());
                 $totalPrice += $product->price * (int)$or['quantity'];
             }
