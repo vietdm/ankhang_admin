@@ -14,6 +14,14 @@ class Orders extends Model
 
     protected $table = 'orders';
 
+    const STATUS_CREATE = 0;
+    const STATUS_ACCEPT = 1;
+    const STATUS_DELIVE = 2;
+    const STATUS_DONE = 3;
+    const STATUS_CANCEL = 4;
+    const PAYED = 1;
+    const NOT_PAY = 0;
+
     public function user(): BelongsTo
     {
         return $this->belongsTo(Users::class, 'user_id', 'id');
@@ -31,9 +39,13 @@ class Orders extends Model
             1 => '<span class="badge badge-success">Đã xác nhận</span>',
             2 => '<span class="badge badge-primary">Đang vận chuyển</span>',
             3 => '<span class="badge badge-primary">Hoàn thành</span>',
-            4 => '<span class="badge badge-error">Đã hủy</span>',
+            4 => '<span class="badge badge-danger">Đã hủy</span>',
             default => '',
         };
+    }
+
+    public function isCreated() {
+        return $this->status === self::STATUS_CREATE;
     }
 
     public function accept(): void

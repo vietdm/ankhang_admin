@@ -6,6 +6,7 @@
     <title>{{ config('info.title') }}</title>
     <meta name="author" content="pixelcave">
     <meta name="robots" content="noindex, nofollow">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
 
     <!-- Icons -->
     <!-- The following icons can be replaced with your own, they are used by desktop and mobile browsers -->
@@ -100,8 +101,8 @@
                 <ul class="nav-main">
                     <li>
                         <a href="/" class="active">
-                            <i class="si si-cup"></i>
-                            <span class="sidebar-mini-hide">Dashboard</span>
+                            <i class="si si-handbag"></i>
+                            <span class="sidebar-mini-hide">Mua hàng</span>
                         </a>
                     </li>
                 </ul>
@@ -215,8 +216,16 @@
 
 <script src="{{ asset('assets/js/codebase.core.min.js') }}"></script>
 <script src="{{ asset('assets/js/codebase.app.min.js') }}"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script src="{{ asset('assets/js/plugins/chartjs/Chart.bundle.min.js') }}"></script>
 <script src="{{ asset('assets/js/pages/be_pages_dashboard.min.js') }}"></script>
+<script>
+    $.ajaxSetup({
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        }
+    });
+</script>
 @yield('script')
 </body>
 </html>
