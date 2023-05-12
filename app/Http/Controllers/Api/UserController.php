@@ -88,6 +88,7 @@ class UserController extends Controller
             ->first();
 
         UserUtil::getTotalChildAndSale($request->user->phone, $total, $totalSale);
+        $totalSale += $request->user->total_buy;
 
         return Response::success([
             'money_bonus' => $userMoney->money_bonus,
