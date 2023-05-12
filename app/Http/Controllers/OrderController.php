@@ -38,7 +38,6 @@ class OrderController extends Controller
         DB::beginTransaction();
         try {
             $order->accept();
-            DB::commit();
 
             $product = Products::whereIn('id', $order->product_id)->first();
             $totalPrice = number_format($order->total_price);
@@ -57,7 +56,7 @@ Tổng giá: $totalPrice
 text;
 
             Telegram::pushMgs($mgs);
-
+            DB::commit();
             return Response::success('Thành công!');
         } catch (Exception|PDOException $e) {
             logger($e);
