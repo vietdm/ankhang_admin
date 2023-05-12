@@ -11,6 +11,7 @@ use App\Models\Products;
 use App\Models\Users;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 
 class OrderController extends Controller
 {
