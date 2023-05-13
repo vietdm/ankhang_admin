@@ -42,14 +42,14 @@ class OrderController extends Controller
 
         //upload image
         $image = $request->file('image');
-        $ext = $image->extension();
-        $newName = sha1(Carbon::now()->format('Ymd_His'));
+        //$ext = $image->extension();
+        //$newName = sha1(Carbon::now()->format('Ymd_His'));
 
         return Response::success([
             'message' => 'Bạn chưa chọn ảnh kết quả thanh toán!',
-            'aa' => $ext,
+            //'aa' => $ext,
             'img' => $image,
-            'aaaa' => $newName
+            //'aaaa' => $newName
         ]);
 
         try {
