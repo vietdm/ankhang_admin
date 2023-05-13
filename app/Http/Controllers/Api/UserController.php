@@ -206,19 +206,20 @@ class UserController extends Controller
         $bankInfo = BankInfo::with(['bank'])->whereUserId($user->id)->first();
         DB::beginTransaction();
         try {
+            $realMoneyWithdraw = $moneyWithdraw - $moneyWithdraw * 0.1;
             $userMoney->money_bonus -= $moneyWithdraw;
             $userMoney->save();
 
             Withdraw::insert([
                 "user_id" => $user->id,
                 "money" => $moneyWithdraw,
+                "money_real" => $realMoneyWithdraw,
                 "date" => Carbon::now()->format('Y-m-d'),
                 'branch' => $bankInfo->branch,
                 'account_number' => $bankInfo->account_number,
                 'bin' => $bankInfo->bin,
             ]);
 
-            $realMoneyWithdraw = $moneyWithdraw - $moneyWithdraw * 0.1;
             $bankData = $bankInfo->bank;
             $mgs = <<<text
 Có yêu cầu rút tiền mới!
