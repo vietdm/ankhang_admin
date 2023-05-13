@@ -31,7 +31,7 @@ class OrderController extends Controller
 
     public function accept($id): JsonResponse
     {
-        $order = Orders::whereId($id)->first();
+        $order = Orders::with(['user'])->whereId($id)->first();
         if (!$order) {
             return Response::badRequest("Order không tồn tại!");
         }
@@ -45,10 +45,12 @@ class OrderController extends Controller
             $product = Products::where('id', $order->product_id)->first();
             $totalPrice = number_format($order->total_price);
 
+            $username = $order->user->username ?? 'Unkown';
             $mgs = <<<text
 Có đơn hàng mới!
 ==============
 Họ tên: $order->name
+Username: $username
 Số điện thoại: $order->phone
 Địa chỉ: $order->address
 Ghi chú: $order->note
