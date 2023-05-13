@@ -30,6 +30,7 @@ class OrdersExport implements FromCollection, WithMapping, WithHeadings, ShouldA
         if ($this->type == 'not_pay') {
             $orders->where('payed', '0');
         }
+        $orders->orderByDesc('id');
         return $orders->get();
     }
 
