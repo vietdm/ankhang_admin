@@ -2,16 +2,19 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\OrdersExport;
 use App\Helpers\Response;
 use App\Helpers\Telegram;
 use App\Models\Orders;
 use App\Models\Products;
-use App\Models\Users;
+use Carbon\Carbon;
 use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Maatwebsite\Excel\Facades\Excel;
 use PDOException;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
 class OrderController extends Controller
 {
@@ -101,5 +104,12 @@ text;
             DB::rollBack();
             return Response::badRequest('Không thể xác nhận thanh toán! Vui lòng thử lại!');
         }
+    }
+
+    public function export(Request $request): BinaryFileResponse
+    {
+        $type = $request->type ?? 'all';
+        $date = Carbon::now()->format('Ymd_His');
+        return Excel::download(new OrdersExport($type), "order_export_$date.xlsx");
     }
 }

@@ -5,8 +5,17 @@
 @section('content')
     <div class="row gutters-tiny invisible" data-toggle="appear">
         <div class="col-12">
-            <div class="alert alert-secondary">
+            <div class="alert alert-secondary d-flex justify-content-between">
                 <h3 class="mb-0 text-primary">Danh sách mua hàng</h3>
+                <div class="area-export d-flex">
+                    <select name="export_type" id="export_type" class="form-control">
+                        <option value="all" selected>Tất cả</option>
+                        <option value="payed">Đã thanh toán</option>
+                        <option value="not_pay">Chưa thanh toán</option>
+                    </select>
+                    <a class="btn btn-primary ml-2 textlink-export" href="/order/export?type=all" style="width: 150px">Xuất
+                        Excel</a>
+                </div>
             </div>
         </div>
         <div class="col-12">
@@ -29,7 +38,8 @@
                     <tr>
                         <th class="text-center" scope="row">{{ $order->id }}</th>
                         <th class="text-center">{{ $order->code }}</th>
-                        <td class="text-center" data-search="{{ convert_vi_to_en($order->user->fullname) . ' ' . $order->user->fullname }}">
+                        <td class="text-center"
+                            data-search="{{ convert_vi_to_en($order->user->fullname) . ' ' . $order->user->fullname }}">
                             {{ $order->user->fullname }}
                         </td>
                         <td class="text-center">{{ $order->product->title }}</td>
@@ -46,14 +56,17 @@
                         <td class="text-center" style="width: 200px">
                             @if($order->isCreated())
                                 @if($order->payed === 0)
-                                    <button type="button" class="m-1 btn btn-created btn-primary" onclick="Order.payed({{ $order->id }}, this)">
+                                    <button type="button" class="m-1 btn btn-created btn-primary"
+                                            onclick="Order.payed({{ $order->id }}, this)">
                                         Xác nhận thanh toán
                                     </button>
                                 @endif
-                                <button type="button" class="m-1 btn btn-created btn-success" onclick="Order.accept({{ $order->id }}, this)">
+                                <button type="button" class="m-1 btn btn-created btn-success"
+                                        onclick="Order.accept({{ $order->id }}, this)">
                                     Kích hoạt đơn hàng
                                 </button>
-                                <button type="button" class="m-1 btn btn-created btn-outline-danger" onclick="Order.cancel({{ $order->id }}, this)">
+                                <button type="button" class="m-1 btn btn-created btn-outline-danger"
+                                        onclick="Order.cancel({{ $order->id }}, this)">
                                     Hủy
                                 </button>
                             @endif
@@ -70,4 +83,10 @@
     <script src="{{ asset('assets/js/plugins/datatables/dataTables.bootstrap4.min.js') }}"></script>
     <script src="{{ asset('assets/js/pages/be_tables_datatables.min.js') }}"></script>
     <script src="{{ asset('assets/js/order.js') }}" type="module"></script>
+    <script>
+        $('[name="export_type"]').on('change', function () {
+            const type = $(this).val();
+            $('.textlink-export').attr('href', '/order/export?type=' + type);
+        })
+    </script>
 @endsection

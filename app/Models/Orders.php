@@ -32,6 +32,18 @@ class Orders extends Model
         return $this->belongsTo(Products::class, 'product_id', 'id');
     }
 
+    public function getPayedTextAttribute()
+    {
+        return $this->payed === 0 ? 'Chưa thanh toán' : 'Đã thanh toán';
+    }
+
+    public function getStatusTextAttribute()
+    {
+        if ($this->status === self::STATUS_CREATE) return 'Chưa xác nhận';
+        if ($this->status === self::STATUS_CANCEL) return 'Đã hủy';
+        return 'Đã xác nhận';
+    }
+
     public function statusBadge(): string
     {
         return match ($this->status) {
@@ -44,7 +56,8 @@ class Orders extends Model
         };
     }
 
-    public function isCreated() {
+    public function isCreated()
+    {
         return $this->status === self::STATUS_CREATE;
     }
 
