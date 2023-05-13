@@ -8,7 +8,7 @@ export const Order = {
                 const tdStatus = $(el).closest('tr').find('.td-status-badge');
                 $(el).closest('td').find('.btn-created').remove();
                 tdStatus.find('.badge').remove();
-                tdStatus.find('area-status-pay').append('<span class="badge badge-success">Đã xác nhận</span>');
+                tdStatus.append('<span class="badge badge-success">Đã xác nhận</span>');
             }).catch(error => {
                 Alert.error(error.responseJSON.message);
             });
@@ -33,7 +33,7 @@ export const Order = {
                 Alert.success(result.message);
                 const tdStatus = $(el).closest('tr').find('.td-status-pay');
                 tdStatus.find('.badge').remove();
-                tdStatus.append('<span class="badge badge-success">Đã thanh toán</span>');
+                tdStatus.find('area-status-pay').append('<span class="badge badge-success">Đã thanh toán</span>');
                 $(el).remove();
             }).catch(error => {
                 Alert.error(error.responseJSON.message);
