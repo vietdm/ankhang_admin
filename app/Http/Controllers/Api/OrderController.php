@@ -9,6 +9,8 @@ use App\Http\Requests\OrderRequest;
 use App\Models\Orders;
 use App\Models\Products;
 use App\Models\Users;
+use Carbon\Carbon;
+use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
@@ -32,9 +34,25 @@ class OrderController extends Controller
             ]);
         }
 
+        if (!$request->has('image')) {
+            return Response::badRequest([
+                'message' => 'Bạn chưa chọn ảnh kết quả thanh toán!'
+            ]);
+        }
+
         //upload image
         $image = $request->file('image');
-        dd($image);
+        $ext = $image->extension();
+        $newName = sha1(Carbon::now()->format('Ymd_His'));
+
+        try {
+            $image->move('bank_result', "$newName.$ext");
+        } catch (Exception $e) {
+            logger($e);
+            return Response::badRequest([
+                'message' => 'Không thể upload ảnh!'
+            ]);
+        }
 
         do {
             $code = Str::random(6);
@@ -50,6 +68,7 @@ class OrderController extends Controller
         $order->quantity = $quantity;
         $order->product_id = $productId;
         $order->total_price = $product->price * $quantity;
+        $order->image_url = "/bank_result/$newName.$ext";
         $order->save();
 
         $user = Users::whereId($request->user_id)->first();
