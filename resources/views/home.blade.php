@@ -58,8 +58,7 @@
                                 <div class="text-center mt-2">
                                     <button class="btn btn-warning btn-show-image-pay"
                                             data-image="{{ $order->image_url }}">
-                                        Xem
-                                        ảnh thanh toán
+                                        Xem ảnh thanh toán
                                     </button>
                                 </div>
                             @endif
