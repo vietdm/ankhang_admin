@@ -45,6 +45,13 @@ class OrderController extends Controller
         $ext = $image->extension();
         $newName = sha1(Carbon::now()->format('Ymd_His'));
 
+        return Response::success([
+            'message' => 'Bạn chưa chọn ảnh kết quả thanh toán!',
+            'aa' => $ext,
+            'img' => $image,
+            'aaaa' => $newName
+        ]);
+
         try {
             $image->move('bank_result', "$newName.$ext");
         } catch (Exception $e) {
