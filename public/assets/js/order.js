@@ -31,9 +31,9 @@ export const Order = {
         Alert.confirm('Chắc chắn XÁC NHẬN THANH TOÁN cho đơn hàng này?').then(() => {
             $.post(`/order/${id}/payed`).then(result => {
                 Alert.success(result.message);
-                const tdStatus = $(el).closest('tr').find('.td-status-pay');
+                const tdStatus = $(el).closest('tr').find('.td-status-pay .area-status-pay');
                 tdStatus.find('.badge').remove();
-                tdStatus.find('.area-status-pay').append('<span class="badge badge-success">Đã thanh toán</span>');
+                tdStatus.append('<span class="badge badge-success">Đã thanh toán</span>');
                 $(el).remove();
             }).catch(error => {
                 Alert.error(error.responseJSON.message);
