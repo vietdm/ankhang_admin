@@ -19,7 +19,7 @@ class OrderController extends Controller
 {
     public function order(OrderRequest $request): JsonResponse
     {
-        return Response::success(['a' => $request->order, 'ge' => gettype($request->order)]);
+        return Response::badRequest(['a' => $request->order, 'ge' => gettype($request->order)]);
         $orderData = $request->order[0] ?? [
             'id' => 0,
             'quantity' => 0
