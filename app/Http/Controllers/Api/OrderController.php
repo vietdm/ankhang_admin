@@ -19,8 +19,8 @@ class OrderController extends Controller
 {
     public function order(OrderRequest $request): JsonResponse
     {
-        return Response::badRequest(['a' => $request->order, 'ge' => gettype($request->order)]);
-        $orderData = $request->order[0] ?? [
+        $requestOrder = json_encode($request->order, 1);
+        $orderData = $requestOrder[0] ?? [
             'id' => 0,
             'quantity' => 0
         ];
@@ -43,15 +43,15 @@ class OrderController extends Controller
 
         //upload image
         $image = $request->file('image');
-        //$ext = $image->extension();
-        //$newName = sha1(Carbon::now()->format('Ymd_His'));
+        $ext = $image->extension();
+        $newName = sha1(Carbon::now()->format('Ymd_His'));
 
-        return Response::badRequest([
-            'message' => 'Bạn chưa chọn ảnh kết quả thanh toán!',
-            //'aa' => $ext,
-            'img' => $image,
-            //'aaaa' => $newName
-        ]);
+        //return Response::badRequest([
+        //    'message' => 'Bạn chưa chọn ảnh kết quả thanh toán!',
+        //'aa' => $ext,
+        //'img' => $image,
+        //'aaaa' => $newName
+        //]);
 
         try {
             $image->move('bank_result', "$newName.$ext");
