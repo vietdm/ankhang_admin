@@ -47,10 +47,21 @@
                         <td class="text-center">{{ number_format($order->total_price) }}</td>
                         <td class="text-center td-status-badge" style="width: 100px">{!! $order->statusBadge() !!}</td>
                         <td class="text-center td-status-pay" style="width: 100px">
-                            @if($order->payed === 0)
-                                <span class="badge badge-danger">Chưa thanh toán</span>
-                            @else
-                                <span class="badge badge-success">Đã thanh toán</span>
+                            <div class="area-status-pay">
+                                @if($order->payed === 0)
+                                    <span class="badge badge-warning">Chưa xác nhận</span>
+                                @else
+                                    <span class="badge badge-success">Đã thanh toán</span>
+                                @endif
+                            </div>
+                            @if($order->image_url)
+                                <div class="text-center">
+                                    <button class="btn btn-primary btn-show-image-pay"
+                                            data-image="{{ $order->image_url }}">
+                                        Xem
+                                        ảnh thanh toán
+                                    </button>
+                                </div>
                             @endif
                         </td>
                         <td class="text-center" style="width: 200px">
@@ -77,6 +88,29 @@
             </table>
         </div>
     </div>
+    <div class="modal fade" id="modalImagePreview" tabindex="-1" role="dialog" aria-labelledby="modalImagePreview"
+         aria-hidden="true">
+        <div class="modal-dialog modal-dialog-popout" role="document">
+            <div class="modal-content">
+                <div class="block block-themed block-transparent mb-0">
+                    <div class="block-header bg-primary-dark">
+                        <h3 class="block-title">Hình ảnh thanh toán</h3>
+                        <div class="block-options">
+                            <button type="button" class="btn-block-option" data-dismiss="modal" aria-label="Close">
+                                <i class="si si-close"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="block-content">
+                        <img src="#" alt="img" style="width: 400px; max-width: 95vw">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-alt-secondary" data-dismiss="modal">Đóng</button>
+                </div>
+            </div>
+        </div>
+    </div>
 @endsection
 @section('script')
     <script src="{{ asset('assets/js/plugins/datatables/jquery.dataTables.min.js') }}"></script>
@@ -87,6 +121,13 @@
         $('[name="export_type"]').on('change', function () {
             const type = $(this).val();
             $('.textlink-export').attr('href', '/order/export?type=' + type);
-        })
+        });
+        $('.btn-show-image-pay').on('click', function () {
+            const imgUrl = $(this).attr('data-image');
+            $('#modalImagePreview').find('img').attr('src', imgUrl);
+        });
+        $('#modalImagePreview').on('hide.bs.modal', function () {
+            $('#modalImagePreview').find('img').attr('src', '#');
+        });
     </script>
 @endsection
