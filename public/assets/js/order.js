@@ -33,7 +33,7 @@ export const Order = {
                 Alert.success(result.message);
                 const tdStatus = $(el).closest('tr').find('.td-status-pay');
                 tdStatus.find('.badge').remove();
-                tdStatus.find('area-status-pay').append('<span class="badge badge-success">Đã thanh toán</span>');
+                tdStatus.find('.area-status-pay').append('<span class="badge badge-success">Đã thanh toán</span>');
                 $(el).remove();
             }).catch(error => {
                 Alert.error(error.responseJSON.message);
