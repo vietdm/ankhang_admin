@@ -56,7 +56,7 @@
                             </div>
                             @if($order->image_url)
                                 <div class="text-center">
-                                    <button class="btn btn-primary btn-show-image-pay"
+                                    <button class="btn btn-warning btn-show-image-pay"
                                             data-image="{{ $order->image_url }}">
                                         Xem
                                         ảnh thanh toán
@@ -122,9 +122,10 @@
             const type = $(this).val();
             $('.textlink-export').attr('href', '/order/export?type=' + type);
         });
-        $('.btn-show-image-pay').on('click', function () {
+        $(document).on('click', '.btn-show-image-pay', function () {
             const imgUrl = $(this).attr('data-image');
             $('#modalImagePreview').find('img').attr('src', imgUrl);
+            $('#modalImagePreview').modal();
         });
         $('#modalImagePreview').on('hide.bs.modal', function () {
             $('#modalImagePreview').find('img').attr('src', '#');

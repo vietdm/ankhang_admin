@@ -1,4 +1,4 @@
-import { Alert } from "./alert.js";
+import {Alert} from "./alert.js";
 
 export const Order = {
     accept(id, el) {
@@ -8,7 +8,7 @@ export const Order = {
                 const tdStatus = $(el).closest('tr').find('.td-status-badge');
                 $(el).closest('td').find('.btn-created').remove();
                 tdStatus.find('.badge').remove();
-                tdStatus.append('<span class="badge badge-success">Đã xác nhận</span>');
+                tdStatus.find('area-status-pay').append('<span class="badge badge-success">Đã xác nhận</span>');
             }).catch(error => {
                 Alert.error(error.responseJSON.message);
             });
