@@ -101,8 +101,8 @@
                             </button>
                         </div>
                     </div>
-                    <div class="block-content">
-                        <img src="#" alt="img" style="width: 400px; max-width: 95vw">
+                    <div class="block-content text-center">
+                        <img src="#" alt="img" style="width: 300px; max-width: 95vw">
                     </div>
                 </div>
                 <div class="modal-footer">
