@@ -11,4 +11,9 @@ class BankInfo extends Model
     use HasFactory, ModelTrait;
 
     protected $table = 'bank_info';
+
+    public function bank()
+    {
+        return $this->belongsTo(Banks::class, 'bin', 'bin');
+    }
 }

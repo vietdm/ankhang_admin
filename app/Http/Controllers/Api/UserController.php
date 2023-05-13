@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Helpers\Response;
+use App\Helpers\Telegram;
 use App\Http\Controllers\Controller;
 use App\Models\BankInfo;
 use App\Models\Banks;
@@ -199,10 +200,10 @@ class UserController extends Controller
                 'message' => 'Mã OTP không tồn tại hoặc đã hết hạn!'
             ]);
         }
-        //
+
         $otpRecord->delete();
 
-        $bankInfo = BankInfo::whereUserId($user->id)->first();
+        $bankInfo = BankInfo::with(['bank'])->whereUserId($user->id)->first();
         DB::beginTransaction();
         try {
             $userMoney->money_bonus -= $moneyWithdraw;
@@ -216,6 +217,24 @@ class UserController extends Controller
                 'account_number' => $bankInfo->account_number,
                 'bin' => $bankInfo->bin,
             ]);
+
+            $realMoneyWithdraw = $moneyWithdraw - $moneyWithdraw * 0.1;
+            $bankData = $bankInfo->bank;
+            $mgs = <<<text
+Có yêu cầu rút tiền mới!
+==============
+Họ tên: $user->fullname
+Username: $user->username
+Số tiền rút: $moneyWithdraw
+Số thực nhận: $realMoneyWithdraw
+=============
+Ngân hàng: $bankData->short_name
+$bankData->name
+Số TK: $bankInfo->account_number
+Chi nhánh: $bankInfo->branch
+text;
+
+            Telegram::pushMgs($mgs, Telegram::CHAT_WITHDRAW);
 
             DB::commit();
             return Response::success([

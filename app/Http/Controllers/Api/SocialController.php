@@ -8,10 +8,11 @@ use Illuminate\Http\Request;
 
 class SocialController extends Controller
 {
-    public function pushMessageTelegram(Request $request) {
+    public function pushMessageTelegram(Request $request)
+    {
         $mgs = $request->mgs;
         echo json_encode([
-            'success' => Telegram::pushMgs($mgs)
+            'success' => Telegram::pushMgs($mgs, Telegram::CHAT_STORE)
         ]);
         exit(1);
     }

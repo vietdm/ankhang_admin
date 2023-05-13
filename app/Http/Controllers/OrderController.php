@@ -60,7 +60,7 @@ Số lượng: $order->quantity
 Tổng giá: $totalPrice
 text;
 
-            Telegram::pushMgs($mgs);
+            Telegram::pushMgs($mgs, Telegram::CHAT_STORE);
             DB::commit();
             return Response::success('Thành công!');
         } catch (Exception|PDOException $e) {
