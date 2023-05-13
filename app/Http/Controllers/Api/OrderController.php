@@ -46,7 +46,7 @@ class OrderController extends Controller
         //$ext = $image->extension();
         //$newName = sha1(Carbon::now()->format('Ymd_His'));
 
-        return Response::success([
+        return Response::badRequest([
             'message' => 'Bạn chưa chọn ảnh kết quả thanh toán!',
             //'aa' => $ext,
             'img' => $image,
