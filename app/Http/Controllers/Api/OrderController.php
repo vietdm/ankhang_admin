@@ -19,7 +19,7 @@ class OrderController extends Controller
 {
     public function order(OrderRequest $request): JsonResponse
     {
-        $requestOrder = json_encode($request->order, 1);
+        $requestOrder = json_decode($request->order, 1);
         $orderData = $requestOrder[0] ?? [
             'id' => 0,
             'quantity' => 0
