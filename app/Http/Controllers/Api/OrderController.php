@@ -32,6 +32,10 @@ class OrderController extends Controller
             ]);
         }
 
+        //upload image
+        $image = $request->file('image');
+        dd($image);
+
         do {
             $code = Str::random(6);
         } while (Orders::whereCode($code)->first() != null);
