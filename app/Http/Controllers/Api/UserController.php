@@ -15,6 +15,7 @@ use App\Models\Withdraw;
 use App\Utils\UserUtil;
 use Carbon\Carbon;
 use Exception;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
@@ -67,9 +68,19 @@ class UserController extends Controller
         ]);
     }
 
-    public function getTreeWithUsername($username)
+    public function getTreeWithUsername($username): JsonResponse
     {
-        //
+        $userTree = Users::wherePresentUsername($username)->get()->toArray();
+        foreach ($userTree as &$uTr) {
+            $uTr['has_child'] = Users::select(['id'])->wherePresentUsername($uTr['username'])->first() != null;
+        }
+
+        $user = Users::whereUsername($username)->first()->toArray();
+        $user['trees'] = $userTree;
+
+        return Response::success([
+            'data' => $user
+        ]);
     }
 
     public function getChild($id)
