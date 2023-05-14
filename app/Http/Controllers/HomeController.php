@@ -24,14 +24,4 @@ class HomeController extends Controller
         $withdraws = Withdraw::with(['user', 'bank'])->orderByDesc('id')->get();
         return view('withdraw', compact('withdraws'));
     }
-
-    public function historySales($username)
-    {
-        $user = Users::whereUsername($username)->first();
-        if (!$user) {
-            return view('history_sale');
-        }
-        UserUtil::getTotalChildAndSale($user->username, $total, $totalSale, $dataTotalSale);
-        dd($dataTotalSale);
-    }
 }

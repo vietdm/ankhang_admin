@@ -8,6 +8,7 @@ use App\Http\Controllers\Controller;
 use App\Models\BankInfo;
 use App\Models\Banks;
 use App\Models\HistoryBonus;
+use App\Models\Orders;
 use App\Models\Otps;
 use App\Models\UserMoney;
 use App\Models\Users;
@@ -73,10 +74,18 @@ class UserController extends Controller
         $userTree = Users::wherePresentUsername($username)->get()->toArray();
         foreach ($userTree as &$uTr) {
             $uTr['has_child'] = Users::select(['id'])->wherePresentUsername($uTr['username'])->first() != null;
+            $uTr['total_order'] = Orders::whereUserId($uTr['id'])->get()->count();
         }
 
         $user = Users::whereUsername($username)->first()->toArray();
         $user['trees'] = $userTree;
+        $user['total_order'] = Orders::whereUserId($user['id'])->get()->count();
+
+        UserUtil::getTotalChildAndSale($user['username'], $total, $totalSale, $totalChildOrder);
+        $totalSale += $user['total_buy'];
+
+        $user['total_child_order'] = $totalChildOrder;
+        $user['total_sale'] = $totalSale;
 
         return Response::success([
             'data' => $user
@@ -104,7 +113,7 @@ class UserController extends Controller
             ->groupBy('user_id')
             ->first();
 
-        UserUtil::getTotalChildAndSale($request->user->username, $total, $totalSale);
+        UserUtil::getTotalChildAndSale($request->user->username, $total, $totalSale, $totalOrder);
         $totalSale += $request->user->total_buy;
 
         return Response::success([
