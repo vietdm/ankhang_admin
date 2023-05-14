@@ -6,24 +6,9 @@ use App\Models\Users;
 
 class UserUtil
 {
-    public static function getTreeUser($userRoot)
+    public static function getTotalChildAndSale($username, &$total = 0, &$totalSale = 0, &$dataTotalSale = []): void
     {
-        $allUser = Users::select([
-            'id',
-            'email',
-            'phone',
-            'fullname',
-            'present_phone'
-        ])->where('present_phone', $userRoot['phone'])->get();
-        foreach ($allUser as $user) {
-            $userRoot['children'][] = self::getTreeUser($user->toArray());
-        }
-        return $userRoot;
-    }
-
-    public static function getTotalChildAndSale($userPhone, &$total = 0, &$totalSale = 0, &$dataTotalSale = []): void
-    {
-        $allUser = Users::select(['phone', 'total_buy'])->where('present_phone', $userPhone)->get();
+        $allUser = Users::select(['phone', 'total_buy'])->where('present_username', $username)->get();
         $total += $allUser->count();
         foreach ($allUser as $user) {
             $totalSale += $user->total_buy;
@@ -33,7 +18,7 @@ class UserUtil
                 'fullname' => $user->fullname,
                 'sale' => $user->total_buy
             ];
-            self::getTotalChildAndSale($user->phone, $total, $totalSale, $dataTotalSale);
+            self::getTotalChildAndSale($user->username, $total, $totalSale, $dataTotalSale);
         }
     }
 }

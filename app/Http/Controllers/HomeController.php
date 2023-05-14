@@ -31,7 +31,7 @@ class HomeController extends Controller
         if (!$user) {
             return view('history_sale');
         }
-        UserUtil::getTotalChildAndSale($user->phone, $total, $totalSale, $dataTotalSale);
+        UserUtil::getTotalChildAndSale($user->username, $total, $totalSale, $dataTotalSale);
         dd($dataTotalSale);
     }
 }

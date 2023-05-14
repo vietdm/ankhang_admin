@@ -170,7 +170,7 @@ class OrderUtil
     }
 
     public static function loopSendBonusLevel(
-        $userPresentPhone,
+        $userPresentUsername,
         $userOrder,
         $pricePayed,
         &$totalBonusPercent,
@@ -178,7 +178,7 @@ class OrderUtil
         &$percentLevel
     ): void
     {
-        $user = Users::wherePhone($userPresentPhone)->first();
+        $user = Users::whereUsername($userPresentUsername)->first();
         if (!$user) return;
         self::sendBonusLevel(
             $user,
@@ -189,7 +189,7 @@ class OrderUtil
             $percentLevel
         );
         self::loopSendBonusLevel(
-            $user->present_phone,
+            $user->present_username,
             $userOrder,
             $pricePayed,
             $totalBonusPercent,

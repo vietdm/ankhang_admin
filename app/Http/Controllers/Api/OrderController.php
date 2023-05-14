@@ -46,13 +46,6 @@ class OrderController extends Controller
         $ext = $image->extension();
         $newName = sha1(Carbon::now()->format('Ymd_His'));
 
-        //return Response::badRequest([
-        //    'message' => 'Bạn chưa chọn ảnh kết quả thanh toán!',
-        //'aa' => $ext,
-        //'img' => $image,
-        //'aaaa' => $newName
-        //]);
-
         try {
             $image->move('bank_result', "$newName.$ext");
         } catch (Exception $e) {
@@ -85,33 +78,6 @@ class OrderController extends Controller
             $user->save();
         }
 
-//         $order = array_reduce($request->order, function ($result, $ord) {
-//             $result[$ord['id']] = (int)$ord['quantity'];
-//             return $result;
-//         }, []);
-//
-//         $products = Products::whereIn('id', array_keys($order))->get()->toArray();
-//         $textOrder = '';
-//         foreach ($products as $index => $product) {
-//             $textOrder .= "=========";
-//             $textOrder .= "\r\nĐơn hàng " . ($index + 1);
-//             $textOrder .= "\r\nTên sản phẩm: " . $product['title'];
-//             $textOrder .= "\r\nSố lượng: " . $order[$product['id']];
-//             $textOrder .= "\r\nTổng giá: " . number_format($product['price'] * $order[$product['id']]);
-//             $textOrder .= "\r\n";
-//         }
-//
-//         $mgs = <<<text
-// Có đơn hàng mới!
-// ==============
-// Họ tên: $request->name,
-// Số điện thoại: $request->phone,
-// Địa chỉ: $request->address,
-// Ghi chú: $request->note,
-// $textOrder
-// text;
-//
-//         Telegram::pushMgs($mgs);
         return Response::success([]);
     }
 

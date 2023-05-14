@@ -45,15 +45,15 @@ class UserController extends Controller
         $userTree = [...$user];
 
         //get level 1
-        $userLevel1 = Users::select(['id', 'phone', 'username'])->wherePresentPhone($user['phone'])->get()->toArray();
+        $userLevel1 = Users::select(['id', 'phone', 'username'])->wherePresentUsername($user['username'])->get()->toArray();
 
         //get level2
         foreach ($userLevel1 as $key1 => $userlv1) {
-            $userLevel2 = Users::select(['id', 'phone', 'username'])->wherePresentPhone($userlv1['phone'])->get()->toArray();
+            $userLevel2 = Users::select(['id', 'phone', 'username'])->wherePresentUsername($userlv1['username'])->get()->toArray();
 
             //get level 3
             foreach ($userLevel2 as $key2 => $userlv2) {
-                $userLevel3 = Users::select(['id', 'phone', 'username'])->wherePresentPhone($userlv2['phone'])->get()->toArray();
+                $userLevel3 = Users::select(['id', 'phone', 'username'])->wherePresentUsername($userlv2['username'])->get()->toArray();
                 $userLevel2[$key2]['children'] = [...$userLevel3];
             }
 
@@ -67,13 +67,18 @@ class UserController extends Controller
         ]);
     }
 
+    public function getTreeWithUsername($username)
+    {
+        //
+    }
+
     public function getChild($id)
     {
         $user = Users::select(['phone'])->whereId($id)->first();
         if (!$user) {
             return Response::success(['child' => []]);
         }
-        $child = Users::select(['id', 'fullname'])->wherePresentPhone($user->phone)->get()->toArray();
+        $child = Users::select(['id', 'fullname'])->wherePresentUsername($user->username)->get()->toArray();
         return Response::success(['child' => $child]);
     }
 
@@ -88,7 +93,7 @@ class UserController extends Controller
             ->groupBy('user_id')
             ->first();
 
-        UserUtil::getTotalChildAndSale($request->user->phone, $total, $totalSale);
+        UserUtil::getTotalChildAndSale($request->user->username, $total, $totalSale);
         $totalSale += $request->user->total_buy;
 
         return Response::success([

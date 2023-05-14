@@ -77,10 +77,8 @@ class Orders extends Model
         $levelCalc = Users::LEVEL_NOMAL;
         $percentLevel = 0;
 
-        //$mgs
-
         //trả thưởng cho F1
-        $userParentF1 = Users::with(['user_money'])->wherePhone($userOrder->present_phone)->first();
+        $userParentF1 = Users::with(['user_money'])->whereUsername($userOrder->present_username)->first();
         if ($userParentF1) {
             OrderUtil::sendBonus(
                 $userParentF1,
@@ -93,7 +91,7 @@ class Orders extends Model
             );
 
             //trả thưởng cho F2
-            $userParentF2 = Users::with(['user_money'])->wherePhone($userParentF1->present_phone)->first();
+            $userParentF2 = Users::with(['user_money'])->whereUsername($userParentF1->present_username)->first();
             if ($userParentF2) {
                 OrderUtil::sendBonus(
                     $userParentF2,
@@ -106,7 +104,7 @@ class Orders extends Model
                 );
 
                 //trả thưởng cho F3
-                $userParentF3 = Users::with(['user_money'])->wherePhone($userParentF2->present_phone)->first();
+                $userParentF3 = Users::with(['user_money'])->whereUsername($userParentF2->present_username)->first();
                 if ($userParentF3) {
                     OrderUtil::sendBonus(
                         $userParentF3,
@@ -119,9 +117,9 @@ class Orders extends Model
                     );
 
                     //Trả thưởng cấp bậc từ F4 trở lên
-                    if (!empty($userParentF3->present_phone)) {
+                    if (!empty($userParentF3->present_username)) {
                         OrderUtil::loopSendBonusLevel(
-                            $userParentF3->present_phone,
+                            $userParentF3->present_username,
                             $userOrder,
                             $pricePayed,
                             $totalBonusPercent,
@@ -132,8 +130,6 @@ class Orders extends Model
                 }
             }
         }
-
-        //
 
         //trả % cho VIP
         if ($totalBonusPercent > 0) {

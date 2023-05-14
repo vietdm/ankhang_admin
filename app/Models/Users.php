@@ -24,18 +24,16 @@ class Users extends Model
     public function getChildUsersAttribute()
     {
         $allUsers = Users::get();
-        $parentPhone = $this->phone;
-
-        return Users::buildTree($allUsers, $parentPhone);
+        return Users::buildTree($allUsers, $this->username);
     }
 
-    public function buildTree($elements, $parentPhone)
+    public function buildTree($elements, $parentUsername)
     {
         $branch = array();
 
         foreach ($elements as $element) {
-            if ($element->present_phone == $parentPhone) {
-                $children = Users::buildTree($elements, $element->phone);
+            if ($element->present_username == $parentUsername) {
+                $children = Users::buildTree($elements, $element->username);
                 if ($children) {
                     $element['children'] = $children;
                 }

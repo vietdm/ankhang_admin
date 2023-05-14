@@ -28,6 +28,7 @@ Route::get('/banks', [ApiBanksController::class, 'list']);
 Route::middleware('api.auth')->group(function () {
     Route::post('/auth/info', [ApiAuthController::class, 'info']);
     Route::get('/user/tree', [ApiUserController::class, 'getTree']);
+    Route::get('/user/tree/{username}', [ApiUserController::class, 'getTreeWithUsername']);
     Route::post('/user/dashboard', [ApiUserController::class, 'getDashboardData']);
     Route::post('/user/withdraw', [ApiUserController::class, 'withdrawRequest']);
     Route::post('/user/withdraw/history', [ApiUserController::class, 'withdrawHistory']);

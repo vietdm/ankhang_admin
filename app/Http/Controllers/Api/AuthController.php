@@ -104,7 +104,7 @@ class AuthController extends Controller
             $newUser->phone = $request->phone;
             $newUser->fullname = $request->fullname;
             $newUser->password = bcrypt($request->password);
-            $newUser->present_phone = $userWithPresentCode->phone;
+            $newUser->present_username = $userWithPresentCode->username;
             $newUser->parent_id = $userWithPresentCode->id;
             $newUser->save();
             $newUser->createMoney();
