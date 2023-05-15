@@ -91,7 +91,7 @@ class UserController extends Controller
         UserUtil::getTotalChildAndSale($user['username'], $total, $totalSale, $totalChildOrder);
         $totalSale += $user['total_buy'];
 
-        $user['total_child_order'] = $totalChildOrder;
+        $user['total_child_order'] = $totalChildOrder + $user['total_order'];
         $user['total_sale'] = $totalSale;
 
         return Response::success([
