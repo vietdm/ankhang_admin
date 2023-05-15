@@ -108,6 +108,7 @@ class AuthController extends Controller
             $newUser->parent_id = $userWithPresentCode->id;
             $newUser->save();
             $newUser->createMoney();
+            $newUser->createBankInfo();
 
             $token = sprintf("%06d", mt_rand(1, 999999));
             Otps::insert([

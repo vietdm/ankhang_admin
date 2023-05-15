@@ -58,4 +58,17 @@ class Users extends Model
         $newUserMoney->user_id = $this->id;
         $newUserMoney->save();
     }
+
+    public function createBankInfo()
+    {
+        if (BankInfo::whereUserId($this->id)->first() != null) {
+            return;
+        }
+        BankInfo::insert([
+            'user_id' => $this->id,
+            'bin' => '',
+            'account_number' => '',
+            'branch' => ''
+        ]);
+    }
 }
