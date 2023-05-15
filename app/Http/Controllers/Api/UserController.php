@@ -292,10 +292,23 @@ text;
     public function updateNomalInfo(Request $request)
     {
         $fullname = trim($request->fullname ?? '');
+        $cccd = trim($request->cccd ?? '');
         if (empty($fullname)) {
-            return Response::badRequest(['message' => "Họ và tên không được trống"]);
+            return Response::badRequest("Họ và tên không được trống");
+        }
+        if (!$request->user->cccd) {
+            if (empty($cccd)) {
+                return Response::badRequest("CCCD không được trống");
+            }
+            $cccdLen = strlen($cccd);
+            if ($cccdLen !== 9 && $cccdLen !== 12) {
+                return Response::badRequest("CCCD phải có 9 hoặc 12 ký tự");
+            }
         }
         $request->user->fullname = $fullname;
+        if (!$request->user->cccd) {
+            $request->user->cccd = $cccd;
+        }
         $request->user->save();
         return Response::success(['message' => 'Cập nhật thông tin thành công!']);
     }
