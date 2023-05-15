@@ -74,13 +74,19 @@ class UserController extends Controller
         $userTree = Users::wherePresentUsername($username)->get()->toArray();
         foreach ($userTree as &$uTr) {
             $uTr['has_child'] = Users::select(['id'])->wherePresentUsername($uTr['username'])->first() != null;
-            $uTr['total_order'] = Orders::whereUserId($uTr['id'])->get()->count();
+            $total = $totalSale = $totalChildOrder = 0;
+            UserUtil::getTotalChildAndSale($uTr['username'], $total, $totalSale, $totalChildOrder);
+            $totalSale += $uTr['total_buy'];
+
+            $uTr['total_child_order'] = $totalChildOrder;
+            $uTr['total_sale'] = $totalSale;
         }
 
         $user = Users::whereUsername($username)->first()->toArray();
         $user['trees'] = $userTree;
         $user['total_order'] = Orders::whereUserId($user['id'])->get()->count();
 
+        $total = $totalSale = $totalChildOrder = 0;
         UserUtil::getTotalChildAndSale($user['username'], $total, $totalSale, $totalChildOrder);
         $totalSale += $user['total_buy'];
 
