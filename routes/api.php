@@ -9,6 +9,7 @@ use App\Http\Controllers\Api\OrderController as ApiOrderController;
 use App\Http\Controllers\Api\MissionListController as ApiMissionListController;
 use App\Http\Controllers\Api\MissionController as ApiMissionController;
 use App\Http\Controllers\Api\BanksController as ApiBanksController;
+use App\Http\Controllers\Api\MoneyController as ApiMoneyController;
 
 Route::post('/auth/login', [ApiAuthController::class, 'login']);
 Route::post('/__/____', [ApiAuthController::class, 'getPhoneByUsername']);
@@ -45,4 +46,6 @@ Route::middleware('api.auth')->group(function () {
     Route::get('/user/bank', [ApiUserController::class, 'getBankInfo']);
 
     Route::post('/user/otp/withdraw', [ApiUserController::class, 'withdrawSendOtp']);
+
+    Route::post('/user/money/history', [ApiMoneyController::class, 'getMoneyHistory']);
 });

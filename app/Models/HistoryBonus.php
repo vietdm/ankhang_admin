@@ -14,4 +14,9 @@ class HistoryBonus extends Model
     const HH_CAP_BAC = 'cap_bac';
 
     protected $table = 'history_bonus';
+
+    public function user_from()
+    {
+        return $this->belongsTo(Users::class, 'from_user_id', 'id');
+    }
 }

@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Api;
 
 use App\Helpers\Response;
-use App\Helpers\Telegram;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\OrderRequest;
 use App\Models\Orders;
@@ -83,17 +82,7 @@ class OrderController extends Controller
 
     public function history(Request $request): JsonResponse
     {
-        $products = [];
-        $orders = Orders::whereUserId($request->user->id)->orderBy('id', 'DESC')->get()->toArray();
-        foreach ($orders as &$order) {
-            foreach ($order['order'] as &$or) {
-                if (!isset($products[$or['id']])) {
-                    $product = Products::whereId($or['id'])->first();
-                    $products[$or['id']] = $product;
-                }
-                $or['product'] = $products[$or['id']];
-            }
-        }
+        $orders = Orders::with(['product'])->whereUserId($request->user->id)->orderByDesc('id')->get();
         return Response::success([
             'history' => $orders
         ]);

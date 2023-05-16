@@ -273,7 +273,7 @@ text;
             return Response::success([
                 'message' => 'Yêu cầu rút tiền thành công!'
             ]);
-        } catch (Exception|PDOException $e) {
+        } catch (Exception | PDOException $e) {
             DB::rollBack();
             return Response::badRequest([
                 'message' => 'Có lỗi khi tạo yêu cầu rút tiền. Vui lòng liên hệ quản trị viên!'

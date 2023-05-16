@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Models\Trait\ModelTrait;
 use App\Utils\OrderUtil;
+use App\Utils\UserUtil;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -77,11 +78,11 @@ class Orders extends Model
         $levelCalc = Users::LEVEL_NOMAL;
         $percentLevel = 0;
 
-        //trả thưởng cho F1
-        $userParentF1 = Users::with(['user_money'])->whereUsername($userOrder->present_username)->first();
-        if ($userParentF1) {
+        //trả thưởng cho P1
+        $userParentP1 = Users::with(['user_money'])->whereUsername($userOrder->present_username)->first();
+        if ($userParentP1) {
             OrderUtil::sendBonus(
-                $userParentF1,
+                $userParentP1,
                 $userOrder,
                 $pricePayed,
                 'F1',
@@ -90,11 +91,11 @@ class Orders extends Model
                 $percentLevel
             );
 
-            //trả thưởng cho F2
-            $userParentF2 = Users::with(['user_money'])->whereUsername($userParentF1->present_username)->first();
-            if ($userParentF2) {
+            //trả thưởng cho P2
+            $userParentP2 = Users::with(['user_money'])->whereUsername($userParentP1->present_username)->first();
+            if ($userParentP2) {
                 OrderUtil::sendBonus(
-                    $userParentF2,
+                    $userParentP2,
                     $userOrder,
                     $pricePayed,
                     'F2',
@@ -103,11 +104,11 @@ class Orders extends Model
                     $percentLevel
                 );
 
-                //trả thưởng cho F3
-                $userParentF3 = Users::with(['user_money'])->whereUsername($userParentF2->present_username)->first();
-                if ($userParentF3) {
+                //trả thưởng cho P3
+                $userParentP3 = Users::with(['user_money'])->whereUsername($userParentP2->present_username)->first();
+                if ($userParentP3) {
                     OrderUtil::sendBonus(
-                        $userParentF3,
+                        $userParentP3,
                         $userOrder,
                         $pricePayed,
                         'F3',
@@ -116,10 +117,10 @@ class Orders extends Model
                         $percentLevel
                     );
 
-                    //Trả thưởng cấp bậc từ F4 trở lên
-                    if (!empty($userParentF3->present_username)) {
+                    //Trả thưởng cấp bậc từ P4 trở lên
+                    if (!empty($userParentP3->present_username)) {
                         OrderUtil::loopSendBonusLevel(
-                            $userParentF3->present_username,
+                            $userParentP3->present_username,
                             $userOrder,
                             $pricePayed,
                             $totalBonusPercent,
@@ -142,6 +143,12 @@ class Orders extends Model
             //    'time_bonus' => Carbon::now()->format('Y-m-d H:i:s'),
             //    'date_bonus' => Carbon::now()->format('Y-m-d'),
             //]);
+        }
+
+        //tính toán lên cấp cho user
+        $minPriceUpLevel = 3000000;
+        if ($pricePayed >= $minPriceUpLevel) {
+            UserUtil::upLevelChuyenVien($userOrder);
         }
     }
 }
