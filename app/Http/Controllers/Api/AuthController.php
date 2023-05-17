@@ -7,6 +7,7 @@ use App\Helpers\Response;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\LoginRequest;
 use App\Http\Requests\RegisterRequest;
+use App\Jobs\SendMailVerifyAccount;
 use App\Mail\ForgotPassword as MailForgotPassword;
 use App\Mail\VerifyAccount as MailVerifyAccount;
 use App\Models\ForgotPassword;
@@ -119,6 +120,7 @@ class AuthController extends Controller
             ]);
 
             Mail::to($newUser->email)->send(new MailVerifyAccount($token));
+            // SendMailVerifyAccount::dispatch($newUser->email, $token);
 
             DB::commit();
             return Response::success([
@@ -292,6 +294,13 @@ class AuthController extends Controller
         $user->verified = 1;
         $user->save();
         $otpRecord->delete();
+
+        //add point to parent
+        $parent = Users::with(['user_money'])->whereUsername($user->present_username)->first();
+        if ($parent) {
+            $parent->user_money->akg_point += $parent->total_pay === 0 ? 1: 2;
+            $parent->user_money->save();
+        }
 
         return Response::success([
             'message' => 'Xác nhận tài khoản thành công!'
