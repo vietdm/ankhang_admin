@@ -19,14 +19,20 @@ class Configs extends Model
         if (!$config) return $default;
         return match ($format) {
             Format::Boolean => $config->value === '1',
-            Format::Double => (double)$config->value,
+            Format::Double => (float)$config->value,
             Format::Integer => (int)$config->value,
             default => $config->value,
         };
     }
 
-    public static function getDouble($name, $default = null) {
+    public static function getDouble($name, $default = null)
+    {
         return self::get($name, $default, Format::Double);
+    }
+
+    public static function getBoolean($name, $default = null)
+    {
+        return self::get($name, $default, Format::Boolean);
     }
 
     public static function set($name, $value, $format = Format::String): Configs
@@ -46,7 +52,8 @@ class Configs extends Model
         return $config;
     }
 
-    public static function setDouble($name, $value) {
+    public static function setDouble($name, $value)
+    {
         return self::set($name, $value, Format::Double);
     }
 }

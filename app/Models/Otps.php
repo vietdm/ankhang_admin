@@ -12,6 +12,7 @@ class Otps extends Model
 
     const VERIFY_ACCOUNT = 'verify_account';
     const WITHDRAW = 'withdraw';
+    const TRANSFER_AKG = 'transfer_akg';
     protected $table = 'otps';
 
     public static function insertOtp($params = [])

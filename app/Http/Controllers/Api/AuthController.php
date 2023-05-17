@@ -129,7 +129,7 @@ class AuthController extends Controller
                 'message' => 'Tạo tài khoản thành công! Kiểm tra email và điền mã xác nhận',
                 'user_id' => $newUser->id
             ], 201);
-        } catch (Exception|PDOException $e) {
+        } catch (Exception | PDOException $e) {
             DB::rollBack();
             logger($e->getMessage());
             return Response::badRequest([
@@ -150,6 +150,7 @@ class AuthController extends Controller
         $userMoney = UserMoney::whereUserId($request->user->id)->first();
         $request->user->password = '';
         $request->user->reward_point = $userMoney ? $userMoney->reward_point : 0;
+        $request->user->akg_point = $userMoney ? $userMoney->akg_point : 0;
         return Response::success(['message' => 'Success!', 'user' => $request->user]);
     }
 
@@ -302,13 +303,13 @@ class AuthController extends Controller
         if ($parent) {
             $totalAkgPoint = Configs::get('total_akg', 0, Format::Double);
             if ($parent->total_pay === 0) {
-                if($totalAkgPoint >= 1) {
+                if ($totalAkgPoint >= 1) {
                     $parent->user_money->akg_point += 1;
                     $parent->user_money->save();
                     $totalAkgPoint -= 1;
                 }
             } else {
-                if($totalAkgPoint == 1) {
+                if ($totalAkgPoint == 1) {
                     $parent->user_money->akg_point += 1;
                     $parent->user_money->save();
                     $totalAkgPoint -= 1;

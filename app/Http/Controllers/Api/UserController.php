@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Helpers\Response;
 use App\Helpers\Telegram;
 use App\Http\Controllers\Controller;
+use App\Mail\TransferAkg;
 use App\Models\BankInfo;
 use App\Models\Banks;
 use App\Models\HistoryBonus;
@@ -22,6 +23,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
 use PDOException;
 use App\Mail\Withdraw as MailWithdraw;
+use App\Models\Configs;
 
 class UserController extends Controller
 {
@@ -252,8 +254,9 @@ class UserController extends Controller
                 'bin' => $bankInfo->bin,
             ]);
 
-            $bankData = $bankInfo->bank;
-            $mgs = <<<text
+            if (Configs::getBoolean('allow_put_telegram', false) === true) {
+                $bankData = $bankInfo->bank;
+                $mgs = <<<text
 Có yêu cầu rút tiền mới!
 ==============
 Họ tên: $user->fullname
@@ -267,7 +270,8 @@ Số TK: $bankInfo->account_number
 Chi nhánh: $bankInfo->branch
 text;
 
-            Telegram::pushMgs($mgs, Telegram::CHAT_WITHDRAW);
+                Telegram::pushMgs($mgs, Telegram::CHAT_WITHDRAW);
+            }
 
             DB::commit();
             return Response::success([
@@ -367,6 +371,39 @@ text;
 
         return Response::success([
             'message' => 'Đã gửi OTP thành công! Vui lòng kiểm tra email!'
+        ]);
+    }
+
+    public function transferAkgSendOtp(Request $request)
+    {
+        $userId = $request->user->id;
+        $user = Users::whereId($userId)->first();
+        if (!$user) {
+            return Response::badRequest([
+                'message' => 'Người dùng không tồn tại!'
+            ]);
+        }
+
+        $token = sprintf("%06d", mt_rand(1, 999999));
+        Otps::insertOtp([
+            'user_id' => $user->id,
+            'token' => $token,
+            'type' => Otps::TRANSFER_AKG,
+            'ttl' => Carbon::now()->addMinutes(10)->timestamp
+        ]);
+
+        Mail::to($user->email)->send(new TransferAkg($token));
+
+        return Response::success([
+            'message' => 'Đã gửi OTP thành công! Vui lòng kiểm tra email!'
+        ]);
+    }
+
+    public function bonusHistory(Request $request)
+    {
+        $histories = HistoryBonus::with(['user_from'])->whereUserId($request->user->id)->orderByDesc('date_bonus')->get();
+        return Response::success([
+            'histories' => $histories
         ]);
     }
 }

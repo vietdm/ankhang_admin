@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Exports\OrdersExport;
 use App\Helpers\Response;
 use App\Helpers\Telegram;
+use App\Models\Configs;
 use App\Models\Orders;
 use App\Models\Products;
 use Carbon\Carbon;
@@ -45,8 +46,9 @@ class OrderController extends Controller
             $product = Products::where('id', $order->product_id)->first();
             $totalPrice = number_format($order->total_price);
 
-            $username = $order->user->username ?? 'Unkown';
-            $mgs = <<<text
+            if (Configs::getBoolean('allow_put_telegram', false) === true) {
+                $username = $order->user->username ?? 'Unkown';
+                $mgs = <<<text
 Có đơn hàng mới!
 ==============
 Họ tên: $order->name
@@ -60,10 +62,12 @@ Số lượng: $order->quantity
 Tổng giá: $totalPrice
 text;
 
-            Telegram::pushMgs($mgs, Telegram::CHAT_STORE);
+                Telegram::pushMgs($mgs, Telegram::CHAT_STORE);
+            }
+
             DB::commit();
             return Response::success('Thành công!');
-        } catch (Exception|PDOException $e) {
+        } catch (Exception | PDOException $e) {
             logger($e);
             DB::rollBack();
             return Response::badRequest('Không thể xác nhận đơn hàng! Vui lòng thử lại!');
@@ -82,7 +86,7 @@ text;
             $order->save();
             DB::commit();
             return Response::success('Thành công!');
-        } catch (Exception|PDOException $e) {
+        } catch (Exception | PDOException $e) {
             logger($e);
             DB::rollBack();
             return Response::badRequest('Không thể hủy đơn hàng! Vui lòng thử lại!');
@@ -101,7 +105,7 @@ text;
             $order->save();
             DB::commit();
             return Response::success('Thành công!');
-        } catch (Exception|PDOException $e) {
+        } catch (Exception | PDOException $e) {
             logger($e);
             DB::rollBack();
             return Response::badRequest('Không thể xác nhận thanh toán! Vui lòng thử lại!');

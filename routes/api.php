@@ -46,6 +46,10 @@ Route::middleware('api.auth')->group(function () {
     Route::get('/user/bank', [ApiUserController::class, 'getBankInfo']);
 
     Route::post('/user/otp/withdraw', [ApiUserController::class, 'withdrawSendOtp']);
+    Route::post('/user/otp/tranfer-akg', [ApiUserController::class, 'transferAkgSendOtp']);
 
     Route::post('/user/money/history', [ApiMoneyController::class, 'getMoneyHistory']);
+    Route::post('/user/money/transfer/akg', [ApiMoneyController::class, 'transferAkg']);
+    Route::post('/user/history/transfer/akg', [ApiMoneyController::class, 'transferAkgHistory']);
+    Route::post('/user/bonus/history', [ApiUserController::class, 'bonusHistory']);
 });
