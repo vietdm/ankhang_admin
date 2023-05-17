@@ -157,7 +157,7 @@ class Orders extends Model
         //tính toán tăng điểm AKG
         if ($totalBuyAfterAdd >= 30000000) {
             $priceCalcAkgPoint = $totalBuyBeforeAdd < 30000000 ? $totalBuyAfterAdd : $pricePayed;
-            $valueOfAkg = Configs::getDouble('value_of_akg', 0);
+            $valueOfAkg = Configs::getDouble('value_of_akg', 1);
             $point = round($priceCalcAkgPoint / $valueOfAkg);
             $userMoneyOfUserOrder = UserMoney::whereUserId($this->user_id)->first();
             $userMoneyOfUserOrder->akg_point += $point;
