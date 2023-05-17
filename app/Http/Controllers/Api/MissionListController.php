@@ -19,7 +19,7 @@ class MissionListController extends Controller
             ->whereUserId($userId)
             ->where('date', Carbon::now()->format('Y-m-d'))
             ->get();
-        $missionList = MissionList::whereType($type)->get();
+        $missionList = MissionList::whereType($type)->orderBy('order', 'ASC')->get();
         return Response::success([
             'limit' => 5 - $missionWithTypeOfUser->count(),
             'mission' => $missionList
