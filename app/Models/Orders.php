@@ -174,5 +174,14 @@ class Orders extends Model
                 Configs::setDouble('total_akg', $totalAkgPoint);
             }
         }
+
+        //tính toán tham gia gói star hay là vip
+        if ($userOrder->total_buy >= 30000000) {
+            $userOrder->package_joined = Users::PACKAGE_VIP;
+            $userOrder->save();
+        } else if($userOrder->total_buy >= 3000000) {
+            $userOrder->package_joined = Users::PACKAGE_STAR;
+            $userOrder->save();
+        }
     }
 }
