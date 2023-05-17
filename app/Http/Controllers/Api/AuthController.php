@@ -301,15 +301,22 @@ class AuthController extends Controller
         $parent = Users::with(['user_money'])->whereUsername($user->present_username)->first();
         if ($parent) {
             $totalAkgPoint = Configs::get('total_akg', 0, Format::Double);
-            if ($totalAkgPoint >= 1 && $parent->total_pay === 0) {
-                $parent->user_money->akg_point += 1;
-                $parent->user_money->save();
-                $totalAkgPoint -= 1;
-            }
-            if ($totalAkgPoint >= 2 && $parent->total_pay > 0) {
-                $parent->user_money->akg_point += 2;
-                $parent->user_money->save();
-                $totalAkgPoint -= 2;
+            if ($parent->total_pay === 0) {
+                if($totalAkgPoint >= 1) {
+                    $parent->user_money->akg_point += 1;
+                    $parent->user_money->save();
+                    $totalAkgPoint -= 1;
+                }
+            } else {
+                if($totalAkgPoint == 1) {
+                    $parent->user_money->akg_point += 1;
+                    $parent->user_money->save();
+                    $totalAkgPoint -= 1;
+                } else if ($totalAkgPoint > 1) {
+                    $parent->user_money->akg_point += 2;
+                    $parent->user_money->save();
+                    $totalAkgPoint -= 2;
+                }
             }
             Configs::set('total_akg', $totalAkgPoint, Format::Double);
         }

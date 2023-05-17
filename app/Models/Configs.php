@@ -45,4 +45,8 @@ class Configs extends Model
         $config->save();
         return $config;
     }
+
+    public static function setDouble($name, $value) {
+        return self::set($name, $value, Format::Double);
+    }
 }

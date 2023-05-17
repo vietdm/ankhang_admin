@@ -160,8 +160,19 @@ class Orders extends Model
             $valueOfAkg = Configs::getDouble('value_of_akg', 1);
             $point = round($priceCalcAkgPoint / $valueOfAkg);
             $userMoneyOfUserOrder = UserMoney::whereUserId($this->user_id)->first();
-            $userMoneyOfUserOrder->akg_point += $point;
-            $userMoneyOfUserOrder->save();
+
+            $totalAkgPoint = Configs::getDouble('total_akg', 0);
+            if ($totalAkgPoint < $point) {
+                $point = $totalAkgPoint;
+                $totalAkgPoint = 0;
+            } else {
+                $totalAkgPoint -= $point;
+            }
+            if ($point > 0) {
+                $userMoneyOfUserOrder->akg_point += $point;
+                $userMoneyOfUserOrder->save();
+                Configs::setDouble('total_akg', $totalAkgPoint);
+            }
         }
     }
 }
