@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Helpers\Format;
 use App\Helpers\JwtHelper;
 use App\Helpers\Response;
 use App\Http\Controllers\Controller;
@@ -10,6 +11,7 @@ use App\Http\Requests\RegisterRequest;
 use App\Jobs\SendMailVerifyAccount;
 use App\Mail\ForgotPassword as MailForgotPassword;
 use App\Mail\VerifyAccount as MailVerifyAccount;
+use App\Models\Configs;
 use App\Models\ForgotPassword;
 use App\Models\Otps;
 use App\Models\UserMoney;
@@ -298,8 +300,18 @@ class AuthController extends Controller
         //add point to parent
         $parent = Users::with(['user_money'])->whereUsername($user->present_username)->first();
         if ($parent) {
-            $parent->user_money->akg_point += $parent->total_pay === 0 ? 1: 2;
-            $parent->user_money->save();
+            $totalAkgPoint = Configs::get('total_akg', 0, Format::Double);
+            if ($totalAkgPoint >= 1 && $parent->total_pay === 0) {
+                $parent->user_money->akg_point += 1;
+                $parent->user_money->save();
+                $totalAkgPoint -= 1;
+            }
+            if ($totalAkgPoint >= 2 && $parent->total_pay > 0) {
+                $parent->user_money->akg_point += 2;
+                $parent->user_money->save();
+                $totalAkgPoint -= 2;
+            }
+            Configs::set('total_akg', $totalAkgPoint, Format::Double);
         }
 
         return Response::success([
