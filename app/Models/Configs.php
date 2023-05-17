@@ -25,6 +25,10 @@ class Configs extends Model
         };
     }
 
+    public static function getDouble($name, $default = null) {
+        return self::get($name, $default, Format::Double);
+    }
+
     public static function set($name, $value, $format = Format::String): Configs
     {
         $value = match ($format) {

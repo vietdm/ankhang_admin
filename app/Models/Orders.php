@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Helpers\Format;
 use App\Models\Trait\ModelTrait;
 use App\Utils\OrderUtil;
 use App\Utils\UserUtil;
@@ -72,7 +73,9 @@ class Orders extends Model
         $pricePayed = $this->total_price;
 
         $userOrder = Users::whereId($this->user_id)->first();
+        $totalBuyBeforeAdd = $userOrder->total_buy;
         $userOrder->total_buy += $pricePayed;
+        $totalBuyAfterAdd = $userOrder->total_buy;
         $userOrder->save();
 
         $levelCalc = Users::LEVEL_NOMAL;
@@ -149,6 +152,16 @@ class Orders extends Model
         $minPriceUpLevel = 3000000;
         if ($pricePayed >= $minPriceUpLevel) {
             UserUtil::upLevelChuyenVien($userOrder);
+        }
+
+        //tính toán tăng điểm AKG
+        if ($totalBuyAfterAdd >= 30000000) {
+            $priceCalcAkgPoint = $totalBuyBeforeAdd < 30000000 ? $totalBuyAfterAdd : $pricePayed;
+            $valueOfAkg = Configs::getDouble('value_of_akg', 0);
+            $point = round($priceCalcAkgPoint / $valueOfAkg);
+            $userMoneyOfUserOrder = UserMoney::whereUserId($this->user_id)->first();
+            $userMoneyOfUserOrder->akg_point += $point;
+            $userMoneyOfUserOrder->save();
         }
     }
 }
