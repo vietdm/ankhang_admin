@@ -4,9 +4,15 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\WithdrawController;
+use App\Models\Configs;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Route;
 
 Route::get('auth0/login', [AuthController::class, 'login']);
+Route::get('test', function () {
+    $openEvent1905 = Configs::getBoolean('open_even_1905', false) && Carbon::now()->format('d') === '19';
+    dd($openEvent1905);
+});
 Route::post('auth0/logout', [AuthController::class, 'logout']);
 Route::post('auth0/login', [AuthController::class, 'loginPost']);
 

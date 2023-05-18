@@ -6,6 +6,7 @@ use App\Helpers\Format;
 use App\Models\Trait\ModelTrait;
 use App\Utils\OrderUtil;
 use App\Utils\UserUtil;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -155,15 +156,31 @@ class Orders extends Model
         }
 
         //tính toán tăng điểm AKG
-        $openEvent1905 = Configs::getBoolean('open_even_1905', false);
-        if ($openEvent1905 || $totalBuyAfterAdd >= 30000000) {
-            $priceCalcAkgPoint = $totalBuyBeforeAdd < 30000000 ? $totalBuyAfterAdd : $pricePayed;
+        $openEvent1905 = Configs::getBoolean('open_even_1905', false) && Carbon::now()->format('d') === '19';
+        if ($openEvent1905) {
             $valueOfAkg = Configs::getDouble('value_of_akg', 1);
-            $point = $priceCalcAkgPoint / $valueOfAkg;
-            if ($openEvent1905 && $pricePayed >= 30000000) {
+            $point = $pricePayed / $valueOfAkg;
+            if ($pricePayed >= 30000000) {
                 $point += $point * 0.1;
             }
             $point = round($point);
+            $userMoneyOfUserOrder = UserMoney::whereUserId($this->user_id)->first();
+            $totalAkgPoint = Configs::getDouble('total_akg', 0);
+            if ($totalAkgPoint < $point) {
+                $point = $totalAkgPoint;
+                $totalAkgPoint = 0;
+            } else {
+                $totalAkgPoint -= $point;
+            }
+            if ($point > 0) {
+                $userMoneyOfUserOrder->akg_point += $point;
+                $userMoneyOfUserOrder->save();
+                Configs::setDouble('total_akg', $totalAkgPoint);
+            }
+        } else if ($totalBuyAfterAdd >= 30000000) {
+            $priceCalcAkgPoint = $totalBuyBeforeAdd < 30000000 ? $totalBuyAfterAdd : $pricePayed;
+            $valueOfAkg = Configs::getDouble('value_of_akg', 1);
+            $point = round($priceCalcAkgPoint / $valueOfAkg);
             $userMoneyOfUserOrder = UserMoney::whereUserId($this->user_id)->first();
 
             $totalAkgPoint = Configs::getDouble('total_akg', 0);
