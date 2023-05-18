@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Helpers\Response;
 use App\Http\Controllers\Controller;
+use App\Models\Configs;
 use App\Models\HistoryBonus;
 use App\Models\Otps;
 use App\Models\TransferAkgHistory;
@@ -123,6 +124,14 @@ class MoneyController extends Controller
         $histories = TransferAkgHistory::with(['to_user'])->whereUserId($request->user->id)->orderByDesc('date_send')->get();
         return Response::success([
             'histories' => $histories
+        ]);
+    }
+
+    public function getValueOfAkg()
+    {
+        $valueOfAkg = Configs::getDouble('value_of_akg');
+        return Response::success([
+            'value' => $valueOfAkg
         ]);
     }
 }

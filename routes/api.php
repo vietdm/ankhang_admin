@@ -10,6 +10,7 @@ use App\Http\Controllers\Api\MissionListController as ApiMissionListController;
 use App\Http\Controllers\Api\MissionController as ApiMissionController;
 use App\Http\Controllers\Api\BanksController as ApiBanksController;
 use App\Http\Controllers\Api\MoneyController as ApiMoneyController;
+use App\Http\Controllers\Api\EventController as ApiEventController;
 
 Route::post('/auth/login', [ApiAuthController::class, 'login']);
 Route::post('/__/____', [ApiAuthController::class, 'getPhoneByUsername']);
@@ -25,6 +26,7 @@ Route::get('/present/name', [ApiUserController::class, 'presentName']);
 Route::get('/products', [ApiProductController::class, 'lists']);
 Route::get('/product/{id}', [ApiProductController::class, 'getOne']);
 Route::get('/banks', [ApiBanksController::class, 'list']);
+Route::get('/value-of-akg', [ApiMoneyController::class, 'getValueOfAkg']);
 
 Route::middleware('api.auth')->group(function () {
     Route::post('/auth/info', [ApiAuthController::class, 'info']);
@@ -52,4 +54,6 @@ Route::middleware('api.auth')->group(function () {
     Route::post('/user/money/transfer/akg', [ApiMoneyController::class, 'transferAkg']);
     Route::post('/user/history/transfer/akg', [ApiMoneyController::class, 'transferAkgHistory']);
     Route::post('/user/bonus/history', [ApiUserController::class, 'bonusHistory']);
+
+    Route::post('/event/cashback/join', [ApiEventController::class, 'joinCashback']);
 });
