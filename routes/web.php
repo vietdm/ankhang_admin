@@ -19,6 +19,7 @@ Route::middleware('admin.auth')->group(function () {
     Route::post('/order/{id}/payed', [OrderController::class, 'payed']);
     Route::post('/order/{id}/cancel', [OrderController::class, 'cancel']);
     Route::get('/order/export', [OrderController::class, 'export']);
+    Route::post('/order/create', [OrderController::class, 'create']);
     Route::post('/withdraw/{id}/accept', [WithdrawController::class, 'accept']);
     Route::post('/withdraw/{id}/cancel', [WithdrawController::class, 'cancel']);
 });

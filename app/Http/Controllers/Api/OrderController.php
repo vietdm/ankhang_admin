@@ -21,11 +21,17 @@ class OrderController extends Controller
         $requestOrder = json_decode($request->order, 1);
         $orderData = $requestOrder[0] ?? [
             'id' => 0,
-            'quantity' => 0
+            'quantity' => 0,
         ];
+
+
+        if (!isset($orderData['ignore_image'])) {
+            $orderData['ignore_image'] = '0';
+        }
 
         $productId = (int)$orderData['id'];
         $quantity = (int)$orderData['quantity'];
+        $ignoreImage = $orderData['ignore_image'] == '1';
 
         $product = Products::whereId($productId)->first();
         if (!$product) {
@@ -34,24 +40,26 @@ class OrderController extends Controller
             ]);
         }
 
-        if (!$request->has('image')) {
-            return Response::badRequest([
-                'message' => 'Bạn chưa chọn ảnh kết quả thanh toán!'
-            ]);
-        }
+        if (!$ignoreImage) {
+            if (!$request->has('image')) {
+                return Response::badRequest([
+                    'message' => 'Bạn chưa chọn ảnh kết quả thanh toán!'
+                ]);
+            }
 
-        //upload image
-        $image = $request->file('image');
-        $ext = $image->extension();
-        $newName = sha1(Carbon::now()->format('Ymd_His'));
+            //upload image
+            $image = $request->file('image');
+            $ext = $image->extension();
+            $newName = sha1(Carbon::now()->format('Ymd_His'));
 
-        try {
-            $image->move('bank_result', "$newName.$ext");
-        } catch (Exception $e) {
-            logger($e);
-            return Response::badRequest([
-                'message' => 'Không thể upload ảnh!'
-            ]);
+            try {
+                $image->move('bank_result', "$newName.$ext");
+            } catch (Exception $e) {
+                logger($e);
+                return Response::badRequest([
+                    'message' => 'Không thể upload ảnh!'
+                ]);
+            }
         }
 
         do {
@@ -68,7 +76,7 @@ class OrderController extends Controller
         $order->quantity = $quantity;
         $order->product_id = $productId;
         $order->total_price = $product->price * $quantity;
-        $order->image_url = "/bank_result/$newName.$ext";
+        $order->image_url = $ignoreImage ? null: "/bank_result/$newName.$ext";
         $order->save();
 
         $user = Users::whereId($request->user_id)->first();
