@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Orders;
+use App\Models\Products;
 use App\Models\Users;
 use App\Models\Withdraw;
 use App\Utils\UserUtil;
@@ -23,5 +24,11 @@ class HomeController extends Controller
     {
         $withdraws = Withdraw::with(['user', 'bank'])->orderByDesc('id')->get();
         return view('withdraw', compact('withdraws'));
+    }
+
+    public function createOrder(): View|Application|Factory
+    {
+        $products = Products::all();
+        return view('create_order', compact('products'));
     }
 }

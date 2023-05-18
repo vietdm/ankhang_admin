@@ -80,6 +80,12 @@
                             <span class="sidebar-mini-hide">Rút tiền</span>
                         </a>
                     </li>
+                    <li>
+                        <a href="/c" class="{{ request()->getPathInfo() == '/c' ? 'active' : '' }}">
+                            <i class="si si-handbag"></i>
+                            <span class="sidebar-mini-hide">Tạo đơn thủ công</span>
+                        </a>
+                    </li>
                 </ul>
             </div>
             <!-- END Side Navigation -->

@@ -13,6 +13,7 @@ Route::post('auth0/login', [AuthController::class, 'loginPost']);
 Route::middleware('admin.auth')->group(function () {
     Route::get('/', [HomeController::class, 'home']);
     Route::get('/w', [HomeController::class, 'withdraw']); // w => withdraw
+    Route::get('/c', [HomeController::class, 'createOrder']); // c => createOrder
     Route::get('/order/accepts', [OrderController::class, 'accepts']);
     Route::post('/order/{id}/accept', [OrderController::class, 'accept']);
     Route::post('/order/{id}/payed', [OrderController::class, 'payed']);
