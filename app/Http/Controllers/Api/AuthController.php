@@ -150,6 +150,7 @@ class AuthController extends Controller
         $userMoney = UserMoney::whereUserId($request->user->id)->first();
         $request->user->password = '';
         $request->user->reward_point = $userMoney ? $userMoney->reward_point : 0;
+        $request->user->money_bonus = $userMoney ? $userMoney->money_bonus : 0;
         $request->user->akg_point = $userMoney ? $userMoney->akg_point : 0;
         $request->user->cashback_point = $userMoney ? $userMoney->cashback_point : 0;
         return Response::success(['message' => 'Success!', 'user' => $request->user]);

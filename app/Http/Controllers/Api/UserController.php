@@ -137,7 +137,7 @@ class UserController extends Controller
     public function moneyCanWithdraw(Request $request)
     {
         $userMoney = UserMoney::whereUserId($request->user->id)->first();
-        $priceOfOneProduct = 3000000;
+        $priceOfOneProduct = 500000;
         $productKeep = [
             Users::LEVEL_NOMAL => 0,
             Users::LEVEL_CHUYEN_VIEN => 2,
@@ -165,7 +165,7 @@ class UserController extends Controller
             ]);
         }
 
-        $priceOfOneProduct = 3000000;
+        $priceOfOneProduct = 500000;
         if ($user->level == Users::LEVEL_CHUYEN_VIEN) {
             $priceKeep = $priceOfOneProduct * 2;
             $priceCanWithdraw = $userMoney->money_bonus - $priceKeep;
