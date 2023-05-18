@@ -31,6 +31,7 @@ Route::get('/value-of-akg', [ApiMoneyController::class, 'getValueOfAkg']);
 Route::middleware('api.auth')->group(function () {
     Route::post('/auth/info', [ApiAuthController::class, 'info']);
     Route::get('/user/tree', [ApiUserController::class, 'getTree']);
+    Route::get('/user/get-status-join-cashback', [ApiUserController::class, 'checkJoinedCashback']);
     Route::get('/user/tree/{username}', [ApiUserController::class, 'getTreeWithUsername']);
     Route::post('/user/dashboard', [ApiUserController::class, 'getDashboardData']);
     Route::post('/user/withdraw', [ApiUserController::class, 'withdrawRequest']);

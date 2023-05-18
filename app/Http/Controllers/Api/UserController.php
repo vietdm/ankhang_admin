@@ -24,6 +24,7 @@ use Illuminate\Support\Facades\Mail;
 use PDOException;
 use App\Mail\Withdraw as MailWithdraw;
 use App\Models\Configs;
+use App\Models\JoinCashbackEvent;
 
 class UserController extends Controller
 {
@@ -404,6 +405,24 @@ text;
         $histories = HistoryBonus::with(['user_from'])->whereUserId($request->user->id)->orderByDesc('date_bonus')->get();
         return Response::success([
             'histories' => $histories
+        ]);
+    }
+
+    public function checkJoinedCashback(Request $request)
+    {
+        $joinedCashback = JoinCashbackEvent::select(['id'])->whereUserId($request->user->id)->first();
+        if ($joinedCashback == null) {
+            return Response::success([
+                'status' => 'not_join'
+            ]);
+        }
+        if ($joinedCashback->cashbacked === 1) {
+            return Response::success([
+                'status' => 'cashbacked'
+            ]);
+        }
+        return Response::success([
+            'status' => 'joined'
         ]);
     }
 }
