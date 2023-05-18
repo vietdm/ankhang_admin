@@ -155,10 +155,15 @@ class Orders extends Model
         }
 
         //tính toán tăng điểm AKG
-        if ($totalBuyAfterAdd >= 30000000) {
+        $openEvent1905 = Configs::getBoolean('open_even_1905', false);
+        if ($openEvent1905 || $totalBuyAfterAdd >= 30000000) {
             $priceCalcAkgPoint = $totalBuyBeforeAdd < 30000000 ? $totalBuyAfterAdd : $pricePayed;
             $valueOfAkg = Configs::getDouble('value_of_akg', 1);
-            $point = round($priceCalcAkgPoint / $valueOfAkg);
+            $point = $priceCalcAkgPoint / $valueOfAkg;
+            if ($openEvent1905 && $pricePayed >= 30000000) {
+                $point += $point * 0.1;
+            }
+            $point = round($point);
             $userMoneyOfUserOrder = UserMoney::whereUserId($this->user_id)->first();
 
             $totalAkgPoint = Configs::getDouble('total_akg', 0);
@@ -179,7 +184,7 @@ class Orders extends Model
         if ($userOrder->total_buy >= 30000000) {
             $userOrder->package_joined = Users::PACKAGE_VIP;
             $userOrder->save();
-        } else if($userOrder->total_buy >= 3000000) {
+        } else if ($userOrder->total_buy >= 3000000) {
             $userOrder->package_joined = Users::PACKAGE_STAR;
             $userOrder->save();
         }

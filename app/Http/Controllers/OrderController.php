@@ -48,9 +48,12 @@ class OrderController extends Controller
 
             if (Configs::getBoolean('allow_put_telegram', false) === true) {
                 $username = $order->user->username ?? 'Unkown';
+                $date = Carbon::now()->format('Y-m-d H:i:s');
+
                 $mgs = <<<text
 Có đơn hàng mới!
 ==============
+Thời gian: $date
 Họ tên: $order->name
 Username: $username
 Số điện thoại: $order->phone
@@ -119,7 +122,8 @@ text;
         return Excel::download(new OrdersExport($type), "order_export_$date.xlsx");
     }
 
-    public function create(Request $request) {
+    public function create(Request $request)
+    {
         //
     }
 }
