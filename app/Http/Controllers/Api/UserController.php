@@ -416,7 +416,7 @@ text;
                 'status' => 'not_join'
             ]);
         }
-        if ($joinedCashback->cashbacked === 1) {
+        if ($joinedCashback->cashbacked == 1) {
             return Response::success([
                 'status' => 'cashbacked'
             ]);
