@@ -410,7 +410,7 @@ text;
 
     public function checkJoinedCashback(Request $request)
     {
-        $joinedCashback = JoinCashbackEvent::select(['id'])->whereUserId($request->user->id)->first();
+        $joinedCashback = JoinCashbackEvent::select(['id', 'cashbacked'])->whereUserId($request->user->id)->first();
         if ($joinedCashback == null) {
             return Response::success([
                 'status' => 'not_join'
