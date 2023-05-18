@@ -1,0 +1,3 @@
+rm -f storage/logs/laravel.log
+touch storage/logs/laravel.log
+chown www-data:www-data -R storage/logs

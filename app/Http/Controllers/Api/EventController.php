@@ -44,6 +44,7 @@ class EventController extends Controller
                 $rowMakeCashback->save();
                 DB::commit();
             } catch (Exception | PDOException $e) {
+                logger($e->getMessage());
                 DB::rollBack();
             }
         }
