@@ -7,8 +7,10 @@ use App\Http\Controllers\Controller;
 use App\Models\JoinCashbackEvent;
 use App\Models\Users;
 use Carbon\Carbon;
+use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use PDOException;
 
 class EventController extends Controller
 {
@@ -35,7 +37,15 @@ class EventController extends Controller
             $rowMakeCashback = JoinCashbackEvent::whereId($idMakeCashback)->first();
             $user = Users::with(['user_money'])->whereId($rowMakeCashback->user_id)->first();
             $user->user_money->cashback_point += 3000000;
-            $user->user_money->save();
+            $rowMakeCashback->cashbacked = 1;
+            DB::beginTransaction();
+            try {
+                $user->user_money->save();
+                $rowMakeCashback->save();
+                DB::commit();
+            } catch (Exception | PDOException $e) {
+                DB::rollBack();
+            }
         }
 
         return Response::success('Tham gia thành công!');
