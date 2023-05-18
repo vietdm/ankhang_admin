@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Helpers\Response;
 use App\Http\Controllers\Controller;
+use App\Models\Configs;
 use App\Models\JoinCashbackEvent;
 use App\Models\Users;
 use Carbon\Carbon;
@@ -50,5 +51,13 @@ class EventController extends Controller
         }
 
         return Response::success('Tham gia thành công!');
+    }
+
+    public function getDatetimeCountdown()
+    {
+        $datetimeCountdown = Configs::get('datetime_countdown', '0');
+        return Response::success([
+            'datetime' => $datetimeCountdown
+        ]);
     }
 }

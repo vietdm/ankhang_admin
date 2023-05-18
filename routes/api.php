@@ -27,6 +27,7 @@ Route::get('/products', [ApiProductController::class, 'lists']);
 Route::get('/product/{id}', [ApiProductController::class, 'getOne']);
 Route::get('/banks', [ApiBanksController::class, 'list']);
 Route::get('/value-of-akg', [ApiMoneyController::class, 'getValueOfAkg']);
+Route::get('/datetime-countdown', [ApiEventController::class, 'getDatetimeCountdown']);
 
 Route::middleware('api.auth')->group(function () {
     Route::post('/auth/info', [ApiAuthController::class, 'info']);
