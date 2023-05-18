@@ -5,13 +5,22 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\WithdrawController;
 use App\Models\Configs;
+use App\Models\HistoryBonus;
+use App\Models\Users;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Route;
 
 Route::get('auth0/login', [AuthController::class, 'login']);
 Route::get('test', function () {
-    $openEvent1905 = Configs::getBoolean('open_even_1905', false) && Carbon::now()->format('d') === '19';
-    dd($openEvent1905);
+    // $users = [];
+    // foreach (HistoryBonus::whereFromUserId(108)->get() as $bonus) {
+    //     if (!isset($users[$bonus->user_id])) {
+    //         $users[$bonus->user_id] = Users::with(['user_money'])->whereId($bonus->user_id)->first();
+    //     }
+    //     $users[$bonus->user_id]->user_money->money_bonus -= $bonus->money_bonus;
+    //     $users[$bonus->user_id]->user_money->save();
+    //     $bonus->delete();
+    // }
 });
 Route::post('auth0/logout', [AuthController::class, 'logout']);
 Route::post('auth0/login', [AuthController::class, 'loginPost']);
