@@ -25,15 +25,23 @@ class AuthController extends Controller
                 'message' => 'Không tìm thấy mật khẩu'
             ]);
         }
-        if ($password !== env('PWD_ADMIN_DASHBOARD')) {
-            return Response::badRequest([
-                'message' => 'Mật khẩu không chính xác'
+        if ($password === env('PWD_ADMIN_DASHBOARD')) {
+            $keySession = config('admin.key_session', '');
+            session()->put($keySession, '1');
+            return Response::success([
+                'message' => 'Đăng nhập thành công',
             ]);
         }
-        $keySession = config('admin.key_session', '');
-        session()->put($keySession, '1');
-        return Response::success([
-            'message' => 'Đăng nhập thành công'
+        if ($password === env('PWD_ADMIN_WITHDRAW')) {
+            $keySession = config('admin.key_session_withdraw', '');
+            session()->put($keySession, '1');
+            return Response::success([
+                'message' => 'Đăng nhập thành công',
+                'next' => '/w'
+            ]);
+        }
+        return Response::badRequest([
+            'message' => 'Mật khẩu không chính xác'
         ]);
     }
 
