@@ -19,6 +19,15 @@ class UserUtil
         }
     }
 
+    public static function getTotalSale($username, &$totalSale = 0): void
+    {
+        $allUser = Users::select(['id', 'username', 'total_buy'])->where('present_username', $username)->get();
+        foreach ($allUser as $user) {
+            $totalSale += $user->total_buy;
+            self::getTotalChildAndSale($user->username, $total, $totalSale, $totalOrder);
+        }
+    }
+
     public static function upLevelChuyenVien(Users $user)
     {
         $userParent = Users::whereUsername($user->present_username)->first();
@@ -30,39 +39,34 @@ class UserUtil
             goto _continue;
         }
 
-        $levelUpCondition = LevelUpCondition::whereUserId($userParent->id)->whereLevelNext(Users::LEVEL_CHUYEN_VIEN)->first();
+        $levelUpCondition = LevelUpCondition::whereUserId($userParent->id)
+            ->whereFromUserId($user->id)
+            ->whereLevelNext(Users::LEVEL_CHUYEN_VIEN)
+            ->first();
 
         if (!$levelUpCondition) {
             LevelUpCondition::insert([
                 'user_id' => $userParent->id,
-                'level_next' => Users::LEVEL_CHUYEN_VIEN,
-                'count_pass' => 1
+                'from_user_id' => $user->id,
+                'level_next' => Users::LEVEL_CHUYEN_VIEN
             ]);
-            goto _continue;
         }
 
-        if ($levelUpCondition->count_pass == 1) {
-            $levelUpCondition->count_pass = 2;
-            $levelUpCondition->save();
-            goto _continue;
-        }
+        $countPendingNext = LevelUpCondition::whereUserId($userParent->id)
+            ->whereLevelNext(Users::LEVEL_CHUYEN_VIEN)
+            ->get()
+            ->count();
 
-        //tính tổng doanh số trực tiếp (tổng doanh số F1)
-        $totalPayF1 = 0;
-        foreach (Users::select(['total_buy'])->wherePresentUsername($userParent->username)->get() as $uF1) {
-            $totalPayF1 += $uF1->total_buy;
+        if ($countPendingNext >= 3) {
+            //tính tổng doanh số của cây
+            self::getTotalSale($userParent->username, $totalPayTree);
+            if ($totalPayTree > 30000000 && $userParent->package_joined != null) {
+                $userParent->level = Users::LEVEL_CHUYEN_VIEN;
+                $userParent->save();
+                LevelUpCondition::whereUserId($userParent->id)->whereLevelNext(Users::LEVEL_CHUYEN_VIEN)->delete();
+                self::upLevel($userParent, Users::LEVEL_CHUYEN_VIEN, Users::LEVEL_TRUONG_PHONG);
+            }
         }
-
-        if ($totalPayF1 > 30000000 && $userParent->package_joined != null) {
-            $userParent->level = Users::LEVEL_CHUYEN_VIEN;
-            $userParent->save();
-            $levelUpCondition->delete();
-            self::upLevel($userParent, Users::LEVEL_CHUYEN_VIEN, Users::LEVEL_TRUONG_PHONG);
-            goto _continue;
-        }
-
-        $levelUpCondition->count_pass = 3;
-        $levelUpCondition->save();
 
         _continue:
         self::upLevelChuyenVien($userParent);
@@ -79,36 +83,39 @@ class UserUtil
             goto _continue;
         }
 
-        $levelUpCondition = LevelUpCondition::whereUserId($userParent->id)->whereLevelNext($nextLevel)->first();
+        $levelUpCondition = LevelUpCondition::whereUserId($userParent->id)
+            ->whereFromUserId($user->id)
+            ->whereLevelNext($nextLevel)
+            ->first();
 
         if (!$levelUpCondition) {
             LevelUpCondition::insert([
                 'user_id' => $userParent->id,
-                'level_next' => $nextLevel,
-                'count_pass' => 1
+                'from_user_id' => $user->id,
+                'level_next' => $nextLevel
             ]);
-            goto _continue;
         }
 
-        if ($numUserPass === 3) {
-            if ($levelUpCondition->count_pass == 1) {
-                $levelUpCondition->count_pass = 2;
-                $levelUpCondition->save();
-                goto _continue;
+        $countPendingNext = LevelUpCondition::whereUserId($userParent->id)
+            ->whereLevelNext($nextLevel)
+            ->get()
+            ->count();
+
+        if ($countPendingNext >= $numUserPass) {
+            $userParent->level = $nextLevel;
+            $userParent->save();
+            $levelUpCondition->delete();
+            switch ($nextLevel) {
+                case Users::LEVEL_TRUONG_PHONG:
+                    self::upLevelPhoGiamDoc($userParent);
+                    break;
+                case Users::LEVEL_PHO_GIAM_DOC:
+                    self::upLevelGiamDoc($userParent);
+                    break;
+                case Users::LEVEL_GIAM_DOC:
+                    self::upLevelGiamDocCapCao($userParent);
+                    break;
             }
-        }
-
-        $userParent->level = $nextLevel;
-        $userParent->save();
-        $levelUpCondition->delete();
-
-        switch ($nextLevel) {
-            case Users::LEVEL_TRUONG_PHONG:
-                self::upLevelPhoGiamDoc($userParent);
-                break;
-            case Users::LEVEL_PHO_GIAM_DOC:
-                self::upLevelGiamDoc($userParent);
-                break;
         }
 
         _continue:

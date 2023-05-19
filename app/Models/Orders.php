@@ -157,8 +157,8 @@ class Orders extends Model
 
         //tính toán tăng điểm AKG
         $openEvent1905 = Configs::getBoolean('open_even_1905', false) && Carbon::now()->format('d') === '19';
-        if ($openEvent1905) {
-            $valueOfAkg = Configs::getDouble('value_of_akg', 1);
+        $valueOfAkg = Configs::getDouble('value_of_akg', 1);
+        if ($openEvent1905 || Carbon::parse($this->created_at)->format('d') === '19') {
             $point = $pricePayed / $valueOfAkg;
             if ($pricePayed >= 30000000) {
                 $point += $point * 0.1;
@@ -175,11 +175,16 @@ class Orders extends Model
             if ($point > 0) {
                 $userMoneyOfUserOrder->akg_point += $point;
                 $userMoneyOfUserOrder->save();
+                TotalAkgLog::insert([
+                    'user_id' => $this->user_id,
+                    'date' => Carbon::now()->format('Y-m-d H:i:s'),
+                    'amount' => $point,
+                    'content' => 'Chi trả sự kiện ngày 19/5. Khách mua ' . number_format($pricePayed) . '. Giá AKG: ' . number_format($valueOfAkg)
+                ]);
                 Configs::setDouble('total_akg', $totalAkgPoint);
             }
         } else if ($totalBuyAfterAdd >= 30000000) {
             $priceCalcAkgPoint = $totalBuyBeforeAdd < 30000000 ? $totalBuyAfterAdd : $pricePayed;
-            $valueOfAkg = Configs::getDouble('value_of_akg', 1);
             $point = round($priceCalcAkgPoint / $valueOfAkg);
             $userMoneyOfUserOrder = UserMoney::whereUserId($this->user_id)->first();
 
@@ -192,6 +197,12 @@ class Orders extends Model
             }
             if ($point > 0) {
                 $userMoneyOfUserOrder->akg_point += $point;
+                TotalAkgLog::insert([
+                    'user_id' => $this->user_id,
+                    'date' => Carbon::now()->format('Y-m-d H:i:s'),
+                    'amount' => $point,
+                    'content' => 'Chi trả mua hàng khách đạt điều kiện. Số tiền tính: ' . number_format($priceCalcAkgPoint) . '. Khách mua: ' . number_format($pricePayed) . '. Giá AKG: ' . number_format($valueOfAkg)
+                ]);
                 $userMoneyOfUserOrder->save();
                 Configs::setDouble('total_akg', $totalAkgPoint);
             }

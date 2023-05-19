@@ -16,29 +16,30 @@ class OrderUtil
         &$totalBonusPercent,
         &$levelCalc,
         &$percentLevel
-    ): void
-    {
-        $percentDirect = 0;
-        if ($level == 'F1') {
-            $percentDirect = 0.1;
-        } else if ($level == 'F2' || $level == 'F3') {
-            $percentDirect = 0.05;
+    ): void {
+        if ($user->total_buy >= 3000000) {
+            $percentDirect = 0;
+            if ($level == 'F1') {
+                $percentDirect = 0.1;
+            } else if ($level == 'F2' || $level == 'F3') {
+                $percentDirect = 0.05;
+            }
+
+            $bonus = $pricePayed * $percentDirect;
+            $totalBonusPercent -= $percentDirect;
+
+            $user->user_money->money_bonus += $bonus;
+            $user->user_money->save();
+
+            HistoryBonus::insert([
+                'user_id' => $user->id,
+                'from_user_id' => $userOrder->id,
+                'money_bonus' => $bonus,
+                'type' => HistoryBonus::HH_TRUC_TIEP,
+                'date_bonus' => Carbon::now()->format('Y-m-d'),
+                'content' => 'Thưởng hoa hồng trực tiếp',
+            ]);
         }
-
-        $bonus = $pricePayed * $percentDirect;
-        $totalBonusPercent -= $percentDirect;
-
-        $user->user_money->money_bonus += $bonus;
-        $user->user_money->save();
-
-        HistoryBonus::insert([
-            'user_id' => $user->id,
-            'from_user_id' => $userOrder->id,
-            'money_bonus' => $bonus,
-            'type' => HistoryBonus::HH_TRUC_TIEP,
-            'date_bonus' => Carbon::now()->format('Y-m-d'),
-            'content' => 'Thưởng hoa hồng trực tiếp',
-        ]);
 
         self::sendBonusLevel(
             $user,
@@ -57,8 +58,7 @@ class OrderUtil
         &$totalBonusPercent,
         &$levelCalc,
         &$percentLevel
-    ): void
-    {
+    ): void {
         $dateNow = Carbon::now()->format('Y-m-d');
         if ($user->level == Users::LEVEL_CHUYEN_VIEN) {
             if (in_array($levelCalc, [
@@ -176,8 +176,7 @@ class OrderUtil
         &$totalBonusPercent,
         &$levelCalc,
         &$percentLevel
-    ): void
-    {
+    ): void {
         $user = Users::whereUsername($userPresentUsername)->first();
         if (!$user) return;
         self::sendBonusLevel(

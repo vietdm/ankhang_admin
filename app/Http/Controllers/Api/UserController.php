@@ -309,6 +309,9 @@ text;
             if ($cccdLen !== 9 && $cccdLen !== 12) {
                 return Response::badRequest("CCCD phải có 9 hoặc 12 ký tự");
             }
+            if (Users::whereCccd($cccd)->first() != null) {
+                return Response::badRequest("Số CCCD đã được sử dụng");
+            }
         }
         $request->user->fullname = $fullname;
         if (!$request->user->cccd) {

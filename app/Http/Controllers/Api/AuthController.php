@@ -14,6 +14,7 @@ use App\Mail\VerifyAccount as MailVerifyAccount;
 use App\Models\Configs;
 use App\Models\ForgotPassword;
 use App\Models\Otps;
+use App\Models\TotalAkgLog;
 use App\Models\UserMoney;
 use App\Models\Users;
 use Carbon\Carbon;
@@ -310,6 +311,12 @@ class AuthController extends Controller
                 if ($totalAkgPoint >= 1) {
                     $parent->user_money->akg_point += 1;
                     $parent->user_money->save();
+                    TotalAkgLog::insert([
+                        'user_id' => $parent->id,
+                        'date' => Carbon::now()->format('Y-m-d H:i:s'),
+                        'amount' => 1,
+                        'content' => 'Chi trả giới thiệu. Khách chưa vào gói'
+                    ]);
                     $totalAkgPoint -= 1;
                 }
             } else {
@@ -322,6 +329,12 @@ class AuthController extends Controller
                     $parent->user_money->save();
                     $totalAkgPoint -= 2;
                 }
+                TotalAkgLog::insert([
+                    'user_id' => $parent->id,
+                    'date' => Carbon::now()->format('Y-m-d H:i:s'),
+                    'amount' => 1,
+                    'content' => 'Chi trả giới thiệu. Khách đã vào gói'
+                ]);
             }
             Configs::set('total_akg', $totalAkgPoint, Format::Double);
         }
