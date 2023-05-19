@@ -148,10 +148,12 @@ class AuthController extends Controller
     public function info(Request $request): JsonResponse
     {
         $userMoney = UserMoney::whereUserId($request->user->id)->first();
+        $valueOfAkg = Configs::getDouble('value_of_akg');
         $request->user->password = '';
         $request->user->reward_point = $userMoney ? $userMoney->reward_point : 0;
         $request->user->money_bonus = $userMoney ? $userMoney->money_bonus : 0;
         $request->user->akg_point = $userMoney ? $userMoney->akg_point : 0;
+        $request->user->akg_money = $userMoney ? $userMoney->akg_point * $valueOfAkg : 0;
         $request->user->cashback_point = $userMoney ? $userMoney->cashback_point : 0;
         return Response::success(['message' => 'Success!', 'user' => $request->user]);
     }
