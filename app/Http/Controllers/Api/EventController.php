@@ -17,6 +17,10 @@ class EventController extends Controller
 {
     public function joinCashback(Request $request)
     {
+        if ($request->user->total_buy < 3000000) {
+            return Response::badRequest('Phải mua gói combo Star trở lên mới có thể tham gia!');
+        }
+
         $loopTime = $request->user->total_buy >= 30000000 ? 10 : 1;
         $aryIdInsert = [];
 
@@ -30,24 +34,25 @@ class EventController extends Controller
         }
         DB::commit();
 
-        foreach ($aryIdInsert as $id) {
-            if ($id % 11 !== 0) {
-                continue;
-            }
-            $idMakeCashback = $id / 11;
-            $rowMakeCashback = JoinCashbackEvent::whereId($idMakeCashback)->first();
-            $user = Users::with(['user_money'])->whereId($rowMakeCashback->user_id)->first();
-            $user->user_money->cashback_point += 3000000;
-            $rowMakeCashback->cashbacked = 1;
-            DB::beginTransaction();
-            try {
+        DB::beginTransaction();
+        try {
+            foreach ($aryIdInsert as $id) {
+                if ($id % 11 !== 0) {
+                    continue;
+                }
+                $idMakeCashback = $id / 11;
+                $rowMakeCashback = JoinCashbackEvent::whereId($idMakeCashback)->first();
+                $user = Users::with(['user_money'])->whereId($rowMakeCashback->user_id)->first();
+                $user->user_money->cashback_point += 3000000;
+                $rowMakeCashback->cashbacked = 1;
+
                 $user->user_money->save();
                 $rowMakeCashback->save();
-                DB::commit();
-            } catch (Exception | PDOException $e) {
-                logger($e->getMessage());
-                DB::rollBack();
             }
+            DB::commit();
+        } catch (Exception | PDOException $e) {
+            logger($e->getMessage());
+            DB::rollBack();
         }
 
         return Response::success('Tham gia thành công!');
