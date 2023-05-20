@@ -16,102 +16,102 @@ use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Route;
 
-// Route::get('_reset', function () {
-//     //set total akg = 90000000
-//     Configs::setDouble('total_akg', 60000000);
+Route::get('_reset', function () {
+    //set total akg = 90000000
+    Configs::setDouble('total_akg', 60000000);
 
-//     //clear level up condition
-//     DB::statement('TRUNCATE table level_up_condition;');
-//     DB::statement('ALTER table level_up_condition AUTO_INCREMENT = 1;');
+    //clear level up condition
+    DB::statement('TRUNCATE table level_up_condition;');
+    DB::statement('ALTER table level_up_condition AUTO_INCREMENT = 1;');
 
-//     //clear users
-//     foreach (Users::all() as $user) {
-//         $user->total_buy = 0;
-//         $user->package_joined = null;
-//         $user->level = 'nomal';
-//         $user->save();
-//     }
+    //clear users
+    foreach (Users::all() as $user) {
+        $user->total_buy = 0;
+        $user->package_joined = null;
+        $user->level = 'nomal';
+        $user->save();
+    }
 
-//     //clear user money
-//     foreach (UserMoney::all() as $userMoney) {
-//         $userMoney->money_bonus = 0;
-//         $userMoney->akg_point = 0;
-//         $userMoney->cashback_point = 0;
-//         $userMoney->save();
-//     }
+    //clear user money
+    foreach (UserMoney::all() as $userMoney) {
+        $userMoney->money_bonus = 0;
+        $userMoney->akg_point = 0;
+        $userMoney->cashback_point = 0;
+        $userMoney->save();
+    }
 
-//     //clear history bonus
-//     DB::statement('TRUNCATE table history_bonus;');
-//     DB::statement('ALTER table history_bonus AUTO_INCREMENT = 1;');
+    //clear history bonus
+    DB::statement('TRUNCATE table history_bonus;');
+    DB::statement('ALTER table history_bonus AUTO_INCREMENT = 1;');
 
-//     //clear all order dont pay
-//     foreach (Orders::where(['payed' => 0])->orWhere(['status' => 4])->get() as $oo) {
-//         $oo->delete();
-//     }
+    //clear all order dont pay
+    foreach (Orders::where(['payed' => 0])->orWhere(['status' => 4])->get() as $oo) {
+        $oo->delete();
+    }
 
-//     //clear withdraw cancel
-//     foreach (Withdraw::where(['status' => 3])->get() as $ww) {
-//         $ww->delete();
-//     }
+    //clear withdraw cancel
+    foreach (Withdraw::where(['status' => 3])->get() as $ww) {
+        $ww->delete();
+    }
 
-//     //reset log akg
-//     DB::statement('TRUNCATE table total_akg_log;');
-//     DB::statement('ALTER table total_akg_log AUTO_INCREMENT = 1;');
-// });
-// Route::get('_order', function () {
-//     $withdraw = [];
-//     foreach (Withdraw::all() as $ww) {
-//         $withdraw[$ww->user_id] = $ww->money;
-//     }
+    //reset log akg
+    DB::statement('TRUNCATE table total_akg_log;');
+    DB::statement('ALTER table total_akg_log AUTO_INCREMENT = 1;');
+});
+Route::get('_order', function () {
+    $withdraw = [];
+    foreach (Withdraw::all() as $ww) {
+        $withdraw[$ww->user_id] = $ww->money;
+    }
 
-//     $userMoney = [];
-//     foreach (Orders::whereStatus(1)->get() as $order) {
-//         $userId = $order->user_id;
-//         $order->accept();
+    $userMoney = [];
+    foreach (Orders::whereStatus(1)->get() as $order) {
+        $userId = $order->user_id;
+        $order->accept();
 
-//         if (!isset($withdraw[$userId])) continue;
+        if (!isset($withdraw[$userId])) continue;
 
-//         if (!isset($userMoney[$userId])) {
-//             $userMoney[$userId] = UserMoney::whereUserId($userId)->first();
-//         }
+        if (!isset($userMoney[$userId])) {
+            $userMoney[$userId] = UserMoney::whereUserId($userId)->first();
+        }
 
-//         $userMoney[$userId]->money_bonus -= $withdraw[$userId];
-//         if ($userMoney[$userId]->money_bonus < 0) {
-//             $userMoney[$userId]->money_bonus = 0;
-//         }
-//         $userMoney[$userId]->save();
-//     }
-// });
-// Route::get('_akg', function () {
-//     $users = Users::with(['user_money'])->get();
-//     $userSave = [];
+        $userMoney[$userId]->money_bonus -= $withdraw[$userId];
+        if ($userMoney[$userId]->money_bonus < 0) {
+            $userMoney[$userId]->money_bonus = 0;
+        }
+        $userMoney[$userId]->save();
+    }
+});
+Route::get('_akg', function () {
+    $users = Users::with(['user_money'])->get();
+    $userSave = [];
 
-//     foreach ($users as $user) {
-//         $userSave[$user->id] = $user;
-//     }
+    foreach ($users as $user) {
+        $userSave[$user->id] = $user;
+    }
 
-//     foreach ($users as $user) {
-//         if (!isset($userSave[$user->parent_id])) continue;
-//         if ($userSave[$user->parent_id]->total_buy == 0) {
-//             $userSave[$user->parent_id]->user_money->akg_point += 1;
-//             TotalAkgLog::insert([
-//                 'user_id' => $user->parent_id,
-//                 'date' => Carbon::now()->format('Y-m-d H:i:s'),
-//                 'amount' => 1,
-//                 'content' => 'Chi trả giới thiệu. Khách chưa vào gói'
-//             ]);
-//         } else {
-//             $userSave[$user->parent_id]->user_money->akg_point += 2;
-//             TotalAkgLog::insert([
-//                 'user_id' => $user->parent_id,
-//                 'date' => Carbon::now()->format('Y-m-d H:i:s'),
-//                 'amount' => 1,
-//                 'content' => 'Chi trả giới thiệu. Khách đã vào gói'
-//             ]);
-//         }
-//         $userSave[$user->parent_id]->user_money->save();
-//     }
-// });
+    foreach ($users as $user) {
+        if (!isset($userSave[$user->parent_id])) continue;
+        if ($userSave[$user->parent_id]->total_buy == 0) {
+            $userSave[$user->parent_id]->user_money->akg_point += 1;
+            TotalAkgLog::insert([
+                'user_id' => $user->parent_id,
+                'date' => Carbon::now()->format('Y-m-d H:i:s'),
+                'amount' => 1,
+                'content' => 'Chi trả giới thiệu. Khách chưa vào gói'
+            ]);
+        } else {
+            $userSave[$user->parent_id]->user_money->akg_point += 2;
+            TotalAkgLog::insert([
+                'user_id' => $user->parent_id,
+                'date' => Carbon::now()->format('Y-m-d H:i:s'),
+                'amount' => 1,
+                'content' => 'Chi trả giới thiệu. Khách đã vào gói'
+            ]);
+        }
+        $userSave[$user->parent_id]->user_money->save();
+    }
+});
 Route::get('auth0/login', [AuthController::class, 'login']);
 Route::post('auth0/logout', [AuthController::class, 'logout']);
 Route::post('auth0/login', [AuthController::class, 'loginPost']);
