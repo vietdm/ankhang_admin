@@ -4,8 +4,10 @@ namespace App\Http\Controllers\Api;
 
 use App\Helpers\JwtHelper;
 use App\Helpers\Response;
+use App\Helpers\Telegram;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\OrderRequest;
+use App\Models\Configs;
 use App\Models\Orders;
 use App\Models\Products;
 use App\Models\UserMoney;
@@ -123,9 +125,9 @@ class OrderController extends Controller
             $order->quantity = $quantity;
             $order->product_id = $productId;
             $order->total_price = $totalPrice;
+            $order->payment = $isPointPayment ? 'point' : 'bank';
             $order->image_url = $ignoreImage ? '' : "/bank_result/$newName.$ext";
             $order->save();
-
 
             if ($user) {
                 $user->address = $order->address;
@@ -134,9 +136,33 @@ class OrderController extends Controller
 
             if ($isPointPayment) {
                 $order->payed = 1;
+                $order->status = 1;
                 $order->save();
 
-                $order->accept();
+                $totalPrice = number_format($totalPrice);
+
+                if (Configs::getBoolean('allow_put_telegram', false) === true) {
+                    $date = Carbon::now()->format('Y-m-d H:i:s');
+
+                    $mgs = <<<text
+Có đơn hàng mới!
+==============
+Thời gian: $date
+Họ tên: $order->name
+Username: $user->username
+Số điện thoại: $order->phone
+Địa chỉ: $order->address
+Ghi chú: $order->note
+=============
+Tên sản phẩm: $product->title
+Số lượng: $order->quantity
+Tổng giá: $totalPrice
+============
+Sản phẩm đổi bằng điểm
+text;
+
+                    Telegram::pushMgs($mgs, Telegram::CHAT_STORE);
+                }
             }
             DB::commit();
             return Response::success([]);
