@@ -8,6 +8,7 @@ use App\Models\Users;
 
 class UserUtil
 {
+    //this function not count current user
     public static function getTotalChildAndSale($username, &$total = 0, &$totalSale = 0, &$totalOrder = 0): void
     {
         $allUser = Users::select(['id', 'username', 'total_buy'])->where('present_username', $username)->get();
@@ -19,13 +20,24 @@ class UserUtil
         }
     }
 
+    //this function not count current user
     public static function getTotalSale($username, &$totalSale = 0): void
     {
         $allUser = Users::select(['id', 'username', 'total_buy'])->where('present_username', $username)->get();
         foreach ($allUser as $user) {
             $totalSale += $user->total_buy;
-            self::getTotalChildAndSale($user->username, $total, $totalSale, $totalOrder);
+            self::getTotalSale($user->username, $totalSale);
         }
+    }
+
+    public static function checkIsSameSystem($userChildCheck, $userParentCheck)
+    {
+        $user = Users::whereUsername($userChildCheck->present_username)->first();
+        if (!$user) return false;
+        if ($user->username == $userParentCheck->username) {
+            return true;
+        }
+        return self::checkIsSameSystem($user, $userParentCheck);
     }
 
     public static function upLevelChuyenVien(Users $user)

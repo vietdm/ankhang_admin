@@ -428,4 +428,21 @@ text;
             'status' => 'joined'
         ]);
     }
+
+    public function checkCanTransferAkg(Request $request)
+    {
+        if (!in_array($request->user->level, [
+            Users::LEVEL_PHO_GIAM_DOC,
+            Users::LEVEL_GIAM_DOC,
+            Users::LEVEL_GIAM_DOC_CAP_CAO,
+        ])) {
+            return Response::success(['can' => '0']);
+        }
+
+        if ($request->user->total_buy < 100000000) {
+            return Response::success(['can' => '0']);
+        }
+
+        return Response::success(['can' => '1']);
+    }
 }

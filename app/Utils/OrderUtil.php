@@ -22,7 +22,7 @@ class OrderUtil
             if ($level == 'F1') {
                 $percentDirect = 0.1;
             } else if ($level == 'F2' || $level == 'F3') {
-                $percentDirect = 0.05;
+                $percentDirect = 0.04;
             }
 
             $bonus = $pricePayed * $percentDirect;
@@ -112,6 +112,12 @@ class OrderUtil
                 Users::LEVEL_GIAM_DOC,
                 Users::LEVEL_GIAM_DOC_CAP_CAO,
             ])) return;
+
+            UserUtil::getTotalSale($user->username, $totalSale);
+            $totalSale += $user->total_buy;
+
+            if ($totalSale < 1000000000) return;
+
             $levelCalc = Users::LEVEL_PHO_GIAM_DOC;
             $percent = 0.12 - $percentLevel;
             $percentLevel = 0.12;
@@ -133,6 +139,12 @@ class OrderUtil
                 Users::LEVEL_GIAM_DOC,
                 Users::LEVEL_GIAM_DOC_CAP_CAO,
             ])) return;
+
+            UserUtil::getTotalSale($user->username, $totalSale);
+            $totalSale += $user->total_buy;
+
+            if ($totalSale < 3000000000) return;
+
             $levelCalc = Users::LEVEL_GIAM_DOC;
             $percent = 0.14 - $percentLevel;
             $percentLevel = 0.14;
@@ -151,6 +163,12 @@ class OrderUtil
         }
         if ($user->level == Users::LEVEL_GIAM_DOC_CAP_CAO) {
             if ($levelCalc == Users::LEVEL_GIAM_DOC_CAP_CAO) return;
+
+            UserUtil::getTotalSale($user->username, $totalSale);
+            $totalSale += $user->total_buy;
+
+            if ($totalSale < 3000000000) return;
+
             $levelCalc = Users::LEVEL_GIAM_DOC_CAP_CAO;
             $percent = 0.16 - $percentLevel;
             $percentLevel = 0.16;

@@ -12,6 +12,7 @@ use App\Models\UserMoney;
 use App\Models\Users;
 use App\Models\Withdraw;
 use App\Utils\MoneyUtil;
+use App\Utils\UserUtil;
 use Carbon\Carbon;
 use Exception;
 use Illuminate\Http\Request;
@@ -67,6 +68,18 @@ class MoneyController extends Controller
 
         if ($userMoney->akg_point < $pointSend) {
             return Response::badRequest('Số điểm bạn chuyển nhiều hơn số điểm bạn có!');
+        }
+
+        //check cùng hệ thống
+        // -- check người nhận là cha
+        $sameSystem = UserUtil::checkIsSameSystem($request->user, $userReceive);
+        if (!$sameSystem) {
+            // -- check người nhận là con
+            $sameSystem = UserUtil::checkIsSameSystem($userReceive, $request->user);
+        }
+
+        if (!$sameSystem) {
+            return Response::badRequest('Người nhận không cùng hệ thống với bạn!');
         }
 
         $otpCode = $request->otp_code;

@@ -60,4 +60,5 @@ Route::middleware('api.auth')->group(function () {
     Route::post('/event/cashback/join', [ApiEventController::class, 'joinCashback']);
 
     Route::post('/user/point/check', [ApiMoneyController::class, 'checkPointPayment']);
+    Route::post('/user/can/transfer-akg', [ApiUserController::class, 'checkCanTransferAkg']);
 });
