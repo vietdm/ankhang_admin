@@ -134,4 +134,43 @@ class MoneyController extends Controller
             'value' => $valueOfAkg
         ]);
     }
+
+    public function checkPointPayment(Request $request)
+    {
+        $userMoney = UserMoney::whereUserId($request->user->id)->first();
+        $rewardPoint = $userMoney->reward_point;
+
+        $allowRewarPoint = false;
+        if ($request->user->total_buy == 0) {
+            goto _return;
+        }
+
+        $allF1 = Users::wherePresentUsername($request->user->username)->get();
+        if ($allF1->count() < 5) {
+            goto _return;
+        }
+
+        $totalF1BuyProduct = 0;
+        foreach ($allF1 as $f1) {
+            if ($f1->total_buy > 0) {
+                $totalF1BuyProduct += 1;
+            }
+        }
+
+        if ($totalF1BuyProduct >= 5) {
+            $allowRewarPoint = true;
+        }
+
+        _return:
+        return Response::success([
+            'cashback' => [
+                'point' => $userMoney->cashback_point,
+                'allow' => '1'
+            ],
+            'reward' => [
+                'point' => $rewardPoint,
+                'allow' => $allowRewarPoint === false ? '0' : '1'
+            ]
+        ]);
+    }
 }

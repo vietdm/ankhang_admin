@@ -58,4 +58,6 @@ Route::middleware('api.auth')->group(function () {
     Route::post('/user/bonus/history', [ApiUserController::class, 'bonusHistory']);
 
     Route::post('/event/cashback/join', [ApiEventController::class, 'joinCashback']);
+
+    Route::post('/user/point/check', [ApiMoneyController::class, 'checkPointPayment']);
 });
