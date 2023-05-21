@@ -11,5 +11,6 @@ return new class extends Migration
         Configs::set("total_akg", 60000000, Format::Double);
         Configs::set("value_of_akg", 4000, Format::Double);
         Configs::set("allow_increase_value_of_akg", true, Format::Boolean);
+        Configs::set("allow_put_telegram", false, Format::Boolean);
     }
 };
