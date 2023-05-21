@@ -17,7 +17,7 @@ class OrderUtil
         &$levelCalc,
         &$percentLevel
     ): void {
-        if ($user->total_buy >= 3000000) {
+        if ($user->total_buy > 0) {
             $percentDirect = 0;
             if ($level == 'F1') {
                 $percentDirect = 0.1;
