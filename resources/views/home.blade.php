@@ -24,10 +24,12 @@
                     <tr>
                         <th class="text-center" style="width: 50px;">ID</th>
                         <th class="text-center no-sort" style="width: 150px;">Mã đơn hàng</th>
+                        <th class="text-center">Username</th>
                         <th class="text-center no-sort">Họ Tên</th>
                         <th class="text-center no-sort">Sản phẩm</th>
                         <th class="text-center no-sort">Số lượng</th>
                         <th class="text-center">Đơn giá</th>
+                        <th class="text-center no-sort">Ngày giờ</th>
                         <th class="text-center" style="width: 100px">Trạng thái</th>
                         <th class="text-center" style="width: 100px">Thanh toán</th>
                         <th class="text-center no-sort" style="width: 100px;">Actions</th>
@@ -41,12 +43,15 @@
                         <tr>
                             <th class="text-center" scope="row">{{ $order->id }}</th>
                             <th class="text-center">{{ $order->code }}</th>
+                            <th class="text-center">{{ $order->user->username ?? '' }}</th>
                             <td class="text-center" data-search="{{ convert_vi_to_en($fullname) . ' ' . $fullname }}">
                                 {{ $fullname }}
                             </td>
                             <td class="text-center">{{ $order->product->title }}</td>
                             <td class="text-center">{{ $order->quantity }}</td>
                             <td class="text-center">{{ number_format($order->total_price) }}</td>
+                            <td class="text-center">{{ \Carbon\Carbon::parse($order->created_at)->format('Y-m-d H:i:s') }}
+                            </td>
                             <td class="text-center td-status-badge" style="width: 100px">{!! $order->statusBadge() !!}</td>
                             <td class="text-center td-status-pay" style="width: 100px">
                                 <div class="area-status-pay">
