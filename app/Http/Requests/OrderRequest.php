@@ -15,6 +15,7 @@ class OrderRequest extends BaseRequest
             'phone' => ['required', 'regex:/^(03|05|07|08|09|01[2|6|8|9])+([0-9]{8})$/', 'min:10'],
             'address' => 'required',
             'note' => 'nullable',
+            'total_price_pay' => 'nullable|integer'
         ];
     }
 
@@ -23,7 +24,8 @@ class OrderRequest extends BaseRequest
         return [
             'phone.regex' => 'Số điện thoại không đúng định dạng!',
             'phone.min' => 'Số điện thoại không đúng định dạng!',
-            'address.required' => 'Hãy nhập địa chỉ nhận hàng'
+            'address.required' => 'Hãy nhập địa chỉ nhận hàng',
+            'total_price_pay.integer' => 'Định dàng dữ liệu của tổng tiền thanh toán không hợp lệ'
         ];
     }
 }

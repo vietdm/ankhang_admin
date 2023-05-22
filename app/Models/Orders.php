@@ -74,7 +74,7 @@ class Orders extends Model
         $totalBonusPercent = 0.46;
         $pricePayed = $this->total_price;
 
-        $userOrder = Users::whereId($this->user_id)->first();
+        $userOrder = Users::with(['user_money'])->whereId($this->user_id)->first();
         $totalBuyBeforeAdd = $userOrder->total_buy;
         $userOrder->total_buy += $pricePayed;
         $totalBuyAfterAdd = $userOrder->total_buy;
@@ -82,6 +82,18 @@ class Orders extends Model
 
         $levelCalc = Users::LEVEL_NOMAL;
         $percentLevel = 0;
+
+        //cộng điểm mua hàng nếu có
+        if ($this->total_price_pay > $this->total_price) {
+            $productPoint = $this->total_price_pay - $this->total_price;
+            $userOrder->user_money->product_point += $productPoint;
+            $userOrder->user_money->save();
+            ProductPointHistory::insert([
+                'user_id' => $userOrder->id,
+                'order_id' => $this->id,
+                'type' => ProductPointHistory::TYPE_IN
+            ]);
+        }
 
         //trả thưởng cho P1
         $userParentP1 = Users::with(['user_money'])->whereUsername($userOrder->present_username)->first();

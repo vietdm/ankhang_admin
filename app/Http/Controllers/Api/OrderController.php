@@ -59,10 +59,12 @@ class OrderController extends Controller
             }
 
             $totalPrice = $product->price * $quantity;
+            $totalPricePay = (int)($request->total_price_pay ?? 0);
             $isPointPayment = $request->has('point_type');
 
             if ($isPointPayment) {
                 $orderData['ignore_image'] = '1';
+                $totalPricePay = $totalPrice;
 
                 $pointType = $request->point_type;
                 if (!in_array($pointType, ['cashback', 'reward'])) {
@@ -84,6 +86,10 @@ class OrderController extends Controller
                     }
                     $userMoney->reward_point -= $totalPrice;
                     $userMoney->save();
+                }
+            } else {
+                if ($totalPricePay < $totalPrice) {
+                    return Response::badRequest('Số tiền thanh toán ít nhất phải bằng giá trị đơn hàng!');
                 }
             }
 
@@ -125,6 +131,7 @@ class OrderController extends Controller
             $order->quantity = $quantity;
             $order->product_id = $productId;
             $order->total_price = $totalPrice;
+            $order->total_price_pay = $totalPricePay;
             $order->payment = $isPointPayment ? 'point' : 'bank';
             $order->image_url = $ignoreImage ? '' : "/bank_result/$newName.$ext";
             $order->save();
