@@ -53,6 +53,7 @@ Route::middleware('api.auth')->group(function () {
     Route::post('/user/otp/tranfer-akg', [ApiUserController::class, 'transferAkgSendOtp']);
 
     Route::post('/user/money/history', [ApiMoneyController::class, 'getMoneyHistory']);
+    Route::post('/user/akg/history', [ApiMoneyController::class, 'getAkgHistory']);
     Route::post('/user/money/transfer/akg', [ApiMoneyController::class, 'transferAkg']);
     Route::post('/user/history/transfer/akg', [ApiMoneyController::class, 'transferAkgHistory']);
     Route::post('/user/bonus/history', [ApiUserController::class, 'bonusHistory']);

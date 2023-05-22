@@ -315,7 +315,9 @@ class AuthController extends Controller
                         'user_id' => $parent->id,
                         'date' => Carbon::now()->format('Y-m-d H:i:s'),
                         'amount' => 1,
-                        'content' => 'Chi trả giới thiệu. Khách chưa vào gói'
+                        'type' => TotalAkgLog::TYPE_GIOI_THIEU,
+                        'note' => 'Khách chưa vào gói',
+                        'content' => 'Giới thiệu khách hàng'
                     ]);
                     $totalAkgPoint -= 1;
                 }
@@ -336,7 +338,9 @@ class AuthController extends Controller
                     'user_id' => $parent->id,
                     'date' => Carbon::now()->format('Y-m-d H:i:s'),
                     'amount' => $akgMinus,
-                    'content' => 'Chi trả giới thiệu. Khách đã vào gói'
+                    'type' => TotalAkgLog::TYPE_GIOI_THIEU,
+                    'note' => 'Khách đã vào gói',
+                    'content' => 'Giới thiệu khách hàng'
                 ]);
             }
             Configs::set('total_akg', $totalAkgPoint, Format::Double);

@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Helpers\Format;
 use App\Models\Trait\ModelTrait;
+use App\Utils\EventUtil;
 use App\Utils\OrderUtil;
 use App\Utils\UserUtil;
 use Carbon\Carbon;
@@ -156,52 +157,30 @@ class Orders extends Model
         }
 
         //tính toán tăng điểm AKG
-        $openEvent1905 = Configs::getBoolean('open_even_1905', false) && Carbon::now()->format('d') === '19';
-        $valueOfAkg = Configs::getDouble('value_of_akg', 1);
-        if ($openEvent1905 || Carbon::parse($this->created_at)->format('d') === '19') {
-            $point = $pricePayed / $valueOfAkg;
-            if ($pricePayed >= 30000000) {
-                $point += $point * 0.1;
-            }
-            $point = round($point);
-            $userMoneyOfUserOrder = UserMoney::whereUserId($this->user_id)->first();
+        if ($totalBuyAfterAdd >= 30000000) {
+            $valueOfAkg = Configs::getDouble('value_of_akg', 1);
             $totalAkgPoint = Configs::getDouble('total_akg', 0);
-            if ($totalAkgPoint < $point) {
-                $point = $totalAkgPoint;
-                $totalAkgPoint = 0;
-            } else {
-                $totalAkgPoint -= $point;
-            }
-            if ($point > 0) {
-                $userMoneyOfUserOrder->akg_point += $point;
-                $userMoneyOfUserOrder->save();
-                TotalAkgLog::insert([
-                    'user_id' => $this->user_id,
-                    'date' => Carbon::now()->format('Y-m-d H:i:s'),
-                    'amount' => $point,
-                    'content' => 'Chi trả sự kiện ngày 19/5. Khách mua ' . number_format($pricePayed) . '. Giá AKG: ' . number_format($valueOfAkg)
-                ]);
-                Configs::setDouble('total_akg', $totalAkgPoint);
-            }
-        } else if ($totalBuyAfterAdd >= 30000000) {
+
             $priceCalcAkgPoint = $totalBuyBeforeAdd < 30000000 ? $totalBuyAfterAdd : $pricePayed;
             $point = round($priceCalcAkgPoint / $valueOfAkg);
             $userMoneyOfUserOrder = UserMoney::whereUserId($this->user_id)->first();
 
-            $totalAkgPoint = Configs::getDouble('total_akg', 0);
             if ($totalAkgPoint < $point) {
                 $point = $totalAkgPoint;
                 $totalAkgPoint = 0;
             } else {
                 $totalAkgPoint -= $point;
             }
+
             if ($point > 0) {
                 $userMoneyOfUserOrder->akg_point += $point;
                 TotalAkgLog::insert([
                     'user_id' => $this->user_id,
                     'date' => Carbon::now()->format('Y-m-d H:i:s'),
                     'amount' => $point,
-                    'content' => 'Chi trả mua hàng khách đạt điều kiện. Số tiền tính: ' . number_format($priceCalcAkgPoint) . '. Khách mua: ' . number_format($pricePayed) . '. Giá AKG: ' . number_format($valueOfAkg)
+                    'type' => TotalAkgLog::TYPE_MUA_HANG,
+                    'note' => 'Chi trả mua hàng khách đạt điều kiện. Số tiền tính: ' . number_format($priceCalcAkgPoint) . '. Khách mua: ' . number_format($pricePayed) . '. Giá AKG: ' . number_format($valueOfAkg),
+                    'content' => 'Mua hàng. Giá trị đơn hàng: ' . number_format($pricePayed) . '. Số tiền tính điểm: ' . number_format($priceCalcAkgPoint)
                 ]);
                 $userMoneyOfUserOrder->save();
                 Configs::setDouble('total_akg', $totalAkgPoint);
@@ -215,6 +194,14 @@ class Orders extends Model
         } else if ($userOrder->total_buy >= 3000000) {
             $userOrder->package_joined = Users::PACKAGE_STAR;
             $userOrder->save();
+        }
+
+        //join cashback
+        if ($pricePayed >= 3000000) {
+            $timeLoop = floor($pricePayed / 3000000);
+            for ($i = 1; $i <= $timeLoop; $i++) {
+                EventUtil::joinEventCashback($userOrder);
+            }
         }
     }
 }

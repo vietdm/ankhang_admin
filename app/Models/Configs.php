@@ -30,6 +30,11 @@ class Configs extends Model
         return self::get($name, $default, Format::Double);
     }
 
+    public static function getInt($name, $default = null)
+    {
+        return self::get($name, $default, Format::Integer);
+    }
+
     public static function getBoolean($name, $default = null)
     {
         return self::get($name, $default, Format::Boolean);
@@ -55,5 +60,10 @@ class Configs extends Model
     public static function setDouble($name, $value)
     {
         return self::set($name, $value, Format::Double);
+    }
+
+    public static function setInt($name, $value)
+    {
+        return self::set($name, $value, Format::Integer);
     }
 }

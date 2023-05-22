@@ -2,6 +2,7 @@
 
 namespace App\Exceptions;
 
+use App\Helpers\Telegram;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Throwable;
 
@@ -17,6 +18,20 @@ class Handler extends ExceptionHandler
         'password',
         'password_confirmation',
     ];
+
+    public function report(Throwable $e)
+    {
+        logger($e);
+
+        $errorMgs = $e->getMessage();
+        $mgs = <<<text
+Có lỗi xảy ra!
+====================
+$errorMgs
+text;
+
+        Telegram::pushMgs($mgs, Telegram::CHAT_REPORT_BUG, Telegram::BOT_TOKEN_REPORT_BUG);
+    }
 
     /**
      * Register the exception handling callbacks for the application.

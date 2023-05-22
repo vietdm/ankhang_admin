@@ -10,4 +10,7 @@ class TotalAkgLog extends Model
 {
     use HasFactory, ModelTrait;
     protected $table = 'total_akg_log';
+
+    const TYPE_GIOI_THIEU = 'gioi_thieu';
+    const TYPE_MUA_HANG = 'mua_hang';
 }
