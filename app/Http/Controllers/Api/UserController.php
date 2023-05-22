@@ -199,7 +199,7 @@ class UserController extends Controller
             $priceCanWithdraw = $userMoney->money_bonus - $priceKeep;
             if ($moneyWithdraw > $priceCanWithdraw) {
                 return Response::badRequest([
-                    'message' => 'Không đủ tiền rút vì: Cấp bậc phó giám đốc phải giữ tiền quay vòng tối thiểu 5 gói!'
+                    'message' => 'Không đủ tiền rút vì: Cấp bậc giám đốc phải giữ tiền quay vòng tối thiểu 5 gói!'
                 ]);
             }
         } else if ($user->level == Users::LEVEL_GIAM_DOC_CAP_CAO) {
@@ -207,7 +207,7 @@ class UserController extends Controller
             $priceCanWithdraw = $userMoney->money_bonus - $priceKeep;
             if ($moneyWithdraw > $priceCanWithdraw) {
                 return Response::badRequest([
-                    'message' => 'Không đủ tiền rút vì: Cấp bậc phó giám đốc phải giữ tiền quay vòng tối thiểu 6 gói!'
+                    'message' => 'Không đủ tiền rút vì: Cấp bậc giám đốc cấp cao phải giữ tiền quay vòng tối thiểu 6 gói!'
                 ]);
             }
         } else {
