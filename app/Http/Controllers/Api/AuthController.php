@@ -320,19 +320,22 @@ class AuthController extends Controller
                     $totalAkgPoint -= 1;
                 }
             } else {
+                $akgMinus = 0;
                 if ($totalAkgPoint == 1) {
                     $parent->user_money->akg_point += 1;
                     $parent->user_money->save();
                     $totalAkgPoint -= 1;
+                    $akgMinus = 1;
                 } else if ($totalAkgPoint > 1) {
                     $parent->user_money->akg_point += 2;
                     $parent->user_money->save();
                     $totalAkgPoint -= 2;
+                    $akgMinus = 2;
                 }
                 TotalAkgLog::insert([
                     'user_id' => $parent->id,
                     'date' => Carbon::now()->format('Y-m-d H:i:s'),
-                    'amount' => 1,
+                    'amount' => $akgMinus,
                     'content' => 'Chi trả giới thiệu. Khách đã vào gói'
                 ]);
             }

@@ -134,6 +134,7 @@ class OrderController extends Controller
                 $user->save();
             }
 
+            $date = Carbon::now()->format('Y-m-d H:i:s');
             if ($isPointPayment) {
                 $order->payed = 1;
                 $order->status = 1;
@@ -142,8 +143,6 @@ class OrderController extends Controller
                 $totalPrice = number_format($totalPrice);
 
                 if (Configs::getBoolean('allow_put_telegram', false) === true) {
-                    $date = Carbon::now()->format('Y-m-d H:i:s');
-
                     $mgs = <<<text
 Có đơn hàng mới!
 ==============
@@ -162,6 +161,25 @@ Sản phẩm đổi bằng điểm
 text;
 
                     Telegram::pushMgs($mgs, Telegram::CHAT_STORE);
+                }
+            } else {
+                if (Configs::getBoolean('allow_put_telegram', false) === true) {
+                    $mgs = <<<text
+Có đơn hàng mới!
+==============
+Thời gian: $date
+Họ tên: $order->name
+Username: $user->username
+Số điện thoại: $order->phone
+Địa chỉ: $order->address
+Ghi chú: $order->note
+=============
+Tên sản phẩm: $product->title
+Số lượng: $order->quantity
+Tổng giá: $totalPrice
+text;
+
+                    Telegram::pushMgs($mgs, Telegram::CHAT_CHECK_STORE);
                 }
             }
             DB::commit();

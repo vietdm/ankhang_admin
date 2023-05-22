@@ -115,7 +115,11 @@ class UserController extends Controller
     public function getDashboardData(Request $request)
     {
         $userId = $request->user->id;
-        $userMoney = UserMoney::whereUserId($userId)->first();
+
+        $historyBonusTotal = HistoryBonus::select([
+            DB::raw('SUM(money_bonus) AS money_bonus_total')
+        ])->whereUserId($userId)->groupBy('user_id')->first();
+
         $historyBonus = HistoryBonus::select([
             DB::raw('SUM(money_bonus) AS money_bonus_day')
         ])->whereUserId($userId)
@@ -127,7 +131,7 @@ class UserController extends Controller
         $totalSale += $request->user->total_buy;
 
         return Response::success([
-            'money_bonus' => $userMoney->money_bonus,
+            'money_bonus' => $historyBonusTotal->money_bonus_total ?? 0,
             'money_bonus_day' => $historyBonus->money_bonus_day ?? 0,
             'total_child' => $total,
             'total_sale' => $totalSale,

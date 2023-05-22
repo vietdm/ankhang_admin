@@ -192,3 +192,6 @@ Route::get('_join', function () {
         }
     }
 });
+Route::get('_telegram', function () {
+    dd('a');
+});
