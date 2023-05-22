@@ -16,6 +16,7 @@ return new class extends Migration
             $table->integer('user_id');
             $table->integer('order_id');
             $table->string('type');
+            $table->double('money');
             $table->timestamps();
         });
     }

@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Configs;
 use App\Models\HistoryBonus;
 use App\Models\Otps;
+use App\Models\ProductPointHistory;
 use App\Models\TotalAkgLog;
 use App\Models\TransferAkgHistory;
 use App\Models\UserMoney;
@@ -160,6 +161,14 @@ class MoneyController extends Controller
     public function getAkgHistory(Request $request)
     {
         $histories = TotalAkgLog::whereUserId($request->user->id)->orderByDesc('date')->get();
+        return Response::success([
+            'histories' => $histories
+        ]);
+    }
+
+    public function getProductPointHistory(Request $request)
+    {
+        $histories = ProductPointHistory::with(['order'])->whereUserId($request->user->id)->orderByDesc('created_at')->get();
         return Response::success([
             'histories' => $histories
         ]);

@@ -13,4 +13,9 @@ class ProductPointHistory extends Model
 
     const TYPE_IN = 'in';
     const TYPE_OUT = 'out';
+
+    public function order()
+    {
+        return $this->belongsTo(Orders::class, 'order_id', 'id');
+    }
 }

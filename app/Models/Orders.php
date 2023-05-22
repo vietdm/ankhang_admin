@@ -72,7 +72,7 @@ class Orders extends Model
         $this->save();
 
         $totalBonusPercent = 0.46;
-        $pricePayed = $this->total_price;
+        $pricePayed = $this->total_price_pay;
 
         $userOrder = Users::with(['user_money'])->whereId($this->user_id)->first();
         $totalBuyBeforeAdd = $userOrder->total_buy;
