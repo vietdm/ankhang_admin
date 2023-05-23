@@ -43,6 +43,10 @@ class MoneyUtil
             'reward' => [
                 'point' => $rewardPoint,
                 'allow' => $allowRewardPoint === false ? '0' : '1'
+            ],
+            'product' => [
+                'point' => $userMoney->product_point,
+                'allow' => $userMoney->product_point <= 0 ? '0' : '1'
             ]
         ];
     }

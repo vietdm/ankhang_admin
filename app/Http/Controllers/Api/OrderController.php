@@ -9,6 +9,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\OrderRequest;
 use App\Models\Configs;
 use App\Models\Orders;
+use App\Models\ProductPointHistory;
 use App\Models\Products;
 use App\Models\UserMoney;
 use App\Models\Users;
@@ -67,7 +68,7 @@ class OrderController extends Controller
                 $totalPricePay = $totalPrice;
 
                 $pointType = $request->point_type;
-                if (!in_array($pointType, ['cashback', 'reward'])) {
+                if (!in_array($pointType, ['cashback', 'reward', 'product'])) {
                     return Response::badRequest('Loại điểm thanh toán không tồn tại!');
                 }
 
@@ -85,6 +86,13 @@ class OrderController extends Controller
                         return Response::badRequest('Điểm thưởng không đủ hoặc không đủ điều kiện thanh toán!');
                     }
                     $userMoney->reward_point -= $totalPrice;
+                    $userMoney->save();
+                }
+                if ($pointType == 'product') {
+                    if ($pointStatus['product']['allow'] == '0') {
+                        return Response::badRequest('Điểm mua hàng không đủ!');
+                    }
+                    $userMoney->product_point -= $totalPrice;
                     $userMoney->save();
                 }
             } else {
@@ -147,7 +155,7 @@ class OrderController extends Controller
                 $order->status = 1;
                 $order->save();
 
-                $totalPrice = number_format($totalPrice);
+                $totalPriceStr = number_format($totalPrice);
 
                 if (Configs::getBoolean('allow_put_telegram', false) === true) {
                     $mgs = <<<text
@@ -162,12 +170,21 @@ Ghi chú: $order->note
 =============
 Tên sản phẩm: $product->title
 Số lượng: $order->quantity
-Tổng giá: $totalPrice
+Tổng giá: $totalPriceStr
 ============
 Sản phẩm đổi bằng điểm
 text;
 
                     Telegram::pushMgs($mgs, Telegram::CHAT_STORE);
+                }
+
+                if ($request->point_type == 'product') {
+                    ProductPointHistory::insert([
+                        'user_id' => $userId,
+                        'order_id' => $order->id,
+                        'type' => ProductPointHistory::TYPE_OUT,
+                        'money' => $totalPrice
+                    ]);
                 }
             } else {
                 if (Configs::getBoolean('allow_put_telegram', false) === true) {

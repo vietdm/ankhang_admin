@@ -91,7 +91,8 @@ class Orders extends Model
             ProductPointHistory::insert([
                 'user_id' => $userOrder->id,
                 'order_id' => $this->id,
-                'type' => ProductPointHistory::TYPE_IN
+                'type' => ProductPointHistory::TYPE_IN,
+                'money' => $productPoint
             ]);
         }
 
