@@ -39,6 +39,7 @@
                     @foreach ($orders as $order)
                         @php
                             $fullname = $order->user->fullname ?? '';
+                            $isCombo = $order->product_id == 0;
                         @endphp
                         <tr>
                             <th class="text-center" scope="row">{{ $order->id }}</th>
@@ -47,8 +48,18 @@
                             <td class="text-center" data-search="{{ convert_vi_to_en($fullname) . ' ' . $fullname }}">
                                 {{ $fullname }}
                             </td>
-                            <td class="text-center">{{ $order->product->title }}</td>
-                            <td class="text-center">{{ $order->quantity }}</td>
+                            @if ($isCombo)
+                                <td colspan="2">
+                                    <ul style="padding-left: 15px">
+                                        @foreach ($order->combo as $combo)
+                                            <li>{{ $combo->product->title }} <br>Số lượng: {{ $combo->quantity }}</li>
+                                        @endforeach
+                                    </ul>
+                                </td>
+                            @else
+                                <td class="text-center">{{ $order->product->title }}</td>
+                                <td class="text-center">{{ $order->quantity }}</td>
+                            @endif
                             <td class="text-center">{{ number_format($order->total_price) }}</td>
                             <td class="text-center">{{ \Carbon\Carbon::parse($order->created_at)->format('Y-m-d H:i:s') }}
                             </td>

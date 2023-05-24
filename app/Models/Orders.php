@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Helpers\Format;
+use App\Jobs\UpLevelUser;
 use App\Models\Trait\ModelTrait;
 use App\Utils\EventUtil;
 use App\Utils\OrderUtil;
@@ -34,6 +35,11 @@ class Orders extends Model
     public function product(): BelongsTo
     {
         return $this->belongsTo(Products::class, 'product_id', 'id');
+    }
+
+    public function combo()
+    {
+        return $this->hasMany(ComboOrder::class, 'hash', 'combo_hash');
     }
 
     public function getPayedTextAttribute()
@@ -164,10 +170,7 @@ class Orders extends Model
         }
 
         //tính toán lên cấp cho user
-        $minPriceUpLevel = 3000000;
-        if ($pricePayed >= $minPriceUpLevel) {
-            UserUtil::upLevelChuyenVien($userOrder);
-        }
+        UpLevelUser::dispatch($userOrder->id)->delay(5);
 
         //tính toán tăng điểm AKG
         if ($totalBuyAfterAdd >= 30000000) {

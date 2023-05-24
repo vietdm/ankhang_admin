@@ -17,3 +17,10 @@ function convert_vi_to_en($str): array|string|null
     $str = preg_replace("/(Ỳ|Ý|Ỵ|Ỷ|Ỹ)/", "Y", $str);
     return preg_replace("/(Đ)/", "D", $str);
 }
+
+function json_validator($data) {
+    if (!empty($data)) {
+        return is_string($data) && is_array(json_decode($data, true));
+    }
+    return false;
+}

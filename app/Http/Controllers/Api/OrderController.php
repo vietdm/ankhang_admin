@@ -7,6 +7,7 @@ use App\Helpers\Response;
 use App\Helpers\Telegram;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\OrderRequest;
+use App\Models\ComboOrder;
 use App\Models\Configs;
 use App\Models\Orders;
 use App\Models\ProductPointHistory;
@@ -26,14 +27,37 @@ class OrderController extends Controller
 {
     public function order(OrderRequest $request): JsonResponse
     {
+        if (!json_validator($request->order)) {
+            return Response::badRequest('Lệnh order không hợp lệ!');
+        }
         DB::beginTransaction();
         try {
             $userId = $request->user_id;
             $requestOrder = json_decode($request->order, 1);
-            $orderData = $requestOrder[0] ?? [
-                'id' => 0,
-                'quantity' => 0,
-            ];
+            $isComboOrder = false;
+            $totalPrice = 0;
+            $ignoreImage = false;
+            $newUuidComboOrder = Str::uuid();
+
+            if (count($requestOrder) > 1) {
+                $isComboOrder = true;
+            }
+
+            foreach ($requestOrder as &$_order) {
+                $product = Products::whereId($_order['id'])->first();
+                if ($product == null) {
+                    return Response::badRequest('Có sản phẩm không tồn tại. Vui lòng kiểm tra lại hoặc liên hệ quản trị viên!');
+                }
+                $_order['product'] = $product;
+                $totalPrice += (int)$_order['quantity'] * $product->price;
+                if ($isComboOrder) {
+                    ComboOrder::insert([
+                        'hash' => $newUuidComboOrder,
+                        'product_id' => $_order['id'],
+                        'quantity' => $_order['quantity']
+                    ]);
+                }
+            }
 
             $token = $request->bearerToken();
             $payload = JwtHelper::decode($token);
@@ -47,24 +71,14 @@ class OrderController extends Controller
                 return Response::badRequest('Người dùng không tồn tại!');
             }
 
-            if (!isset($orderData['ignore_image'])) {
-                $orderData['ignore_image'] = '0';
-            }
+            $productId = $isComboOrder ? 0 : (int)$requestOrder[0]['id'];
+            $quantity = $isComboOrder ? 0 : (int)$requestOrder[0]['quantity'];
 
-            $productId = (int)$orderData['id'];
-            $quantity = (int)$orderData['quantity'];
-
-            $product = Products::whereId($productId)->first();
-            if (!$product) {
-                return Response::badRequest('Sản phẩm không tồn tại!');
-            }
-
-            $totalPrice = $product->price * $quantity;
             $totalPricePay = (int)($request->total_price_pay ?? 0);
             $isPointPayment = $request->has('point_type');
 
             if ($isPointPayment) {
-                $orderData['ignore_image'] = '1';
+                $ignoreImage = true;
                 $totalPricePay = $totalPrice;
 
                 $pointType = $request->point_type;
@@ -101,8 +115,6 @@ class OrderController extends Controller
                 }
             }
 
-            $ignoreImage = $orderData['ignore_image'] == '1';
-
             if (!$ignoreImage) {
                 if (!$request->has('image')) {
                     return Response::badRequest([
@@ -138,6 +150,7 @@ class OrderController extends Controller
             $order->note = $request->note ?? '';
             $order->quantity = $quantity;
             $order->product_id = $productId;
+            $order->combo_hash = $isComboOrder ? $newUuidComboOrder : null;
             $order->total_price = $totalPrice;
             $order->total_price_pay = $totalPricePay;
             $order->payment = $isPointPayment ? 'point' : 'bank';
@@ -149,33 +162,21 @@ class OrderController extends Controller
                 $user->save();
             }
 
-            $date = Carbon::now()->format('Y-m-d H:i:s');
+            $messageTelegram = view('telegrams.order', [
+                'order' => $order,
+                'user' => $user,
+                'requestOrder' => $requestOrder,
+                'totalPrice' => $totalPrice,
+                'isPoint' => $isPointPayment
+            ])->render();
+
             if ($isPointPayment) {
                 $order->payed = 1;
                 $order->status = 1;
                 $order->save();
 
-                $totalPriceStr = number_format($totalPrice);
-
                 if (Configs::getBoolean('allow_put_telegram', false) === true) {
-                    $mgs = <<<text
-Có đơn hàng mới!
-==============
-Thời gian: $date
-Họ tên: $order->name
-Username: $user->username
-Số điện thoại: $order->phone
-Địa chỉ: $order->address
-Ghi chú: $order->note
-=============
-Tên sản phẩm: $product->title
-Số lượng: $order->quantity
-Tổng giá: $totalPriceStr
-============
-Sản phẩm đổi bằng điểm
-text;
-
-                    Telegram::pushMgs($mgs, Telegram::CHAT_STORE);
+                    Telegram::pushMgs($messageTelegram, Telegram::CHAT_STORE);
                 }
 
                 if ($request->point_type == 'product') {
@@ -188,28 +189,13 @@ text;
                 }
             } else {
                 if (Configs::getBoolean('allow_put_telegram', false) === true) {
-                    $mgs = <<<text
-Có đơn hàng mới!
-==============
-Thời gian: $date
-Họ tên: $order->name
-Username: $user->username
-Số điện thoại: $order->phone
-Địa chỉ: $order->address
-Ghi chú: $order->note
-=============
-Tên sản phẩm: $product->title
-Số lượng: $order->quantity
-Tổng giá: $totalPrice
-text;
-
-                    Telegram::pushMgs($mgs, Telegram::CHAT_CHECK_STORE);
+                    Telegram::pushMgs($messageTelegram, Telegram::CHAT_CHECK_STORE);
                 }
             }
             DB::commit();
             return Response::success([]);
         } catch (Exception | PDOException $e) {
-            logger($e->getMessage());
+            logger($e);
             DB::rollBack();
             return Response::badRequest('Có lỗi khi đặt đơn hàng. Vui lòng liên hệ quản trị viên!');
         }

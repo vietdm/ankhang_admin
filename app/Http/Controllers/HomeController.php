@@ -16,7 +16,7 @@ class HomeController extends Controller
 {
     public function home(): View|Application|Factory
     {
-        $orders = Orders::with(['user', 'product'])->orderByDesc('id')->get();
+        $orders = Orders::with(['user', 'product', 'combo.product'])->orderByDesc('id')->get();
         return view('home', compact('orders'));
     }
 
