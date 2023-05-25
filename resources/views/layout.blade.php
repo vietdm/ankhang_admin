@@ -20,7 +20,7 @@
     <link rel="stylesheet"
         href="https://fonts.googleapis.com/css2?family=Mulish:ital,wght@0,200;0,300;0,400;0,500;0,600;0,700;0,800;1,200;1,300;1,400;1,500;1,600;1,700;1,800&display=swap">
     <link rel="stylesheet" id="css-main" href="{{ asset('assets/css/codebase.css') }}">
-    <link rel="stylesheet" id="css-main" href="{{ asset('assets/css/custom.css') }}">
+    <link rel="stylesheet" id="css-main" href="{{ asset('assets/css/custom.css?i=1') }}">
     @yield('head')
 </head>
 
@@ -74,15 +74,19 @@
                     <div class="btn-group" role="group">
                         <button type="button" class="btn btn-rounded btn-dual-secondary" id="page-header-user-dropdown"
                             data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            <i class="fa fa-user d-sm-none"></i>
+                            <i class="si si-user"></i>
                             <span class="d-none d-sm-inline-block">{{ admin()->fullname }}</span>
                             <i class="fa fa-angle-down ml-5"></i>
                         </button>
                         <div class="dropdown-menu dropdown-menu-right min-width-200"
                             aria-labelledby="page-header-user-dropdown">
+                            <a class="dropdown-item text-center" href="/">
+                                <i class="si si-settings mr-5"></i> Settings
+                            </a>
+                            <div class="dropdown-divider"></div>
                             <form action="/auth0/logout" method="POST">
                                 @csrf
-                                <button type="submit" class="dropdown-item mb-0" style="cursor: pointer">
+                                <button type="submit" class="dropdown-item text-center mb-0" style="cursor: pointer">
                                     <i class="si si-logout mr-5"></i> Sign Out
                                 </button>
                             </form>

@@ -6,3 +6,10 @@
 .text-link:hover {
     text-decoration: underline;
 }
+
+.user-select-none {
+    user-select: none;
+    -ms-user-select: none;
+    -moz-user-select: none;
+    -webkit-user-select: none;
+}
