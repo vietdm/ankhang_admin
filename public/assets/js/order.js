@@ -3,21 +3,21 @@ import {Alert} from "./alert.js";
 export const Order = {
     accept(id, el) {
         Alert.confirm('Chắc chắn KÍCH HOẠT đơn hàng này?').then(() => {
-            $.post(`/order/${id}/accept`).then(result => {
-                Alert.success(result.message);
+            $(el).hide();
+            $.post(`/order/${id}/accept`).then(() => {
                 const tdStatus = $(el).closest('tr').find('.td-status-badge');
                 $(el).closest('td').find('.btn-created').remove();
                 tdStatus.find('.badge').remove();
                 tdStatus.append('<span class="badge badge-success">Đã xác nhận</span>');
             }).catch(error => {
+                $(el).show();
                 Alert.error(error.responseJSON.message);
             });
         });
     },
     cancel(id, el) {
         Alert.confirm('Chắc chắn HỦY đơn hàng này?').then(() => {
-            $.post(`/order/${id}/cancel`).then(result => {
-                Alert.success(result.message);
+            $.post(`/order/${id}/cancel`).then(() => {
                 const tdStatus = $(el).closest('tr').find('.td-status-badge');
                 $(el).closest('td').find('.btn-created').remove();
                 tdStatus.find('.badge').remove();
@@ -29,8 +29,7 @@ export const Order = {
     },
     payed(id, el) {
         Alert.confirm('Chắc chắn XÁC NHẬN THANH TOÁN cho đơn hàng này?').then(() => {
-            $.post(`/order/${id}/payed`).then(result => {
-                Alert.success(result.message);
+            $.post(`/order/${id}/payed`).then(() => {
                 const tdStatus = $(el).closest('tr').find('.td-status-pay .area-status-pay');
                 tdStatus.find('.badge').remove();
                 tdStatus.append('<span class="badge badge-success">Đã thanh toán</span>');

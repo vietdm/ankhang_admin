@@ -9,7 +9,7 @@ use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
 use Symfony\Component\HttpFoundation\Response;
 
-class AdminAuthMiddleware
+class AdminNotAuthMiddleware
 {
     /**
      * @throws ContainerExceptionInterface
@@ -17,8 +17,11 @@ class AdminAuthMiddleware
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if (!Auth::check()) {
-            return redirect()->to('/auth0/login?next=' . urlencode($request->url()));
+        if (Auth::check()) {
+            if ($request->has('next')) {
+                return redirect()->to($request->get('next', '/'));
+            }
+            return redirect()->to('/');
         }
         return $next($request);
     }

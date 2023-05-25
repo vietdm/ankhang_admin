@@ -24,3 +24,7 @@ function json_validator($data) {
     }
     return false;
 }
+
+function admin() {
+    return auth()->user();
+}
