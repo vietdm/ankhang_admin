@@ -18,9 +18,21 @@ class HomeController extends Controller
         return view('dashboard.index');
     }
 
-    public function confirmOrder(): View|Application|Factory
+    public function allOrder(): View|Application|Factory
     {
         $orders = Orders::with(['user', 'product', 'combo.product'])->orderByDesc('id')->get();
+        return view('order.all', compact('orders'));
+    }
+
+    public function transferOrder(): View|Application|Factory
+    {
+        $orders = Orders::with(['user', 'product', 'combo.product'])->whereStatus(1)->orderByDesc('id')->get();
+        return view('order.transfer', compact('orders'));
+    }
+
+    public function confirmOrder(): View|Application|Factory
+    {
+        $orders = Orders::with(['user', 'product', 'combo.product'])->whereStatus(0)->orderByDesc('id')->get();
         return view('order.confirm', compact('orders'));
     }
 

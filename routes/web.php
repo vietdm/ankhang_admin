@@ -24,6 +24,14 @@ Route::middleware('admin.auth')->group(function () {
         Route::get('/order/export', [OrderController::class, 'export']);
     });
 
+    Route::middleware('admin.role:transfer_order')->group(function () {
+        Route::get('/order/transfer', [HomeController::class, 'transferOrder']);
+    });
+
+    Route::middleware('admin.role:all_order')->group(function () {
+        Route::get('/order/all', [HomeController::class, 'allOrder']);
+    });
+
     Route::middleware('admin.role:confirm_withdraw')->group(function () {
         Route::get('/withdraw/confirm', [HomeController::class, 'confirmWithdraw']);
         Route::post('/withdraw/{id}/accept', [WithdrawController::class, 'accept']);

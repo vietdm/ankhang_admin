@@ -71,6 +71,11 @@ class Orders extends Model
         return $this->status === self::STATUS_CREATE;
     }
 
+    public function isAccepted()
+    {
+        return $this->status === self::STATUS_ACCEPT;
+    }
+
     public function accept(): void
     {
         //update status order
