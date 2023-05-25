@@ -121,9 +121,4 @@ text;
         $date = Carbon::now()->format('Ymd_His');
         return Excel::download(new OrdersExport($type), "order_export_$date.xlsx");
     }
-
-    public function create(Request $request)
-    {
-        //
-    }
 }

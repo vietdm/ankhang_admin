@@ -18,7 +18,6 @@ Route::middleware('admin.auth')->group(function () {
 
     Route::middleware('admin.role:confirm_order')->group(function () {
         Route::get('/order/confirm', [HomeController::class, 'confirmOrder']);
-        Route::get('/order/accepts', [OrderController::class, 'accepts']);
         Route::post('/order/{id}/accept', [OrderController::class, 'accept']);
         Route::post('/order/{id}/payed', [OrderController::class, 'payed']);
         Route::post('/order/{id}/cancel', [OrderController::class, 'cancel']);

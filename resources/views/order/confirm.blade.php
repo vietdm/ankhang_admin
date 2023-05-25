@@ -5,7 +5,7 @@
         #table-order tr>th:last-child,
         #table-order tr>td:last-child {
             position: sticky;
-            right: 0;
+            right: -1px;
         }
 
         #table-order tbody tr:nth-of-type(odd) td {
