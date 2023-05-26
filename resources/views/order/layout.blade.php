@@ -65,7 +65,7 @@
     <script src="{{ asset('assets/js/plugins/datatables/jquery.dataTables.min.js') }}"></script>
     <script src="{{ asset('assets/js/plugins/datatables/dataTables.bootstrap4.min.js') }}"></script>
     <script src="{{ asset('assets/js/pages/be_tables_datatables.min.js?i=2') }}"></script>
-    <script src="{{ asset('assets/js/order.js?i=1') }}" type="module"></script>
+    <script src="{{ asset('assets/js/order.js?i=' . time()) }}" type="module"></script>
     <script>
         $('[name="export_type"]').on('change', function() {
             const type = $(this).val();
@@ -80,4 +80,5 @@
             $('#modalImagePreview').find('img').attr('src', '#');
         });
     </script>
+    @yield('script.order')
 @endsection

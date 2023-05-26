@@ -16,7 +16,7 @@ Tên sản phẩm: {{ $or['product']->title }}
 Số lượng: {{ $or['quantity'] }}
 ==============
 @endforeach
-Tổng giá: {{ number_format($totalPrice) }}
+Tổng giá: {{ number_format($order->total_price) }}
 @if (!empty($isPoint) && $isPoint === true)
 ==============
 Sản phẩm đổi bằng điểm

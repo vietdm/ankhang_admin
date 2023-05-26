@@ -37,6 +37,9 @@
     </div>
 @endsection
 @section('script')
-    <script>window.UserRoleList = {!! json_encode($userRole) !!}</script>
+    <script>
+        window.UserRoleList = {!! json_encode($userRole) !!};
+        window.UserLogin = {!! admin()->json(['id', 'username', 'fullname']) !!};
+    </script>
     <script src='{{ asset('assets/js/settings.js?i=' . time()) }}' type="module"></script>
 @endsection

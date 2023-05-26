@@ -27,6 +27,10 @@ Route::middleware('admin.auth')->group(function () {
 
     Route::middleware('admin.role:transfer_order')->group(function () {
         Route::get('/order/transfer', [HomeController::class, 'transferOrder']);
+        Route::post('/order/confirmed', [OrderController::class, 'listOrderConfirmed']);
+        Route::post('/order/deliving', [OrderController::class, 'listOrderDeliving']);
+        Route::post('/order/{id}/deliving', [OrderController::class, 'setDeliving']);
+        Route::post('/order/{id}/success', [OrderController::class, 'setSuccess']);
     });
 
     Route::middleware('admin.role:all_order')->group(function () {
@@ -41,5 +45,6 @@ Route::middleware('admin.auth')->group(function () {
 
     Route::middleware('admin.role:settings')->group(function () {
         Route::get('/settings', [SettingsController::class, 'home']);
+        Route::post('/setting/update/role', [SettingsController::class, 'updateRole']);
     });
 });

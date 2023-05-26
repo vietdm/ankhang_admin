@@ -1,75 +1,33 @@
 @extends('order.layout')
 @section('table-data')
-<div class="position-relative">
-    <table id="table-order" class="table table-bordered table-responsive table-striped table-vcenter js-dataTable-full">
-        <thead>
-            <tr>
-                <th class="text-center">#</th>
-                <th class="text-center">Username</th>
-                <th class="text-center no-sort">Họ Tên</th>
-                <th class="text-center no-sort">Sản phẩm</th>
-                <th class="text-center">Đơn giá</th>
-                <th class="text-center" style="width: 100px">Trạng thái</th>
-                <th class="text-center" style="width: 100px">Thanh toán</th>
-                <th class="text-center no-sort fixed-right" style="width: 100px;">Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach ($orders as $order)
-                @php
-                    $fullname = $order->user->fullname ?? '';
-                    $isCombo = $order->product_id == 0;
-                @endphp
-                <tr>
-                    <td class="text-center" style="min-width: 100px">
-                        {{ \Carbon\Carbon::parse($order->created_at)->format('Y-m-d H:i:s') }}
-                    </td>
-                    <td class="text-center">{{ $order->user->username ?? '' }}</td>
-                    <td class="text-center" style="min-width: 120px"
-                        data-search="{{ convert_vi_to_en($fullname) . ' ' . $fullname }}">
-                        {{ $fullname }}
-                    </td>
-                    <td style="min-width: 220px">
-                        <ul style="padding-left: 15px">
-                            @if ($isCombo)
-                                @foreach ($order->combo as $combo)
-                                    <li>
-                                        {{ $combo->product->title }}
-                                        <br>
-                                        Số lượng: {{ $combo->quantity }}
-                                    </li>
-                                @endforeach
-                            @else
-                                <li>
-                                    {{ $order->product->title }}
-                                    <br>
-                                    Số lượng: {{ $order->quantity }}
-                                </li>
-                            @endif
-                        </ul>
-                    </td>
-                    <td class="text-center">{{ number_format($order->total_price) }}</td>
-                    <td class="text-center td-status-badge" style="width: 100px">{!! $order->statusBadge() !!}</td>
-                    <td class="text-center td-status-pay" style="width: 100px">
-                        <div class="area-status-pay">
-                            {!! $order->statusBadge() !!}
-                        </div>
-                    </td>
-                    <td class="text-center fixed-right" style="min-width: 90px">
-                        @if ($order->isAccepted())
-                            <div class="m-1 btn-created text-link text-primary"
-                                onclick="Order.accept({{ $order->id }}, this)">
-                                Đánh dấu vận chuyển
-                            </div>
-                            <div class="m-1 btn-created text-link text-danger"
-                                onclick="Order.cancel({{ $order->id }}, this)">
-                                Hủy
-                            </div>
-                        @endif
-                    </td>
-                </tr>
-            @endforeach
-        </tbody>
-    </table>
-</div>
+    <div class="block block-order-transfer">
+        <ul class="nav nav-tabs nav-tabs-block" data-toggle="tabs" role="tablist">
+            <li class="nav-item">
+                <a class="nav-link" data-type="confirmed" href="#list-order-transfer">Đã xác nhận</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" data-type="deliving" href="#list-order-transfer">Đang vận chuyển</a>
+            </li>
+        </ul>
+        <div class="block-content tab-content overflow-hidden">
+            <div class="pb-3 tab-pane fade fade-up" id="list-order-transfer" role="tabpanel">
+                <div class="tab-pane-loading text-center">
+                    <i class="fa fa-3x fa-cog fa-spin"></i>
+                </div>
+                <div class="tab-pane-content"></div>
+            </div>
+        </div>
+    </div>
+@endsection
+@section('script.order')
+    <script>
+        $('[data-toggle="tabs"]').on('shown.bs.tab', function(e) {
+            const el = $(e.target);
+            const type = el.attr('data-type');
+            Order.loadTranferData(type);
+        });
+        $(document).ready(() => {
+            $('.block-order-transfer').find('.nav-item:first-child .nav-link').trigger('click');
+        });
+    </script>
 @endsection

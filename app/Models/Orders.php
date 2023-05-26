@@ -2,12 +2,10 @@
 
 namespace App\Models;
 
-use App\Helpers\Format;
 use App\Jobs\UpLevelUser;
 use App\Models\Trait\ModelTrait;
 use App\Utils\EventUtil;
 use App\Utils\OrderUtil;
-use App\Utils\UserUtil;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -60,7 +58,7 @@ class Orders extends Model
             0 => '<span class="badge badge-info">Vừa đặt hàng</span>',
             1 => '<span class="badge badge-success">Đã xác nhận</span>',
             2 => '<span class="badge badge-primary">Đang vận chuyển</span>',
-            3 => '<span class="badge badge-primary">Hoàn thành</span>',
+            3 => '<span class="badge badge-secondary">Hoàn thành</span>',
             4 => '<span class="badge badge-danger">Đã hủy</span>',
             default => '',
         };
@@ -74,6 +72,11 @@ class Orders extends Model
     public function isAccepted()
     {
         return $this->status === self::STATUS_ACCEPT;
+    }
+
+    public function isDeliving()
+    {
+        return $this->status === self::STATUS_DELIVE;
     }
 
     public function accept(): void

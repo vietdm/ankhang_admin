@@ -1,4 +1,5 @@
 import { Alert } from './alert.js';
+import { Common } from './common.js';
 
 export const Settings = {
     init() {
@@ -39,8 +40,48 @@ export const Settings = {
         });
     },
     triggerClickUpdateRole() {
-        $('.btn-update-role').on('click', function() {
-            console.log($('.input-select-role:checked'));
+        $('.btn-update-role').on('click', async function () {
+            const elRoleSelected = $('.input-select-role:checked');
+            if (elRoleSelected.length == 0) {
+                Alert.error('Cần chọn ít nhất 1 quyền mới có thể cập nhật!');
+                return;
+            }
+
+            const self = this;
+
+            $(self).prop('disabled', true);
+
+            const roles = [];
+            for (const el of elRoleSelected) {
+                roles.push(el.value);
+            }
+
+            const userIdUpdate = $('#user_id_change_role').val();
+            if (userIdUpdate == '') {
+                Alert.error('Cần chọn tài khoản để cập nhật!');
+                return;
+            }
+
+            const isSelfUpdate = userIdUpdate == UserLogin.id;
+            if (isSelfUpdate) {
+                if (!(await Alert.confirm('Bạn đang thay đổi quyền của chính mình. Sau khi cập nhật có thể sẽ không truy cập được 1 số chức năng. Vẫn cập nhật chứ?'))) {
+                    $(self).prop('disabled', false);
+                    return;
+                }
+            }
+
+            Common.post('/setting/update/role', { roles, user_id: userIdUpdate })
+                .then((result) => {
+                    Alert.success(result.message);
+                    $(self).prop('disabled', false);
+                    UserRoleList[userIdUpdate] = roles;
+                    if(isSelfUpdate) {
+                        setTimeout(() => window.location.reload(), 1000);
+                    }
+                }).catch((error) => {
+                    Alert.error(error.message);
+                    $(self).prop('disabled', false);
+                });
         });
     }
 }

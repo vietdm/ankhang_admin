@@ -26,8 +26,7 @@ class HomeController extends Controller
 
     public function transferOrder(): View|Application|Factory
     {
-        $orders = Orders::with(['user', 'product', 'combo.product'])->whereStatus(1)->orderByDesc('id')->get();
-        return view('order.transfer', compact('orders'));
+        return view('order.transfer');
     }
 
     public function confirmOrder(): View|Application|Factory
