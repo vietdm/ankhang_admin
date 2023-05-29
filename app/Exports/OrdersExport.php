@@ -3,6 +3,7 @@
 namespace App\Exports;
 
 use App\Models\Orders;
+use Carbon\Carbon;
 use Illuminate\Support\Collection;
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\ShouldAutoSize;
@@ -23,7 +24,7 @@ class OrdersExport implements FromCollection, WithMapping, WithHeadings, ShouldA
 
     public function collection(): Collection
     {
-        $orders = Orders::with(['user', 'product']);
+        $orders = Orders::with(['user', 'product', 'combo.product']);
         if ($this->type == 'payed') {
             $orders->where('payed', '1');
         }
@@ -37,15 +38,14 @@ class OrdersExport implements FromCollection, WithMapping, WithHeadings, ShouldA
     public function headings(): array
     {
         return [
+            'Ngày mua hàng',
+            'Username',
+            'Họ tên',
             'Mã đơn hàng',
             'Sản phẩm mua',
-            'Số lượng',
             'Tổng tiền',
             'Địa chỉ',
             'Ghi chú',
-            'Username',
-            'Họ tên',
-            'Ngày mua hàng',
             'Thanh toán',
             'Trạng thái',
         ];
@@ -53,16 +53,31 @@ class OrdersExport implements FromCollection, WithMapping, WithHeadings, ShouldA
 
     public function map($row): array
     {
+        if ($row->product_id != 0) {
+            $productTitle = $row->product->title;
+            $productQuantity = $row->quantity;
+            $textProductBuy = "$productTitle\nSố lượng: $productQuantity";
+        } else {
+            $textProductBuy = '';
+            foreach ($row->combo as $combo) {
+                if ($textProductBuy != '') {
+                    $textProductBuy .= "\n\n";
+                }
+                $productTitle = $combo->product->title;
+                $productQuantity = $combo->quantity;
+                $textProductBuy .= "$productTitle\nSố lượng: $productQuantity";
+            }
+        }
+
         return [
-            $row->code,
-            $row->product->title,
-            $row->quantity,
-            $row->total_price,
-            $row->address,
-            $row->note,
+            Carbon::parse($row->created_at)->format('Y-m-d H:i:s'),
             $row->user->username,
             $row->user->fullname,
-            $row->updated_at,
+            $row->code,
+            $textProductBuy,
+            number_format($row->total_price),
+            $row->address,
+            $row->note,
             $row->payed_text,
             $row->status_text,
         ];
@@ -70,21 +85,67 @@ class OrdersExport implements FromCollection, WithMapping, WithHeadings, ShouldA
 
     public function styles($sheet): array
     {
-        return [
-            1 => ['font' => [
-                'bold' => true,
-                'size' => 14,
+        $font = fn ($size = 12, $bold = false) => [
+            'font' => [
+                'bold' => $bold,
+                'size' => $size,
                 'name' => 'Times New Roman'
-            ]],
+            ]
+        ];
+        $defaultStyle = [
+            'alignment' => [
+                'vertical' => 'top'
+            ],
+            ...$font()
+        ];
+        return [
+            'A' => [
+                ...$defaultStyle
+            ],
+            'B' => [
+                ...$defaultStyle
+            ],
+            'C' => [
+                ...$defaultStyle
+            ],
+            'D' => [
+                ...$defaultStyle
+            ],
+            'E' => [
+                'alignment' => [
+                    'vertical' => 'top',
+                    'wrapText' => true
+                ],
+                ...$font()
+            ],
+            'F' => [
+                ...$defaultStyle
+            ],
+            'G' => [
+                ...$defaultStyle
+            ],
+            'H' => [
+                ...$defaultStyle
+            ],
+            'I' => [
+                ...$defaultStyle
+            ],
+            'J' => [
+                ...$defaultStyle
+            ],
+            1 => [
+                ...$font(14, true)
+            ]
         ];
     }
+
 
     public function registerEvents(): array
     {
         return [
             AfterSheet::class => function ($event) {
-                $event->sheet->getDelegate()->getParent()->getDefaultStyle()->getFont()->setName('Times New Roman');
-                $event->sheet->getDelegate()->getParent()->getDefaultStyle()->getFont()->setSize(12);
+                $workSheet = $event->sheet->getDelegate();
+                $workSheet->freezePane('A2');
             },
         ];
     }
