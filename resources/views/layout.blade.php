@@ -80,10 +80,12 @@
                         </button>
                         <div class="dropdown-menu dropdown-menu-right min-width-200"
                             aria-labelledby="page-header-user-dropdown">
-                            <a class="dropdown-item text-center" href="/">
-                                <i class="si si-settings mr-5"></i> Settings
-                            </a>
-                            <div class="dropdown-divider"></div>
+                            @if (admin()->allow('settings'))
+                                <a class="dropdown-item text-center" href="/">
+                                    <i class="si si-settings mr-5"></i> Settings
+                                </a>
+                                <div class="dropdown-divider"></div>
+                            @endif
                             <form action="/auth0/logout" method="POST">
                                 @csrf
                                 <button type="submit" class="dropdown-item text-center mb-0" style="cursor: pointer">

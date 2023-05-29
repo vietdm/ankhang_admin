@@ -43,7 +43,7 @@
                                 <h2 class="h5 font-w400 text-muted mb-0">Chúc một ngày tốt lành!</h2>
                             </div>
                             <form action="#" method="post" id="form-login">
-                                <div class="block block-themed block-rounded block-shadow">
+                                <div class="block block-themed block-rounded block-shadow w-100 m-auto" style="max-width: 550px">
                                     <div class="block-header bg-gd-dusk">
                                         <h3 class="block-title">Đăng nhập</h3>
                                     </div>
