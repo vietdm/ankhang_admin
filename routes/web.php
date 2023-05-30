@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\SettingsController;
@@ -13,9 +14,13 @@ Route::middleware('admin.notauth')->group(function () {
 });
 
 Route::middleware('admin.auth')->group(function () {
-    Route::get('/', [HomeController::class, 'home']);
+    Route::get('/', [DashboardController::class, 'home']);
     Route::get('auth0/logout', fn () => redirect()->to('/'));
     Route::post('auth0/logout', [AuthController::class, 'logout']);
+
+    Route::prefix('dashboard')->group(function() {
+        Route::get('bonus', [DashboardController::class, 'bonus']);
+    });
 
     Route::middleware('admin.role:confirm_order')->group(function () {
         Route::get('/order/confirm', [HomeController::class, 'confirmOrder']);
