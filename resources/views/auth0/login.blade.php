@@ -30,42 +30,42 @@
 
     <div id="page-container" class="main-content-boxed">
         <main id="main-container">
-            <div class="bg-image bg-pattern"
-                style="background-image: url('{{ asset('assets/media/photos/photo34@2x.jpg') }}');">
-                <div class="row mx-0 justify-content-center bg-white-op-95">
+            <div class="bg-body-dark bg-pattern" style="background-image: url('{{ asset('images/bg-pattern-inverse.png') }}');">
+                <div class="row mx-0 justify-content-center">
                     <div class="hero-static col-lg-6 col-xl-4">
                         <div class="content content-full overflow-hidden">
                             <div class="py-30 text-center">
-                                <div class="link-effect text-pulse font-w700">
-                                    <i class="si si-fire" style="color: #3eb2f2"></i>
-                                    <span class="font-size-xl text-pulse-dark">An</span>
-                                    <span class="font-size-xl" style="color: #3eb2f2">Khang</span>
+                                <div class="link-effect font-w700" style="font-size: 22px; color: #3f9ce8;">
+                                    <i class="si si-fire"></i>
+                                    <span class="font-size-xl text-primary-dark">An</span><span class="font-size-xl">Khang</span>
                                 </div>
-                                <h1 class="h4 font-w700 mt-30 mb-10">Welcome back, Administator</h1>
+                                <h1 class="h4 font-w700 mt-30 mb-10">Chào mừng tới trang quản trị</h1>
+                                <h2 class="h5 font-w400 text-muted mb-0">Chúc một ngày tốt lành!</h2>
                             </div>
-                            <form id="form-login" action="" method="post">
-                                <div class="block block-themed block-rounded block-shadow w-100 m-auto"
-                                    style="max-width: 550px">
-                                    <div class="block-header" style="background-color: #3eb2f2">
-                                        <h3 class="block-title text-center font-w600" style="font-size: 22px">Đăng nhập
-                                        </h3>
+                            <form action="#" method="post">
+                                <div class="block block-themed block-rounded block-shadow">
+                                    <div class="block-header bg-gd-dusk">
+                                        <h3 class="block-title">Đăng nhập</h3>
                                     </div>
                                     <div class="block-content">
-                                        <div class="form-group text-center">
-                                            <img class="img-avatar img-avatar96"
-                                                src="{{ asset('assets/media/avatars/avatar15.jpg') }}" alt="">
+                                        <div class="form-group row">
+                                            <div class="col-12">
+                                                <label for="username">Tài khoản</label>
+                                                <input type="text" class="form-control" id="username" name="username">
+                                            </div>
                                         </div>
                                         <div class="form-group row">
                                             <div class="col-12">
-                                                <input type="password" class="form-control text-center" id="password"
-                                                    placeholder="Password" />
+                                                <label for="password">Mật khẩu</label>
+                                                <input type="password" class="form-control" id="password" name="password">
                                             </div>
                                         </div>
-                                        <div class="form-group text-center">
-                                            <button type="submit" class="btn btn-alt-primary">
-                                                <i class="si si-lock-open mr-10"></i>
-                                                Login
-                                            </button>
+                                        <div class="form-group row">
+                                            <div class="col-12 text-center">
+                                                <button type="submit" class="btn btn-alt-primary">
+                                                    <i class="si si-login mr-10"></i> Đăng nhập
+                                                </button>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -121,7 +121,7 @@
             });
         });
         $(() => {
-            $("#password").focus();
+            $("#username").focus();
         });
     </script>
 </body>
