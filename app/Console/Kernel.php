@@ -13,6 +13,7 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule): void
     {
         $schedule->command('value-of-akg:update')->cron('0 0 */3 * *');
+        $schedule->command('user:calc-bonus-monthly')->dailyAt('00:00');
     }
 
     /**

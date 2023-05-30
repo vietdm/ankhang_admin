@@ -27,6 +27,11 @@ class CalcBonusMonthy extends Command
 
     public function handle()
     {
+        $date = (int)Carbon::now()->format('d');
+        if ($date !== 1) {
+            return;
+        }
+
         $monthOfToday = Carbon::now()->format('Y-m-d');
         $startDate = $monthOfToday . ' 00:00:00';
         $endDate = $monthOfToday . ' 23:59:59';

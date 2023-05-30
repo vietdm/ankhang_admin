@@ -33,6 +33,11 @@ class Response {
 
     public static function Unauthorized($data = []): JsonResponse
     {
+        if (gettype($data) == 'string') {
+            $data = [
+                'message' => $data
+            ];
+        }
         return response()->json([
             'success' => false,
             'message' => 'Unauthorized',

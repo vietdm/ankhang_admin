@@ -2,9 +2,12 @@
 
 namespace App\Exceptions;
 
+use App\Helpers\Response;
 use App\Helpers\Telegram;
 use App\Models\Configs;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+use Illuminate\Http\Exceptions\ThrottleRequestsException;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Throwable;
 
 class Handler extends ExceptionHandler
@@ -41,6 +44,14 @@ text;
      */
     public function register(): void
     {
+        $this->renderable(function (NotFoundHttpException $e, $request) {
+            if ($request->is('api/*')) {
+                return Response::Unauthorized('Không có quyền truy cập đường dẫn này');
+            }
+        });
+        $this->renderable(function (ThrottleRequestsException $e, $request) {
+            return Response::badRequest('Bạn đã thử quá nhiều lần. Vui lòng thử lại sau.');
+        });
         $this->reportable(function (Throwable $e) {
             //
         });
