@@ -42,8 +42,8 @@
                                 <h1 class="h4 font-w700 mt-30 mb-10">Chào mừng tới trang quản trị</h1>
                                 <h2 class="h5 font-w400 text-muted mb-0">Chúc một ngày tốt lành!</h2>
                             </div>
-                            <form action="#" method="post">
-                                <div class="block block-themed block-rounded block-shadow">
+                            <form action="#" method="post" id="form-login">
+                                <div class="block block-themed block-rounded block-shadow w-100 m-auto" style="max-width: 550px">
                                     <div class="block-header bg-gd-dusk">
                                         <h3 class="block-title">Đăng nhập</h3>
                                     </div>
@@ -84,16 +84,18 @@
         $('#form-login').on('submit', function(e) {
             e.preventDefault();
             const password = $('#password').val().trim();
-            if (password === '') {
+            const username = $('#username').val().trim();
+            if (password === '' || username == '') {
                 Swal.fire({
                     title: 'Error!',
-                    text: 'Hãy nhập mật khẩu để đăng nhập',
+                    text: 'Hãy nhập tài khoản và mật khẩu để đăng nhập',
                     icon: 'error'
                 });
                 return;
             }
             $.post('/auth0/login', {
                 password,
+                username,
                 _token: "{{ csrf_token() }}"
             }).then((result) => {
                 Swal.fire({
@@ -101,12 +103,6 @@
                     text: result.message,
                     icon: 'success'
                 });
-                if (typeof result.next == 'string') {
-                    setTimeout(() => {
-                        window.location.href = result.next;
-                    }, 1000);
-                    return;
-                }
                 setTimeout(() => {
                     const url = new URL(window.location.href);
                     const next = url.searchParams.get("next");

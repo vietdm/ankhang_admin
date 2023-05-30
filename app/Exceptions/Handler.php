@@ -3,6 +3,7 @@
 namespace App\Exceptions;
 
 use App\Helpers\Telegram;
+use App\Models\Configs;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Throwable;
 
@@ -23,14 +24,16 @@ class Handler extends ExceptionHandler
     {
         logger($e);
 
-        $errorMgs = $e->getMessage();
-        $mgs = <<<text
+        if (Configs::getDouble('allow_put_telegram', false)) {
+            $errorMgs = $e->getMessage();
+            $mgs = <<<text
 Có lỗi xảy ra!
 ====================
 $errorMgs
 text;
 
-        Telegram::pushMgs($mgs, Telegram::CHAT_REPORT_BUG, Telegram::BOT_TOKEN_REPORT_BUG);
+            Telegram::pushMgs($mgs, Telegram::CHAT_REPORT_BUG, Telegram::BOT_TOKEN_REPORT_BUG);
+        }
     }
 
     /**

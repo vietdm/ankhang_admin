@@ -32,7 +32,7 @@ class OrderController extends Controller
 
     public function accept($id): JsonResponse
     {
-        $order = Orders::with(['user'])->whereId($id)->first();
+        $order = Orders::with(['user', 'combo.product', 'product'])->whereId($id)->first();
         if (!$order) {
             return Response::badRequest("Order không tồn tại!");
         }
@@ -43,29 +43,30 @@ class OrderController extends Controller
         try {
             $order->accept();
 
-            $product = Products::where('id', $order->product_id)->first();
-            $totalPrice = number_format($order->total_price);
-
             if (Configs::getBoolean('allow_put_telegram', false) === true) {
-                $username = $order->user->username ?? 'Unkown';
-                $date = Carbon::now()->format('Y-m-d H:i:s');
+                $requestOrder = [];
+                if ($order->product_id != 0) {
+                    $requestOrder[] = [
+                        'product' => $order->product,
+                        'quantity' => $order->quantity
+                    ];
+                } else {
+                    foreach ($order->combo as $combo) {
+                        $requestOrder[] = [
+                            'product' => $combo->product,
+                            'quantity' => $combo->quantity
+                        ];
+                    }
+                }
 
-                $mgs = <<<text
-Có đơn hàng mới!
-==============
-Thời gian: $date
-Họ tên: $order->name
-Username: $username
-Số điện thoại: $order->phone
-Địa chỉ: $order->address
-Ghi chú: $order->note
-=============
-Tên sản phẩm: $product->title
-Số lượng: $order->quantity
-Tổng giá: $totalPrice
-text;
+                $messageTelegram = view('telegrams.order', [
+                    'order' => $order,
+                    'user' => $order->user,
+                    'requestOrder' => $requestOrder,
+                    'isPoint' => false
+                ])->render();
 
-                Telegram::pushMgs($mgs, Telegram::CHAT_STORE);
+                Telegram::pushMgs($messageTelegram, Telegram::CHAT_STORE);
             }
 
             DB::commit();
@@ -96,6 +97,44 @@ text;
         }
     }
 
+    public function setDeliving($id): JsonResponse
+    {
+        $order = Orders::whereId($id)->first();
+        if (!$order) {
+            return Response::badRequest("Order không tồn tại!");
+        }
+        DB::beginTransaction();
+        try {
+            $order->status = Orders::STATUS_DELIVE;
+            $order->save();
+            DB::commit();
+            return Response::success('Thành công!');
+        } catch (Exception | PDOException $e) {
+            logger($e);
+            DB::rollBack();
+            return Response::badRequest('Không thể xác nhận đang vận chuyên đơn hàng! Vui lòng thử lại!');
+        }
+    }
+
+    public function setSuccess($id): JsonResponse
+    {
+        $order = Orders::whereId($id)->first();
+        if (!$order) {
+            return Response::badRequest("Order không tồn tại!");
+        }
+        DB::beginTransaction();
+        try {
+            $order->status = Orders::STATUS_DONE;
+            $order->save();
+            DB::commit();
+            return Response::success('Thành công!');
+        } catch (Exception | PDOException $e) {
+            logger($e);
+            DB::rollBack();
+            return Response::badRequest('Không thể xác nhận hoàn thành đơn hàng! Vui lòng thử lại!');
+        }
+    }
+
     public function payed($id): JsonResponse
     {
         $order = Orders::whereId($id)->first();
@@ -122,8 +161,19 @@ text;
         return Excel::download(new OrdersExport($type), "order_export_$date.xlsx");
     }
 
-    public function create(Request $request)
-    {
-        //
+    public function listOrderConfirmed() {
+        $orders = Orders::with(['user', 'product', 'combo.product'])->whereStatus(1)->orderByDesc('id')->get();
+        $html = view('order.table.transfer', compact('orders'))->render();
+        return Response::success([
+            'html' => $html
+        ]);
+    }
+
+    public function listOrderDeliving() {
+        $orders = Orders::with(['user', 'product', 'combo.product'])->whereStatus(2)->orderByDesc('id')->get();
+        $html = view('order.table.transfer', compact('orders'))->render();
+        return Response::success([
+            'html' => $html
+        ]);
     }
 }

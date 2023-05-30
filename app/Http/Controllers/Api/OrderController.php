@@ -166,7 +166,6 @@ class OrderController extends Controller
                 'order' => $order,
                 'user' => $user,
                 'requestOrder' => $requestOrder,
-                'totalPrice' => $totalPrice,
                 'isPoint' => $isPointPayment
             ])->render();
 

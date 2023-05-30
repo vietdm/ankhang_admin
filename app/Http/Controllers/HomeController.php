@@ -14,16 +14,31 @@ use Illuminate\Http\Request;
 
 class HomeController extends Controller
 {
-    public function home(): View|Application|Factory
-    {
-        $orders = Orders::with(['user', 'product', 'combo.product'])->orderByDesc('id')->get();
-        return view('home', compact('orders'));
+    public function home() {
+        return view('dashboard.index');
     }
 
-    public function withdraw(): View|Application|Factory
+    public function allOrder(): View|Application|Factory
+    {
+        $orders = Orders::with(['user', 'product', 'combo.product'])->orderByDesc('id')->get();
+        return view('order.all', compact('orders'));
+    }
+
+    public function transferOrder(): View|Application|Factory
+    {
+        return view('order.transfer');
+    }
+
+    public function confirmOrder(): View|Application|Factory
+    {
+        $orders = Orders::with(['user', 'product', 'combo.product'])->whereStatus(0)->orderByDesc('id')->get();
+        return view('order.confirm', compact('orders'));
+    }
+
+    public function confirmWithdraw(): View|Application|Factory
     {
         $withdraws = Withdraw::with(['user', 'bank'])->orderByDesc('id')->get();
-        return view('withdraw', compact('withdraws'));
+        return view('withdraw.confirm', compact('withdraws'));
     }
 
     public function createOrder(): View|Application|Factory

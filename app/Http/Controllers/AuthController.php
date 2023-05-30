@@ -9,6 +9,7 @@ use Illuminate\Foundation\Application;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class AuthController extends Controller
 {
@@ -19,36 +20,29 @@ class AuthController extends Controller
 
     public function loginPost(Request $request): JsonResponse
     {
-        $password = $request->password;
-        if (empty($password)) {
-            return Response::badRequest([
-                'message' => 'Không tìm thấy mật khẩu'
-            ]);
+        $username = $request->get('username', '');
+        $password = $request->get('password', '');
+
+        if (empty($username) || empty($password)) {
+            return Response::badRequest('Thông tin đăng nhập không đúng!');
         }
-        if ($password === env('PWD_ADMIN_DASHBOARD')) {
-            $keySession = config('admin.key_session', '');
-            session()->put($keySession, '1');
-            return Response::success([
-                'message' => 'Đăng nhập thành công',
-            ]);
+
+        $credentials = [
+            'username' => $username,
+            'password' => $password
+        ];
+
+        if (Auth::attempt($credentials)) {
+            $request->session()->regenerate();
+            return Response::success('Đăng nhập thành công');
         }
-        if ($password === env('PWD_ADMIN_WITHDRAW')) {
-            $keySession = config('admin.key_session_withdraw', '');
-            session()->put($keySession, '1');
-            return Response::success([
-                'message' => 'Đăng nhập thành công',
-                'next' => '/w'
-            ]);
-        }
-        return Response::badRequest([
-            'message' => 'Mật khẩu không chính xác'
-        ]);
+ 
+        return Response::badRequest('Thông tin đăng nhập không đúng!');
     }
 
     public function logout(): RedirectResponse
     {
-        $keySession = config('admin.key_session', '');
-        session()->remove($keySession);
+        Auth::logout();
         return redirect()->to('/auth0/login');
     }
 }

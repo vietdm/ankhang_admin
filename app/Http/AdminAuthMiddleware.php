@@ -8,7 +8,7 @@ use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
 use Symfony\Component\HttpFoundation\Response;
 
-class AdminWithdrawAuthMiddleware
+class AdminAuthMiddleware
 {
     /**
      * @throws ContainerExceptionInterface
@@ -16,11 +16,11 @@ class AdminWithdrawAuthMiddleware
      */
     public function handle(Request $request, Closure $next): Response
     {
-        $keySession = config('admin.key_session_withdraw', '');
+        $keySession = config('admin.key_session', '');
         $status = session()->get($keySession, '0');
 
         if ($status === '0') {
-            return redirect()->to('/');
+            return redirect()->to('/auth0/login?next=' . urlencode($request->url()));
         }
 
         return $next($request);
