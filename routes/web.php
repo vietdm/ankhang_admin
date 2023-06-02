@@ -18,7 +18,7 @@ Route::middleware('admin.auth')->group(function () {
     Route::get('auth0/logout', fn () => redirect()->to('/'));
     Route::post('auth0/logout', [AuthController::class, 'logout']);
 
-    Route::prefix('dashboard')->group(function() {
+    Route::prefix('dashboard')->group(function () {
         Route::get('bonus', [DashboardController::class, 'bonus']);
     });
 
