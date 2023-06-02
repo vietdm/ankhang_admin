@@ -21,7 +21,7 @@
     <div class="row gutters-tiny invisible" data-toggle="appear">
         <div class="col-12">
             <div class="alert alert-secondary d-flex justify-content-between">
-                <h3 class="mb-0 text-primary">Danh sách mua hàng</h3>
+                <h3 class="mb-0 text-primary">{{ $titleTable ?? 'Danh sách mua hàng' }}</h3>
                 <div class="area-export d-flex">
                     <select name="export_type" id="export_type" class="form-control">
                         <option value="all" selected>Tất cả</option>

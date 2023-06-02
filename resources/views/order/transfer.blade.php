@@ -1,4 +1,7 @@
 @extends('order.layout')
+@php
+    $titleTable = 'Đơn hàng cần vận chuyển'
+@endphp
 @section('table-data')
     <div class="block block-order-transfer">
         <ul class="nav nav-tabs nav-tabs-block" data-toggle="tabs" role="tablist">

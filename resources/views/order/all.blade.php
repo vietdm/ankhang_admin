@@ -1,4 +1,7 @@
 @extends('order.layout')
+@php
+    $titleTable = 'Toàn bộ đơn hàng'
+@endphp
 @section('table-data')
 <div class="position-relative">
     <table id="table-order" class="table table-bordered table-responsive table-striped table-vcenter js-dataTable-full">
