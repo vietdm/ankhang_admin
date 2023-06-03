@@ -18,13 +18,21 @@ function convert_vi_to_en($str): array|string|null
     return preg_replace("/(Đ)/", "D", $str);
 }
 
-function json_validator($data) {
+function json_validator($data)
+{
     if (!empty($data)) {
         return is_string($data) && is_array(json_decode($data, true));
     }
     return false;
 }
 
-function admin() {
+function validateDate($date, $format = 'Y-m-d H:i:s')
+{
+    $d = DateTime::createFromFormat($format, $date);
+    return $d && $d->format($format) == $date;
+}
+
+function admin()
+{
     return auth()->user();
 }

@@ -15,11 +15,13 @@ Route::middleware('admin.notauth')->group(function () {
 
 Route::middleware('admin.auth')->group(function () {
     Route::get('/', [DashboardController::class, 'home']);
+    Route::post('/get-dashboard', [DashboardController::class, 'getDashboard']);
     Route::get('auth0/logout', fn () => redirect()->to('/'));
     Route::post('auth0/logout', [AuthController::class, 'logout']);
 
     Route::prefix('dashboard')->group(function () {
         Route::get('bonus', [DashboardController::class, 'bonus']);
+        Route::get('export', [DashboardController::class, 'export']);
     });
 
     Route::middleware('admin.role:confirm_order')->group(function () {

@@ -186,16 +186,16 @@ export default class Helpers {
      */
     static coreToggleClass() {
         jQuery('[data-toggle="class-toggle"]:not(.js-class-toggle-enabled)')
-                .add('.js-class-toggle:not(.js-class-toggle-enabled)')
-                .on('click.cb.helpers.core', e => {
-            let el = jQuery(e.currentTarget);
+            .add('.js-class-toggle:not(.js-class-toggle-enabled)')
+            .on('click.cb.helpers.core', e => {
+                let el = jQuery(e.currentTarget);
 
-            // Add .js-class-toggle-enabled class to tag it as activated and then blur it
-            el.addClass('js-class-toggle-enabled').blur();
+                // Add .js-class-toggle-enabled class to tag it as activated and then blur it
+                el.addClass('js-class-toggle-enabled').blur();
 
-            // Toggle class
-            jQuery(el.data('target').toString()).toggleClass(el.data('class').toString());
-        });
+                // Toggle class
+                jQuery(el.data('target').toString()).toggleClass(el.data('class').toString());
+            });
     }
 
     /*
@@ -214,11 +214,11 @@ export default class Helpers {
             e.stopPropagation();
 
             // Set variables
-            let lHeader         = jQuery('#page-header');
-            let el              = jQuery(e.currentTarget);
-            let elTarget        = el.data('target') || el.attr('href');
-            let elSpeed         = el.data('speed') || 1000;
-            let headerHeight    = (lHeader.length && jQuery('#page-container').hasClass('page-header-fixed')) ? lHeader.outerHeight() : 0;
+            let lHeader = jQuery('#page-header');
+            let el = jQuery(e.currentTarget);
+            let elTarget = el.data('target') || el.attr('href');
+            let elSpeed = el.data('speed') || 1000;
+            let headerHeight = (lHeader.length && jQuery('#page-container').hasClass('page-header-fixed')) ? lHeader.outerHeight() : 0;
 
             // Add .js-scroll-to-enabled class to tag it as activated
             el.addClass('js-scroll-to-enabled');
@@ -245,9 +245,9 @@ export default class Helpers {
         let el = jQuery('.js-year-copy:not(.js-year-copy-enabled)');
 
         if (el.length > 0) {
-            let date        = new Date();
-            let curYear     = date.getFullYear();
-            let baseYear    = (el.html().length > 0) ? el.html() : curYear;
+            let date = new Date();
+            let curYear = date.getFullYear();
+            let baseYear = (el.html().length > 0) ? el.html() : curYear;
 
             // Add .js-scroll-to-enabled class to tag it as activated and set the correct year
             el.addClass('js-year-copy-enabled').html(
@@ -269,18 +269,18 @@ export default class Helpers {
     static coreAppear() {
         // Add a specific class on elements (when they become visible on scrolling)
         jQuery('[data-toggle="appear"]:not(.js-appear-enabled)').each((index, element) => {
-            let windowW     = Tools.getWidth();
-            let el          = jQuery(element);
-            let elCssClass  = el.data('class') || 'animated fadeIn';
-            let elOffset    = el.data('offset') || 0;
-            let elTimeout   = (windowW < 992) ? 0 : (el.data('timeout') ? el.data('timeout') : 0);
+            let windowW = Tools.getWidth();
+            let el = jQuery(element);
+            let elCssClass = el.data('class') || 'animated fadeIn';
+            let elOffset = el.data('offset') || 0;
+            let elTimeout = (windowW < 992) ? 0 : (el.data('timeout') ? el.data('timeout') : 0);
 
             // Add .js-appear-enabled class to tag it as activated and init it
             el.addClass('js-appear-enabled').appear(() => {
                 setTimeout(() => {
                     el.removeClass('invisible').addClass(elCssClass);
                 }, elTimeout);
-            }, {accY: elOffset});
+            }, { accY: elOffset });
         });
     }
 
@@ -297,9 +297,9 @@ export default class Helpers {
     static coreAppearCountTo() {
         // Init counter functionality
         jQuery('[data-toggle="countTo"]:not(.js-count-to-enabled)').each((index, element) => {
-            let el         = jQuery(element);
-            let elAfter    = el.data('after');
-            let elBefore   = el.data('before');
+            let el = jQuery(element);
+            let elAfter = el.data('after');
+            let elBefore = el.data('before');
 
             // Add .js-count-to-enabled class to tag it as activated and init it
             el.addClass('js-count-to-enabled').appear(() => {
@@ -307,7 +307,7 @@ export default class Helpers {
                     speed: el.data('speed') || 1500,
                     refreshInterval: el.data('refresh-interval') || 15,
                     onComplete: () => {
-                        if(elAfter) {
+                        if (elAfter) {
                             el.html(el.html() + elAfter);
                         } else if (elBefore) {
                             el.html(elBefore + el.html());
@@ -353,17 +353,17 @@ export default class Helpers {
                     ripple = el.children('.' + cssClass);
 
                     // If the ripple element doesn't have dimensions, set them accordingly
-                    if(!ripple.height() && !ripple.width()) {
+                    if (!ripple.height() && !ripple.width()) {
                         d = Math.max(el.outerWidth(), el.outerHeight());
-                        ripple.css({height: d, width: d});
+                        ripple.css({ height: d, width: d });
                     }
 
                     // Get coordinates for our ripple element
-                    x = e.pageX - el.offset().left - ripple.width()/2;
-                    y = e.pageY - el.offset().top - ripple.height()/2;
+                    x = e.pageX - el.offset().left - ripple.width() / 2;
+                    y = e.pageY - el.offset().top - ripple.height() / 2;
 
                     // Position the ripple element and add the class .animate to it
-                    ripple.css({top: y + 'px', left: x + 'px'}).addClass('animate');
+                    ripple.css({ top: y + 'px', left: x + 'px' }).addClass('animate');
                 });
         });
     }
@@ -380,12 +380,12 @@ export default class Helpers {
      ********************************************************************************************
      */
 
-     /*
-      * Print Page functionality
-      *
-      * Helpers.run('print-page');
-      *
-      */
+    /*
+     * Print Page functionality
+     *
+     * Helpers.run('print-page');
+     *
+     */
     static print() {
         // Store all #page-container classes
         let lPage = jQuery('#page-container');
@@ -422,14 +422,14 @@ export default class Helpers {
             // When a row is clicked in tbody.js-table-sections-header
             jQuery('.js-table-sections-header > tr', table).on('click.cb.helpers', e => {
                 if (e.target.type !== 'checkbox'
-                        && e.target.type !== 'button'
-                        && e.target.tagName.toLowerCase() !== 'a'
-                        && !jQuery(e.target).parent('a').length
-                        && !jQuery(e.target).parent('button').length
-                        && !jQuery(e.target).parent('.custom-control').length
-                        && !jQuery(e.target).parent('label').length) {
-                    let row    = jQuery(e.currentTarget);
-                    let tbody  = row.parent('tbody');
+                    && e.target.type !== 'button'
+                    && e.target.tagName.toLowerCase() !== 'a'
+                    && !jQuery(e.target).parent('a').length
+                    && !jQuery(e.target).parent('button').length
+                    && !jQuery(e.target).parent('.custom-control').length
+                    && !jQuery(e.target).parent('label').length) {
+                    let row = jQuery(e.currentTarget);
+                    let tbody = row.parent('tbody');
 
                     if (!tbody.hasClass('show')) {
                         jQuery('tbody', table).removeClass('show table-active');
@@ -475,7 +475,7 @@ export default class Helpers {
             // When a checkbox is clicked in tbody
             jQuery('tbody input:checkbox, tbody input + label', table).on('click.cb.helpers', e => {
                 let checkbox = jQuery(e.currentTarget);
-                let checkedStatus  = checkbox.prop('checked');
+                let checkedStatus = checkbox.prop('checked');
 
                 if (!checkedStatus) {
                     jQuery('thead input:checkbox', table).prop('checked', false);
@@ -491,14 +491,14 @@ export default class Helpers {
             // When a row is clicked in tbody
             jQuery('tbody > tr', table).on('click.cb.helpers', e => {
                 if (e.target.type !== 'checkbox'
-                        && e.target.type !== 'button'
-                        && e.target.tagName.toLowerCase() !== 'a'
-                        && !jQuery(e.target).parent('a').length
-                        && !jQuery(e.target).parent('button').length
-                        && !jQuery(e.target).parent('.custom-control').length
-                        && !jQuery(e.target).parent('label').length) {
-                    let checkbox       = jQuery('input:checkbox', e.currentTarget);
-                    let checkedStatus  = checkbox.prop('checked');
+                    && e.target.type !== 'button'
+                    && e.target.tagName.toLowerCase() !== 'a'
+                    && !jQuery(e.target).parent('a').length
+                    && !jQuery(e.target).parent('button').length
+                    && !jQuery(e.target).parent('.custom-control').length
+                    && !jQuery(e.target).parent('label').length) {
+                    let checkbox = jQuery('input:checkbox', e.currentTarget);
+                    let checkedStatus = checkbox.prop('checked');
 
                     checkbox.prop('checked', !checkedStatus).change();
                     this.tableToolscheckRow(checkbox, !checkedStatus);
@@ -537,8 +537,8 @@ export default class Helpers {
     static contentFilter() {
         // Content Filtering init (with .js-filter class)
         jQuery('.js-filter:not(.js-filter-enabled)').each((index, element) => {
-            let el          = jQuery(element);
-            let filterNav   = jQuery('.nav-pills', el);
+            let el = jQuery(element);
+            let filterNav = jQuery('.nav-pills', el);
             let filterLinks = jQuery('a[data-category-link]', el);
             let filterItems = jQuery('[data-category]', el);
             let filterSpeed = el.data('speed') || 200;
@@ -568,8 +568,8 @@ export default class Helpers {
             // Add number of items to the links if enabled by adding data-numbers="true" to the main element
             if (el.data('numbers')) {
                 filterLinks.each((index, element) => {
-                    let filterLink  = jQuery(element);
-                    let filterCat   = filterLink.data('category-link');
+                    let filterLink = jQuery(element);
+                    let filterCat = filterLink.data('category-link');
 
                     // Add number of items to this category link
                     if (filterCat === 'all') {
@@ -608,7 +608,7 @@ export default class Helpers {
                     } else {
                         if (filterItems.filter(':visible').length) {
                             filterItems.filter(':visible').fadeOut(filterSpeed, () => {
-                                filterItems .filter('[data-category="' + filterCat + '"]') .fadeIn(filterSpeed);
+                                filterItems.filter('[data-category="' + filterCat + '"]').fadeIn(filterSpeed);
                             });
                         } else {
                             filterItems.filter('[data-category="' + filterCat + '"]').fadeIn(filterSpeed);
@@ -654,7 +654,7 @@ export default class Helpers {
                 distance: el.data('distance') || '0',
                 alwaysVisible: el.data('always-visible') ? true : false,
                 railVisible: el.data('rail-visible') ? true : false,
-                railColor: el.data('rail-color') ||'#999',
+                railColor: el.data('rail-color') || '#999',
                 railOpacity: el.data('rail-opacity') || .3
             });
         });
@@ -733,7 +733,7 @@ export default class Helpers {
     static ckeditor() {
         // Init inline text editor
         if (jQuery('#js-ckeditor-inline:not(.js-ckeditor-inline-enabled)').length) {
-            jQuery('#js-ckeditor-inline').attr('contenteditable','true');
+            jQuery('#js-ckeditor-inline').attr('contenteditable', 'true');
             CKEDITOR.inline('js-ckeditor-inline');
 
             // Add .js-ckeditor-inline-enabled class to tag it as activated
@@ -861,7 +861,7 @@ export default class Helpers {
     static tagsInputs() {
         // Init Tags Inputs (with .js-tags-input class)
         jQuery('.js-tags-input:not(.js-tags-input-enabled)').each((index, element) => {
-           var el = jQuery(element);
+            var el = jQuery(element);
 
             // Add .js-tags-input-enabled class to tag it as activated and init it
             el.addClass('js-tags-input-enabled').tagsInput({
@@ -973,10 +973,10 @@ export default class Helpers {
 
                     // Create notification
                     jQuery.notify({
-                            icon: el.data('icon') || '',
-                            message: el.data('message'),
-                            url: el.data('url') || ''
-                        },
+                        icon: el.data('icon') || '',
+                        message: el.data('message'),
+                        url: el.data('url') || ''
+                    },
                         {
                             element: 'body',
                             type: el.data('type') || 'info',
@@ -1002,10 +1002,10 @@ export default class Helpers {
         } else {
             // Create notification
             jQuery.notify({
-                    icon: options.icon || '',
-                    message: options.message,
-                    url: options.url || ''
-                },
+                icon: options.icon || '',
+                message: options.message,
+                url: options.url || ''
+            },
                 {
                     element: options.element || 'body',
                     type: options.type || 'info',
@@ -1053,7 +1053,7 @@ export default class Helpers {
                 handle: '.draggable-handler',
                 placeholder: 'draggable-placeholder',
                 tolerance: 'pointer',
-                start: function(e, ui){
+                start: function (e, ui) {
                     ui.placeholder.css({
                         'height': ui.item.outerHeight(),
                         'margin-bottom': ui.item.css('margin-bottom')
