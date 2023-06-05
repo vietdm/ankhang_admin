@@ -17,9 +17,6 @@
             <li>
                 <a href="/dashboard/bonus" class="{{ $activeWhen('/dashboard/bonus') }}">Hoa hồng</a>
             </li>
-            <li>
-                <a href="#">AKG</a>
-            </li>
         </ul>
     </li>
     @if (admin()->allow('all_order'))

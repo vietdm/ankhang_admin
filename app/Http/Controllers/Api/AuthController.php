@@ -308,7 +308,7 @@ class AuthController extends Controller
         $parent = Users::with(['user_money'])->whereUsername($user->present_username)->first();
         if ($parent) {
             $totalAkgPoint = Configs::get('total_akg', 0, Format::Double);
-            if ($parent->total_pay === 0) {
+            if ($parent->total_buy === 0) {
                 if ($totalAkgPoint >= 1) {
                     $parent->user_money->akg_point += 1;
                     $parent->user_money->save();

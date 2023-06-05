@@ -12,6 +12,7 @@
             <div class="form-group">
                 <label for="point">Số điểm</label>
                 <input type="number" class="form-control" id="point" autocomplete="off">
+                <span class="point_preview"></span>
             </div>
             <div class="form-group">
                 <label for="point" class="d-block">Nội dung chuyển (chọn nội dung có sẵn hoặc điền nội dung mới)</label>
@@ -31,7 +32,16 @@
 @endsection
 @section('script')
     <script src="{{ asset('assets/js/alert.js?i=1') }}" type="module"></script>
+    <script src="{{ asset('assets/js/common.js?i=1') }}" type="module"></script>
     <script>
+        $('#point').on('input', function() {
+            const value = $(this).val().trim();
+            if (value == '') {
+                $('.point_preview').text('');
+            } else {
+                $('.point_preview').text(formatMoney(parseInt(value)));
+            }
+        })
         $('.btn-transfer').on('click', function() {
             const username = $('#username').val().trim();
             if (username == '') {
@@ -52,8 +62,21 @@
                 return AlertCommon.error('Hãy chọn một nội dung chuyển điểm hoặc nhập nội dung mới');
             }
 
-
-            AlertCommon.success('dsd');
+            $(this).prop('disabled', true);
+            Common.post('/akg/transfer', {
+                    username,
+                    point,
+                    content_select,
+                    content_new
+                })
+                .then((result) => {
+                    AlertCommon.success(result.message);
+                    setTimeout(() => window.location.reload(), 500);
+                })
+                .catch((error) => {
+                    AlertCommon.error(error.message);
+                    $(this).prop('disabled', false);
+                });
         });
     </script>
 @endsection

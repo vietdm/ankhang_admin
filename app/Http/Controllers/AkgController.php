@@ -34,7 +34,7 @@ class AkgController extends Controller
 
     public function transfer()
     {
-        $types = TotalAkgLog::listType(['mua_hang']);
+        $types = TotalAkgLog::listType(['mua_hang', 'su_kien_1905']);
         return view('akg.transfer', compact('types'));
     }
 
@@ -54,7 +54,7 @@ class AkgController extends Controller
             return Response::badRequest('Username không tồn tại!');
         }
 
-        $types = TotalAkgLog::listType(['mua_hang']);
+        $types = TotalAkgLog::listType(['mua_hang', 'su_kien_1905']);
         $type = $content = '';
 
         if (!empty($contentSelect)) {
