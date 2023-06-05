@@ -161,7 +161,8 @@ class OrderController extends Controller
         return Excel::download(new OrdersExport($type), "order_export_$date.xlsx");
     }
 
-    public function listOrderConfirmed() {
+    public function listOrderConfirmed()
+    {
         $orders = Orders::with(['user', 'product', 'combo.product'])->whereStatus(1)->orderByDesc('id')->get();
         $html = view('order.table.transfer', compact('orders'))->render();
         return Response::success([
@@ -169,7 +170,8 @@ class OrderController extends Controller
         ]);
     }
 
-    public function listOrderDeliving() {
+    public function listOrderDeliving()
+    {
         $orders = Orders::with(['user', 'product', 'combo.product'])->whereStatus(2)->orderByDesc('id')->get();
         $html = view('order.table.transfer', compact('orders'))->render();
         return Response::success([

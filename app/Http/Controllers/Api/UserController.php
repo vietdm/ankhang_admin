@@ -412,7 +412,7 @@ text;
 
     public function bonusHistory(Request $request)
     {
-        $histories = HistoryBonus::with(['user_from'])->whereUserId($request->user->id)->orderByDesc('date_bonus')->get();
+        $histories = HistoryBonus::with(['user_from'])->whereUserId($request->user->id)->orderByDesc('created_at')->get();
         return Response::success([
             'histories' => $histories
         ]);

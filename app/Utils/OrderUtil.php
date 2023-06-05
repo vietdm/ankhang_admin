@@ -68,6 +68,7 @@ class OrderUtil
                 Users::LEVEL_GIAM_DOC,
                 Users::LEVEL_GIAM_DOC_CAP_CAO,
             ])) return;
+
             $levelCalc = Users::LEVEL_CHUYEN_VIEN;
             $bonus = $pricePayed * 0.04;
             $user->user_money->money_bonus += $bonus;
@@ -90,6 +91,7 @@ class OrderUtil
                 Users::LEVEL_GIAM_DOC,
                 Users::LEVEL_GIAM_DOC_CAP_CAO,
             ])) return;
+
             $levelCalc = Users::LEVEL_TRUONG_PHONG;
             $percent = 0.08 - $percentLevel;
             $percentLevel = 0.08;
@@ -113,11 +115,6 @@ class OrderUtil
                 Users::LEVEL_GIAM_DOC_CAP_CAO,
             ])) return;
 
-            UserUtil::getTotalSale($user->username, $totalSale);
-            $totalSale += $user->total_buy;
-
-            if ($totalSale < 1000000000) return;
-
             $levelCalc = Users::LEVEL_PHO_GIAM_DOC;
             $percent = 0.12 - $percentLevel;
             $percentLevel = 0.12;
@@ -140,11 +137,6 @@ class OrderUtil
                 Users::LEVEL_GIAM_DOC_CAP_CAO,
             ])) return;
 
-            UserUtil::getTotalSale($user->username, $totalSale);
-            $totalSale += $user->total_buy;
-
-            if ($totalSale < 3000000000) return;
-
             $levelCalc = Users::LEVEL_GIAM_DOC;
             $percent = 0.14 - $percentLevel;
             $percentLevel = 0.14;
@@ -163,11 +155,6 @@ class OrderUtil
         }
         if ($user->level == Users::LEVEL_GIAM_DOC_CAP_CAO) {
             if ($levelCalc == Users::LEVEL_GIAM_DOC_CAP_CAO) return;
-
-            UserUtil::getTotalSale($user->username, $totalSale);
-            $totalSale += $user->total_buy;
-
-            if ($totalSale < 3000000000) return;
 
             $levelCalc = Users::LEVEL_GIAM_DOC_CAP_CAO;
             $percent = 0.16 - $percentLevel;

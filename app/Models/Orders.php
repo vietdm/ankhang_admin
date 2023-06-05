@@ -136,30 +136,16 @@ class Orders extends Model
                     $percentLevel
                 );
 
-                //trả thưởng cho P3
-                $userParentP3 = Users::with(['user_money'])->whereUsername($userParentP2->present_username)->first();
-                if ($userParentP3) {
-                    OrderUtil::sendBonus(
-                        $userParentP3,
+                //Trả thưởng cấp bậc từ P3 trở lên
+                if (!empty($userParentP2->present_username)) {
+                    OrderUtil::loopSendBonusLevel(
+                        $userParentP2->present_username,
                         $userOrder,
                         $pricePayed,
-                        'F3',
                         $totalBonusPercent,
                         $levelCalc,
                         $percentLevel
                     );
-
-                    //Trả thưởng cấp bậc từ P4 trở lên
-                    if (!empty($userParentP3->present_username)) {
-                        OrderUtil::loopSendBonusLevel(
-                            $userParentP3->present_username,
-                            $userOrder,
-                            $pricePayed,
-                            $totalBonusPercent,
-                            $levelCalc,
-                            $percentLevel
-                        );
-                    }
                 }
             }
         }
