@@ -19,30 +19,29 @@
             </li>
         </ul>
     </li>
-    @if (admin()->allow('all_order'))
-        <li>
-            <a href="/order/all" class="{{ $activeWhen('/order/all') }}">
-                <i class="si si-organization"></i>
-                <span class="sidebar-mini-hide">Tất cả đơn hàng</span>
-            </a>
-        </li>
-    @endif
-    @if (admin()->allow('confirm_order'))
-        <li>
-            <a href="/order/confirm" class="{{ $activeWhen('/order/confirm') }}">
-                <i class="si si-basket-loaded"></i>
-                <span class="sidebar-mini-hide">Xác nhận đơn hàng</span>
-            </a>
-        </li>
-    @endif
-    @if (admin()->allow('transfer_order'))
-        <li>
-            <a href="/order/transfer" class="{{ $activeWhen('/order/transfer') }}">
-                <i class="si si-share-alt"></i>
-                <span class="sidebar-mini-hide">Vận chuyển đơn hàng</span>
-            </a>
-        </li>
-    @endif
+    <li class="{{ str_starts_with($path, '/order') ? 'open' : '' }}">
+        <a class="nav-submenu" data-toggle="nav-submenu" href="#">
+            <i class="si si-organization"></i>
+            <span class="sidebar-mini-hide">Đơn hàng</span>
+        </a>
+        <ul>
+            @if (admin()->allow('all_order'))
+                <li>
+                    <a href="/order/all" class="{{ $activeWhen('/order/all') }}">Tất cả đơn hàng</a>
+                </li>
+            @endif
+            @if (admin()->allow('confirm_order'))
+                <li>
+                    <a href="/order/confirm" class="{{ $activeWhen('/order/confirm') }}">Xác nhận đơn hàng</a>
+                </li>
+            @endif
+            @if (admin()->allow('transfer_order'))
+                <li>
+                    <a href="/order/transfer" class="{{ $activeWhen('/order/transfer') }}">Vận chuyển đơn hàng</a>
+                </li>
+            @endif
+        </ul>
+    </li>
     @if (admin()->allow('confirm_withdraw'))
         <li>
             <a href="/withdraw/confirm" class="{{ $activeWhen('/withdraw/confirm') }}">
