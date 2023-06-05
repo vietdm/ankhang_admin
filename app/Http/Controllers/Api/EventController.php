@@ -51,7 +51,7 @@ class EventController extends Controller
             }
             DB::commit();
         } catch (Exception | PDOException $e) {
-            logger($e->getMessage());
+            ReportHandle($e);
             DB::rollBack();
         }
 

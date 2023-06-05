@@ -128,6 +128,7 @@ class MoneyController extends Controller
                 'message' => 'Chuyển điểm thành công thành công!'
             ]);
         } catch (Exception | PDOException $e) {
+            ReportHandle($e);
             DB::rollBack();
             return Response::badRequest([
                 'message' => 'Có lỗi khi chuyển điểm. Vui lòng liên hệ quản trị viên!'

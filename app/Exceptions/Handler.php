@@ -26,11 +26,7 @@ class Handler extends ExceptionHandler
 
     public function report(Throwable $e)
     {
-        logger($e);
-
-        if (Configs::getDouble('allow_put_telegram', false)) {
-            SendErrorToTelegram::dispatch($e->getMessage());
-        }
+        ReportHandle($e);
     }
 
     /**

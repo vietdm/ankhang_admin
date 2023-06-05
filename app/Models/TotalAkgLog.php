@@ -13,4 +13,18 @@ class TotalAkgLog extends Model
 
     const TYPE_GIOI_THIEU = 'gioi_thieu';
     const TYPE_MUA_HANG = 'mua_hang';
+
+    public function user()
+    {
+        return $this->belongsTo(Users::class, 'user_id', 'id');
+    }
+
+    public static function listType($ignore = [])
+    {
+        $query = self::select(['type', 'content'])->groupBy(['type', 'content']);
+        foreach ($ignore as $type) {
+            $query->where('type', '!=', $type);
+        }
+        return $query->get()->toArray();
+    }
 }

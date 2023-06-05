@@ -35,7 +35,7 @@ class Telegram
 
             return $arr_body->ok;
         } catch (Exception $e) {
-            logger($e->getMessage());
+            ReportHandle($e);
             return false;
         }
     }

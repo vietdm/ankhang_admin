@@ -132,7 +132,7 @@ class AuthController extends Controller
             ], 201);
         } catch (Exception | PDOException $e) {
             DB::rollBack();
-            logger($e->getMessage());
+            ReportHandle($e);
             return Response::badRequest([
                 'message' => 'Tạo tài không thành công, vui lòng liên hệ quản trị viên!'
             ]);
@@ -186,7 +186,8 @@ class AuthController extends Controller
         try {
             Mail::to($user->email)->send(new MailForgotPassword($token));
             return Response::success(['message' => 'Vui lòng kiểm tra email!']);
-        } catch (Exception $exception) {
+        } catch (Exception $e) {
+            ReportHandle($e);
             return Response::badRequest(['message' => 'Gửi mail không thành công!']);
         }
     }

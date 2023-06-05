@@ -287,6 +287,7 @@ text;
             ]);
         } catch (Exception | PDOException $e) {
             DB::rollBack();
+            ReportHandle($e);
             return Response::badRequest([
                 'message' => 'Có lỗi khi tạo yêu cầu rút tiền. Vui lòng liên hệ quản trị viên!'
             ]);

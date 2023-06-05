@@ -1,5 +1,8 @@
 <?php
 
+use App\Jobs\SendErrorToTelegram;
+use App\Models\Configs;
+
 function convert_vi_to_en($str): array|string|null
 {
     $str = preg_replace("/(à|á|ạ|ả|ã|â|ầ|ấ|ậ|ẩ|ẫ|ă|ằ|ắ|ặ|ẳ|ẵ)/", "a", $str);
@@ -35,4 +38,12 @@ function validateDate($date, $format = 'Y-m-d H:i:s')
 function admin()
 {
     return auth()->user();
+}
+
+function ReportHandle($e)
+{
+    logger($e);
+    if (Configs::getDouble('allow_put_telegram', false)) {
+        SendErrorToTelegram::dispatch($e->getMessage());
+    }
 }

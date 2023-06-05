@@ -1,5 +1,9 @@
 @php $path = request()->getPathInfo() @endphp
-@php $activeWhen = function($p) use ($path) { return $p == $path ? 'active' : ''; } @endphp
+@php
+    $activeWhen = function ($p) use ($path) {
+        return $p == $path ? 'active' : '';
+    };
+@endphp
 <ul class="nav-main">
     <li class="{{ str_starts_with($path, '/dashboard') || $path == '/' ? 'open' : '' }}">
         <a class="nav-submenu" data-toggle="nav-submenu" href="#">
@@ -48,6 +52,22 @@
                 <i class="si si-wallet"></i>
                 <span class="sidebar-mini-hide">Rút tiền</span>
             </a>
+        </li>
+    @endif
+    @if (admin()->allow('akg'))
+        <li class="{{ str_starts_with($path, '/akg') ? 'open' : '' }}">
+            <a class="nav-submenu" data-toggle="nav-submenu" href="#">
+                <i class="si si-wallet"></i>
+                <span class="sidebar-mini-hide">Điểm AKG</span>
+            </a>
+            <ul>
+                <li>
+                    <a href="/akg/all" class="{{ $activeWhen('/akg/all') }}">Tổng quan</a>
+                </li>
+                <li>
+                    <a href="/akg/transfer" class="{{ $activeWhen('/akg/transfer') }}">Chuyển AKG</a>
+                </li>
+            </ul>
         </li>
     @endif
     @if (admin()->allow('settings'))

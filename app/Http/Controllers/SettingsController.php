@@ -45,7 +45,7 @@ class SettingsController extends Controller
             DB::commit();
             return Response::success('Cập nhật thành công!');
         } catch (Exception | PDOException $e) {
-            logger($e);
+            ReportHandle($e);
             DB::rollBack();
             return Response::badRequest('Có lỗi khi cập nhật quyền. Vui lòng liên hệ quản trị viên!');
         }

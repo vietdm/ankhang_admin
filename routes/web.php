@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AkgController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\HomeController;
@@ -22,6 +23,12 @@ Route::middleware('admin.auth')->group(function () {
     Route::prefix('dashboard')->group(function () {
         Route::get('bonus', [DashboardController::class, 'bonus']);
         Route::get('export', [DashboardController::class, 'export']);
+    });
+
+    Route::prefix('akg')->group(function () {
+        Route::get('all', [AkgController::class, 'all']);
+        Route::get('transfer', [AkgController::class, 'transfer']);
+        Route::post('transfer', [AkgController::class, 'transferPost']);
     });
 
     Route::middleware('admin.role:confirm_order')->group(function () {

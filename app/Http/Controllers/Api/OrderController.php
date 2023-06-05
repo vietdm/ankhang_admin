@@ -130,7 +130,7 @@ class OrderController extends Controller
                 try {
                     $image->move('bank_result', "$newName.$ext");
                 } catch (Exception $e) {
-                    logger($e);
+                    ReportHandle($e);
                     return Response::badRequest([
                         'message' => 'Không thể upload ảnh!'
                     ]);
@@ -194,7 +194,7 @@ class OrderController extends Controller
             DB::commit();
             return Response::success([]);
         } catch (Exception | PDOException $e) {
-            logger($e);
+            ReportHandle($e);
             DB::rollBack();
             return Response::badRequest('Có lỗi khi đặt đơn hàng. Vui lòng liên hệ quản trị viên!');
         }

@@ -14,6 +14,7 @@ class Kernel extends ConsoleKernel
     {
         $schedule->command('value-of-akg:update')->cron('0 0 */3 * *');
         $schedule->command('user:calc-bonus-monthly')->dailyAt('00:00');
+        $schedule->command('app:auto-update-total-akg')->dailyAt('00:00');
     }
 
     /**
@@ -21,7 +22,7 @@ class Kernel extends ConsoleKernel
      */
     protected function commands(): void
     {
-        $this->load(__DIR__.'/Commands');
+        $this->load(__DIR__ . '/Commands');
 
         require base_path('routes/console.php');
     }

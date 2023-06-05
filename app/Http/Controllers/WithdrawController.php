@@ -28,7 +28,7 @@ class WithdrawController extends Controller
             DB::commit();
             return Response::success('Thành công!');
         } catch (Exception | PDOException $e) {
-            logger($e);
+            ReportHandle($e);
             DB::rollBack();
             return Response::badRequest('Không thể xác nhận yêu cầu! Vui lòng thử lại!');
         }
@@ -52,7 +52,7 @@ class WithdrawController extends Controller
             DB::commit();
             return Response::success('Thành công!');
         } catch (Exception | PDOException $e) {
-            logger($e);
+            ReportHandle($e);
             DB::rollBack();
             return Response::badRequest('Không thể hủy yêu cầu! Vui lòng thử lại!');
         }

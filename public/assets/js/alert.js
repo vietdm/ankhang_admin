@@ -31,3 +31,5 @@ export const Alert = {
         });
     }
 }
+
+window.AlertCommon = Alert;

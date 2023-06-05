@@ -36,7 +36,7 @@ class EventUtil
             DB::commit();
             return true;
         } catch (Exception | PDOException $e) {
-            logger($e->getMessage());
+            ReportHandle($e);
             DB::rollBack();
             return false;
         }

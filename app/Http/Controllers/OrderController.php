@@ -72,7 +72,7 @@ class OrderController extends Controller
             DB::commit();
             return Response::success('Thành công!');
         } catch (Exception | PDOException $e) {
-            logger($e);
+            ReportHandle($e);
             DB::rollBack();
             return Response::badRequest('Không thể xác nhận đơn hàng! Vui lòng thử lại!');
         }
@@ -91,7 +91,7 @@ class OrderController extends Controller
             DB::commit();
             return Response::success('Thành công!');
         } catch (Exception | PDOException $e) {
-            logger($e);
+            ReportHandle($e);
             DB::rollBack();
             return Response::badRequest('Không thể hủy đơn hàng! Vui lòng thử lại!');
         }
@@ -110,7 +110,7 @@ class OrderController extends Controller
             DB::commit();
             return Response::success('Thành công!');
         } catch (Exception | PDOException $e) {
-            logger($e);
+            ReportHandle($e);
             DB::rollBack();
             return Response::badRequest('Không thể xác nhận đang vận chuyên đơn hàng! Vui lòng thử lại!');
         }
@@ -129,7 +129,7 @@ class OrderController extends Controller
             DB::commit();
             return Response::success('Thành công!');
         } catch (Exception | PDOException $e) {
-            logger($e);
+            ReportHandle($e);
             DB::rollBack();
             return Response::badRequest('Không thể xác nhận hoàn thành đơn hàng! Vui lòng thử lại!');
         }
@@ -148,7 +148,7 @@ class OrderController extends Controller
             DB::commit();
             return Response::success('Thành công!');
         } catch (Exception | PDOException $e) {
-            logger($e);
+            ReportHandle($e);
             DB::rollBack();
             return Response::badRequest('Không thể xác nhận thanh toán! Vui lòng thử lại!');
         }

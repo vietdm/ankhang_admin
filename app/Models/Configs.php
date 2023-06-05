@@ -66,4 +66,9 @@ class Configs extends Model
     {
         return self::set($name, $value, Format::Integer);
     }
+
+    public static function setBoolean($name, $value)
+    {
+        return self::set($name, $value, Format::Boolean);
+    }
 }
