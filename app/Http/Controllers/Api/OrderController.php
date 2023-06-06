@@ -116,7 +116,7 @@ class OrderController extends Controller
             }
 
             if (!$ignoreImage) {
-                if (!$request->has('image')) {
+                if (!$request->has('image') || $request->file('image') == null) {
                     return Response::badRequest([
                         'message' => 'Bạn chưa chọn ảnh kết quả thanh toán!'
                     ]);
