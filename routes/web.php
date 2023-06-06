@@ -1,5 +1,6 @@
 <?php
 
+use App\Helpers\Telegram;
 use App\Http\Controllers\AkgController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\DashboardController;

@@ -37,7 +37,7 @@
                         <th class="text-center no-sort">Ngày</th>
                         <th class="text-center no-sort">Username</th>
                         <th class="text-center no-sort">Họ Tên</th>
-                        <th class="text-center no-sort">Số điểm</th>
+                        <th class="text-center">Số điểm</th>
                         <th class="text-center no-sort">Nội dung</th>
                     </tr>
                 </thead>

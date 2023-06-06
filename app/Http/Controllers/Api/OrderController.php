@@ -188,7 +188,7 @@ class OrderController extends Controller
                 }
             } else {
                 if (Configs::getBoolean('allow_put_telegram', false) === true) {
-                    Telegram::pushMgs($messageTelegram, Telegram::CHAT_CHECK_STORE);
+                    Telegram::pushMgs($messageTelegram, Telegram::CHAT_CHECK_STORE, Telegram::BOT_TOKEN_REPORT_BUG);
                 }
             }
             DB::commit();
