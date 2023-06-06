@@ -12,12 +12,19 @@ class MoneyUtil
         $userMoney = UserMoney::whereUserId($user->id)->first();
         $rewardPoint = $userMoney->reward_point;
         $cashbackPoint = $userMoney->cashback_point;
+        $productPoint = $userMoney->product_point;
         $pricePay = (float)$priceCheck;
 
         $allowRewardPoint = false;
         $allowCashbackPoint = false;
+        $allowProductPoint = false;
+
         if ($cashbackPoint >= $pricePay) {
             $allowCashbackPoint = true;
+        }
+
+        if ($productPoint >= $pricePay) {
+            $allowProductPoint = true;
         }
 
         if ($user->total_buy > 0) {
@@ -46,7 +53,7 @@ class MoneyUtil
             ],
             'product' => [
                 'point' => $userMoney->product_point,
-                'allow' => $userMoney->product_point <= 0 ? '0' : '1'
+                'allow' => $allowProductPoint === false ? '0' : '1'
             ]
         ];
     }
