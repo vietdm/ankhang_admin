@@ -8,6 +8,7 @@ use App\Helpers\Telegram;
 use App\Models\Configs;
 use App\Models\Orders;
 use App\Models\Products;
+use App\Models\Users;
 use Carbon\Carbon;
 use Exception;
 use Illuminate\Http\JsonResponse;
@@ -16,6 +17,8 @@ use Illuminate\Support\Facades\DB;
 use Maatwebsite\Excel\Facades\Excel;
 use PDOException;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
+use App\Http\Controllers\Api\OrderController as ApiOrderController;
+use App\Http\Requests\OrderRequest;
 
 class OrderController extends Controller
 {
@@ -177,5 +180,18 @@ class OrderController extends Controller
         return Response::success([
             'html' => $html
         ]);
+    }
+
+    public function createOrder()
+    {
+        $products = Products::select(['id', 'title'])->get();
+        $users = Users::select(['id', 'username', 'fullname', 'phone', 'address'])->get();
+        return view('order.create', compact('products', 'users'));
+    }
+
+    public function createOrderPost(OrderRequest $request)
+    {
+        $orderControllerApi = new ApiOrderController();
+        return $orderControllerApi->order($request);
     }
 }

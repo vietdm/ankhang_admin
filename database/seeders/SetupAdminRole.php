@@ -16,6 +16,7 @@ class SetupAdminRole extends Seeder
         'confirm_withdraw'  => 'Xác nhận rút tiền',
         'settings'          => 'Cài đặt hệ thống',
         'akg'               => 'Xem thống kê và cập nhật điểm AKG',
+        'create_order'      => 'Tạo đơn hàng thủ công',
     ];
     public function run(): void
     {

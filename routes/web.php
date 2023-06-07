@@ -52,6 +52,11 @@ Route::middleware('admin.auth')->group(function () {
         Route::get('/order/all', [HomeController::class, 'allOrder']);
     });
 
+    Route::middleware('admin.role:create_order')->group(function () {
+        Route::get('/order/create', [OrderController::class, 'createOrder']);
+        Route::post('/order/create', [OrderController::class, 'createOrderPost']);
+    });
+
     Route::middleware('admin.role:confirm_withdraw')->group(function () {
         Route::get('/withdraw/confirm', [HomeController::class, 'confirmWithdraw']);
         Route::post('/withdraw/{id}/accept', [WithdrawController::class, 'accept']);

@@ -40,6 +40,11 @@
                     <a href="/order/transfer" class="{{ $activeWhen('/order/transfer') }}">Vận chuyển đơn hàng</a>
                 </li>
             @endif
+            @if (admin()->allow('create_order'))
+                <li>
+                    <a href="/order/create" class="{{ $activeWhen('/order/create') }}">Tạo đơn thủ công</a>
+                </li>
+            @endif
         </ul>
     </li>
     @if (admin()->allow('confirm_withdraw'))

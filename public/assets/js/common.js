@@ -27,7 +27,8 @@ export const Common = {
                 }
             });
         });
-    }
+    },
+    alert: Alert
 }
 
 window.Common = Common;

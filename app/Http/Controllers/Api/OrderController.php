@@ -59,11 +59,12 @@ class OrderController extends Controller
                 }
             }
 
-            $token = $request->bearerToken();
-            $payload = JwtHelper::decode($token);
-
-            if ($payload['id'] != $userId) {
-                return Response::badRequest('Giả mạo người khác đặt đơn là hành vi phạm pháp!');
+            if (!$request->has('admin_request') || $request->admin_request !== '1') {
+                $token = $request->bearerToken();
+                $payload = JwtHelper::decode($token);
+                if ($payload['id'] != $userId) {
+                    return Response::badRequest('Giả mạo người khác đặt đơn là hành vi phạm pháp!');
+                }
             }
 
             $user = Users::whereId($userId)->first();
@@ -75,6 +76,12 @@ class OrderController extends Controller
             $quantity = $isComboOrder ? 0 : (int)$requestOrder[0]['quantity'];
 
             $totalPricePay = (int)($request->total_price_pay ?? 0);
+
+            if ($request->has('admin_request') && $request->admin_request === '1') {
+                $ignoreImage = true;
+                $totalPricePay = $totalPrice;
+            }
+
             $isPointPayment = $request->has('point_type');
 
             if ($isPointPayment) {
