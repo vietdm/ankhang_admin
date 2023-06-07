@@ -1,4 +1,4 @@
-import {Alert} from "./alert.js";
+import { Alert } from "./alert.js";
 
 export const Withdraw = {
     accept(id, el) {
@@ -26,6 +26,20 @@ export const Withdraw = {
                 Alert.error(error.responseJSON.message);
             });
         });
+    },
+    openQr(el) {
+        const bankCode = $(el).attr('data-code');
+        const bankAccount = $(el).attr('data-account');
+        const money = $(el).attr('data-money');
+        const username = $(el).attr('data-username');
+        const data = [
+            `amount=${money}`,
+            `addInfo=${username}`
+        ];
+        const url = `https://img.vietqr.io/image/${bankCode}-${bankAccount}-11sAiww.png?${data.join('&')}`;
+        const $modal = $('#modalQrCodePayment');
+        $modal.find('img').attr('src', url);
+        $modal.modal();
     }
 }
 
