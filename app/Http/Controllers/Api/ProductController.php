@@ -12,7 +12,7 @@ class ProductController extends Controller
     public function lists()
     {
         return Response::success([
-            'products' => Products::all()
+            'products' => Products::orderBy('order')->get()
         ]);
     }
 
