@@ -71,6 +71,14 @@
             </ul>
         </li>
     @endif
+    @if (admin()->allow('all'))
+        <li>
+            <a href="/accounts" class="{{ $activeWhen('/accounts') }}">
+                <i class="si si-user"></i>
+                <span class="sidebar-mini-hide">Quản lý tài khoản</span>
+            </a>
+        </li>
+    @endif
     @if (admin()->allow('settings'))
         <li>
             <a href="/settings" class="{{ $activeWhen('/settings') }}">

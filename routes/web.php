@@ -1,6 +1,7 @@
 <?php
 
 use App\Helpers\Telegram;
+use App\Http\Controllers\AccountController;
 use App\Http\Controllers\AkgController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\DashboardController;
@@ -30,6 +31,11 @@ Route::middleware('admin.auth')->group(function () {
         Route::get('all', [AkgController::class, 'all']);
         Route::get('transfer', [AkgController::class, 'transfer']);
         Route::post('transfer', [AkgController::class, 'transferPost']);
+    });
+
+    Route::middleware('admin.role:all')->group(function () {
+        Route::get('/accounts', [AccountController::class, 'accounts']);
+        Route::post('/account/create', [AccountController::class, 'createAccount']);
     });
 
     Route::middleware('admin.role:confirm_order')->group(function () {

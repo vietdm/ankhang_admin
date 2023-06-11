@@ -102,5 +102,5 @@
     <script src="{{ asset('assets/js/plugins/datatables/jquery.dataTables.min.js') }}"></script>
     <script src="{{ asset('assets/js/plugins/datatables/dataTables.bootstrap4.min.js') }}"></script>
     <script src="{{ asset('assets/js/pages/be_tables_datatables.min.js') }}"></script>
-    <script src="{{ asset('assets/js/withdraw.js?i=1') }}" type="module"></script>
+    <script src="{{ asset('assets/js/withdraw.js?i=2') }}" type="module"></script>
 @endsection

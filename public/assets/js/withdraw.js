@@ -34,7 +34,7 @@ export const Withdraw = {
         const username = $(el).attr('data-username');
         const data = [
             `amount=${money}`,
-            `addInfo=${username}`
+            `addInfo=AN KHANG GROUP THANH TOAN THU NHAP`
         ];
         const url = `https://img.vietqr.io/image/${bankCode}-${bankAccount}-11sAiww.png?${data.join('&')}`;
         const $modal = $('#modalQrCodePayment');

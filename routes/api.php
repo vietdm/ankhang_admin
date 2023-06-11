@@ -11,6 +11,7 @@ use App\Http\Controllers\Api\MissionController as ApiMissionController;
 use App\Http\Controllers\Api\BanksController as ApiBanksController;
 use App\Http\Controllers\Api\MoneyController as ApiMoneyController;
 use App\Http\Controllers\Api\EventController as ApiEventController;
+use App\Http\Controllers\Api\KycController as ApiKycController;
 
 Route::post('/auth/login', [ApiAuthController::class, 'login']);
 Route::post('/__/____', [ApiAuthController::class, 'getPhoneByUsername']);
@@ -63,4 +64,6 @@ Route::middleware('api.auth')->group(function () {
 
     Route::post('/user/point/check', [ApiMoneyController::class, 'checkPointPayment']);
     Route::post('/user/can/transfer-akg', [ApiUserController::class, 'checkCanTransferAkg']);
+
+    Route::post('/user/kyc', [ApiKycController::class, 'uploadKyc']);
 });
