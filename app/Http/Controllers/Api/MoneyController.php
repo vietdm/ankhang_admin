@@ -108,6 +108,12 @@ class MoneyController extends Controller
 
         $otpRecord->delete();
 
+        if (!Configs::isAllowTransferAkg()) {
+            return Response::badRequest([
+                'message' => 'Chức năng chuyển điểm AKG đang bị khóa!'
+            ]);
+        }
+
         DB::beginTransaction();
         try {
             $userReceive->user_money->akg_point += $pointSend;

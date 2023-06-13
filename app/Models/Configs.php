@@ -71,4 +71,9 @@ class Configs extends Model
     {
         return self::set($name, $value, Format::Boolean);
     }
+
+    public static function isAllowTransferAkg()
+    {
+        return self::getBoolean('allow_transfer_akg', false) === true;
+    }
 }

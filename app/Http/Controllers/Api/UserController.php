@@ -388,6 +388,12 @@ text;
 
     public function transferAkgSendOtp(Request $request)
     {
+        if (!Configs::isAllowTransferAkg()) {
+            return Response::badRequest([
+                'message' => 'Chức năng chuyển điểm AKG đang bị khóa!'
+            ]);
+        }
+
         $userId = $request->user->id;
         $user = Users::whereId($userId)->first();
         if (!$user) {
