@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Jobs\UpdateTotalBuyOfUserJob;
 use App\Jobs\UpLevelUser;
 use App\Models\Trait\ModelTrait;
 use App\Utils\EventUtil;
@@ -213,5 +214,8 @@ class Orders extends Model
                 EventUtil::joinEventCashback($userOrder);
             }
         }
+
+        //rebuild total buy
+        UpdateTotalBuyOfUserJob::dispatch($userOrder->id)->delay(now()->addSeconds(3));
     }
 }
