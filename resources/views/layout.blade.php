@@ -19,8 +19,9 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="stylesheet"
         href="https://fonts.googleapis.com/css2?family=Mulish:ital,wght@0,200;0,300;0,400;0,500;0,600;0,700;0,800;1,200;1,300;1,400;1,500;1,600;1,700;1,800&display=swap">
+    <link rel="stylesheet" href="{{ asset('assets/css/sweetalert2.min.css') }}">
     <link rel="stylesheet" id="css-main" href="{{ asset('assets/css/codebase.css?i=4') }}">
-    <link rel="stylesheet" id="css-main" href="{{ asset('assets/css/custom.css?i=1') }}">
+    <link rel="stylesheet" href="{{ asset('assets/css/custom.css?i=4') }}">
     @yield('head')
 </head>
 
@@ -136,7 +137,7 @@
 
     <script src="{{ asset('assets/js/codebase.core.min.js') }}"></script>
     <script src="{{ asset('assets/js/codebase.app.min.js') }}"></script>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="{{ asset('assets/js/sweetalert2.min.js') }}"></script>
     <script src="{{ asset('assets/js/plugins/chartjs/Chart.bundle.min.js') }}"></script>
     <script src="{{ asset('assets/js/pages/be_pages_dashboard.min.js') }}"></script>
     <script>

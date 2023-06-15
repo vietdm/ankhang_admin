@@ -23,6 +23,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="stylesheet"
         href="https://fonts.googleapis.com/css2?family=Mulish:ital,wght@0,200;0,300;0,400;0,500;0,600;0,700;0,800;1,200;1,300;1,400;1,500;1,600;1,700;1,800&display=swap">
+    <link rel="stylesheet" href="{{ asset('assets/css/sweetalert2.min.css') }}">
     <link rel="stylesheet" id="css-main" href="{{ asset('assets/css/codebase.css') }}">
 </head>
 
@@ -30,20 +31,23 @@
 
     <div id="page-container" class="main-content-boxed">
         <main id="main-container">
-            <div class="bg-body-dark bg-pattern" style="background-image: url('{{ asset('images/bg-pattern-inverse.png') }}');">
+            <div class="bg-body-dark bg-pattern"
+                style="background-image: url('{{ asset('images/bg-pattern-inverse.png') }}');">
                 <div class="row mx-0 justify-content-center">
                     <div class="hero-static col-lg-6 col-xl-4">
                         <div class="content content-full overflow-hidden">
                             <div class="py-30 text-center">
                                 <div class="link-effect font-w700" style="font-size: 22px; color: #3f9ce8;">
                                     <i class="si si-fire"></i>
-                                    <span class="font-size-xl text-primary-dark">An</span><span class="font-size-xl">Khang</span>
+                                    <span class="font-size-xl text-primary-dark">An</span><span
+                                        class="font-size-xl">Khang</span>
                                 </div>
                                 <h1 class="h4 font-w700 mt-30 mb-10">Chào mừng tới trang quản trị</h1>
                                 <h2 class="h5 font-w400 text-muted mb-0">Chúc một ngày tốt lành!</h2>
                             </div>
                             <form action="#" method="post" id="form-login">
-                                <div class="block block-themed block-rounded block-shadow w-100 m-auto" style="max-width: 550px">
+                                <div class="block block-themed block-rounded block-shadow w-100 m-auto"
+                                    style="max-width: 550px">
                                     <div class="block-header bg-gd-dusk">
                                         <h3 class="block-title">Đăng nhập</h3>
                                     </div>
@@ -51,13 +55,15 @@
                                         <div class="form-group row">
                                             <div class="col-12">
                                                 <label for="username">Tài khoản</label>
-                                                <input type="text" class="form-control" id="username" name="username">
+                                                <input type="text" class="form-control" id="username"
+                                                    name="username">
                                             </div>
                                         </div>
                                         <div class="form-group row">
                                             <div class="col-12">
                                                 <label for="password">Mật khẩu</label>
-                                                <input type="password" class="form-control" id="password" name="password">
+                                                <input type="password" class="form-control" id="password"
+                                                    name="password">
                                             </div>
                                         </div>
                                         <div class="form-group row">
@@ -79,7 +85,7 @@
 
     <script src="{{ asset('assets/js/codebase.core.min.js') }}"></script>
     <script src="{{ asset('assets/js/codebase.app.min.js') }}"></script>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="{{ asset('assets/js/sweetalert2.min.js') }}"></script>
     <script>
         $('#form-login').on('submit', function(e) {
             e.preventDefault();

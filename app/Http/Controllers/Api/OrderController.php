@@ -173,7 +173,8 @@ class OrderController extends Controller
                 'order' => $order,
                 'user' => $user,
                 'requestOrder' => $requestOrder,
-                'isPoint' => $isPointPayment
+                'isPoint' => $isPointPayment,
+                'showLink' => true
             ])->render();
 
             if ($isPointPayment) {

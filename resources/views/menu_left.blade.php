@@ -1,4 +1,7 @@
-@php $path = request()->getPathInfo() @endphp
+@php
+    $path = request()->getPathInfo();
+    $uri = request()->route()->uri;
+@endphp
 @php
     $activeWhen = function ($p) use ($path) {
         return $p == $path ? 'active' : '';
@@ -19,6 +22,24 @@
             </li>
         </ul>
     </li>
+    @if (admin()->allow('view_user'))
+        <li class="{{ str_starts_with($path, '/user') ? 'open' : '' }}">
+            <a class="nav-submenu" data-toggle="nav-submenu" href="#">
+                <i class="si si-user"></i>
+                <span class="sidebar-mini-hide">Người dùng</span>
+            </a>
+            <ul>
+                <li>
+                    <a href="/user/all" class="{{ $activeWhen('/user/all') }}">Tất cả người dùng</a>
+                </li>
+                @if ($uri === 'user/{id}')
+                    <li>
+                        <a href="/user/{{ request()->id }}" class="active">Chi tiết người dùng</a>
+                    </li>
+                @endif
+            </ul>
+        </li>
+    @endif
     <li class="{{ str_starts_with($path, '/order') ? 'open' : '' }}">
         <a class="nav-submenu" data-toggle="nav-submenu" href="#">
             <i class="si si-organization"></i>
@@ -75,7 +96,7 @@
         <li>
             <a href="/accounts" class="{{ $activeWhen('/accounts') }}">
                 <i class="si si-user"></i>
-                <span class="sidebar-mini-hide">Quản lý tài khoản</span>
+                <span class="sidebar-mini-hide">Quản lý tài khoản ADMIN</span>
             </a>
         </li>
     @endif

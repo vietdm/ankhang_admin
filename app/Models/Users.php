@@ -21,6 +21,11 @@ class Users extends Model
 
     protected $table = 'users';
 
+    public function _parent()
+    {
+        return $this->belongsTo(Users::class, 'present_username', 'username');
+    }
+
     public function getChildUsersAttribute()
     {
         $allUsers = Users::get();
@@ -70,5 +75,26 @@ class Users extends Model
             'account_number' => '',
             'branch' => ''
         ]);
+    }
+
+    public function levelText()
+    {
+        return match ($this->level) {
+            self::LEVEL_CHUYEN_VIEN => 'Chuyên Viên',
+            self::LEVEL_TRUONG_PHONG => 'Trưởng Phòng',
+            self::LEVEL_PHO_GIAM_DOC => 'Phó Giám Đốc',
+            self::LEVEL_GIAM_DOC => 'Giám Đốc',
+            self::LEVEL_GIAM_DOC_CAP_CAO => 'Giám Đốc Cấp Cao',
+            default => 'Khách hàng',
+        };
+    }
+
+    public function packageText()
+    {
+        return match ($this->level) {
+            self::PACKAGE_VIP => 'VIP',
+            self::PACKAGE_STAR => 'STAR',
+            default => 'Chưa tham gia gói',
+        };
     }
 }

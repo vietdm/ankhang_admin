@@ -17,6 +17,7 @@ class SetupAdminRole extends Seeder
         'settings'          => 'Cài đặt hệ thống',
         'akg'               => 'Xem thống kê và cập nhật điểm AKG',
         'create_order'      => 'Tạo đơn hàng thủ công',
+        'view_user'         => 'Xem thông tin user',
     ];
     public function run(): void
     {

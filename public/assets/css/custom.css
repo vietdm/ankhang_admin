@@ -3,6 +3,7 @@
     cursor: pointer;
     user-select: none;
 }
+
 .text-link:hover {
     text-decoration: underline;
 }
@@ -12,4 +13,8 @@
     -ms-user-select: none;
     -moz-user-select: none;
     -webkit-user-select: none;
+}
+
+.dataTables_empty {
+    text-align: center;
 }

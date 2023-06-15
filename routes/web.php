@@ -7,6 +7,7 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\SettingsController;
+use App\Http\Controllers\UserController;
 use App\Http\Controllers\WithdrawController;
 use Illuminate\Support\Facades\Route;
 
@@ -35,6 +36,12 @@ Route::middleware('admin.auth')->group(function () {
     Route::middleware('admin.role:all')->group(function () {
         Route::get('/accounts', [AccountController::class, 'accounts']);
         Route::post('/account/create', [AccountController::class, 'createAccount']);
+    });
+
+    Route::middleware('admin.role:view_user')->prefix('user')->group(function () {
+        Route::get('/all', [UserController::class, 'all']);
+        Route::get('/{id}', [UserController::class, 'detail']);
+        Route::post('/{id}/children', [UserController::class, 'children']);
     });
 
     Route::middleware('admin.role:confirm_order')->group(function () {

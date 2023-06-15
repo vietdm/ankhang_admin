@@ -21,3 +21,7 @@ Tổng giá: {{ number_format($order->total_price) }}
 ==============
 Sản phẩm đổi bằng điểm
 @endif
+@if (!empty($showLink) && $showLink === true)
+==============
+<a href="https://dashboard.ankhangmilk.com/order/confirm">Bấm vào đây để xác nhận</a>
+@endif

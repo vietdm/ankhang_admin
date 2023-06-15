@@ -8,6 +8,14 @@ use App\Models\Users;
 
 class UserUtil
 {
+    public static function getTotalChildAndSaleMergeCurrentUser(Users $user, &$totalChild = 0, &$totalSale = 0, &$totalOrder = 0): void
+    {
+        self::getTotalChildAndSale($user->username, $totalChild, $totalSale, $totalOrder);
+        $totalChild += 1;
+        $totalSale += $user->total_buy;
+        $totalOrder += Orders::whereUserId($user->id)->get()->count();
+    }
+
     //this function not count current user
     public static function getTotalChildAndSale($username, &$total = 0, &$totalSale = 0, &$totalOrder = 0): void
     {
@@ -147,5 +155,14 @@ class UserUtil
     public static function upLevelGiamDocCapCao(Users $user)
     {
         self::upLevel($user, Users::LEVEL_GIAM_DOC, Users::LEVEL_GIAM_DOC_CAP_CAO, 2);
+    }
+
+    public static function getAllParent($presentUsername, &$parents = [])
+    {
+        $parent = Users::whereUsername($presentUsername)->first();
+        if ($parent != null) {
+            $parents[] = $parent;
+            self::getAllParent($parent->present_username, $parents);
+        }
     }
 }
