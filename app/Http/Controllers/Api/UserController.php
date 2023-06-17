@@ -306,13 +306,11 @@ text;
     {
         $fullname = trim($request->fullname ?? '');
         $cccd = trim($request->cccd ?? '');
+        $email = trim($request->email ?? '');
         if (empty($fullname)) {
             return Response::badRequest("Họ và tên không được trống");
         }
-        if (!$request->user->cccd) {
-            if (empty($cccd)) {
-                return Response::badRequest("CCCD không được trống");
-            }
+        if (!$request->user->cccd && !empty($cccd)) {
             $cccdLen = strlen($cccd);
             if ($cccdLen !== 9 && $cccdLen !== 12) {
                 return Response::badRequest("CCCD phải có 9 hoặc 12 ký tự");
@@ -320,11 +318,18 @@ text;
             if (Users::whereCccd($cccd)->first() != null) {
                 return Response::badRequest("Số CCCD đã được sử dụng");
             }
-        }
-        $request->user->fullname = $fullname;
-        if (!$request->user->cccd) {
             $request->user->cccd = $cccd;
         }
+        if (!$request->user->email && !empty($email)) {
+            if (!preg_match("/^([a-z0-9\+_\-]+)(\.[a-z0-9\+_\-]+)*@([a-z0-9\-]+\.)+[a-z]{2,6}$/", $email)) {
+                return Response::badRequest("Email không đúng định dạng!");
+            }
+            if (Users::whereEmail($email)->first() != null) {
+                return Response::badRequest("Email này đã được sử dụng");
+            }
+            $request->user->email = $email;
+        }
+        $request->user->fullname = $fullname;
         $request->user->save();
         return Response::success(['message' => 'Cập nhật thông tin thành công!']);
     }

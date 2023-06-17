@@ -52,7 +52,8 @@ class AuthController extends Controller
             'message' => $user->verified == '0' ? 'Vui lòng xác nhận tài khoản trước khi sử dụng' : 'Đăng nhập thành công!',
             'token' => $token,
             'verified' => $user->verified,
-            'user_id' => $user->id
+            'user_id' => $user->id,
+            'email' => $user->email
         ]);
     }
 
@@ -72,17 +73,17 @@ class AuthController extends Controller
 
     public function register(RegisterRequest $request): JsonResponse
     {
+        $userWithPresentCode = Users::whereUsername($request->present_code)->first();
+        if (!$userWithPresentCode) {
+            return Response::badRequest([
+                'message' => 'Người giới thiệu không tồn tại!'
+            ]);
+        }
+
         $userWithUsername = Users::whereUsername($request->username)->first();
         if (!!$userWithUsername) {
             return Response::badRequest([
                 'message' => 'Tên tài khoản đã tồn tại!'
-            ]);
-        }
-
-        $userWithEmail = Users::whereEmail($request->email)->first();
-        if (!!$userWithEmail) {
-            return Response::badRequest([
-                'message' => 'Email đã được sử dụng!'
             ]);
         }
 
@@ -93,41 +94,74 @@ class AuthController extends Controller
             ]);
         }
 
-        $userWithPresentCode = Users::whereUsername($request->present_code)->first();
-        if (!$userWithPresentCode) {
-            return Response::badRequest([
-                'message' => 'Người giới thiệu không tồn tại!'
-            ]);
-        }
-
         DB::beginTransaction();
         try {
             $newUser = new Users();
             $newUser->username = $request->username;
-            $newUser->email = $request->email;
+            $newUser->email = $request->email ?? '';
             $newUser->phone = $request->phone;
-            $newUser->fullname = $request->fullname;
+            $newUser->fullname = $request->fullname ?? '';
             $newUser->password = bcrypt($request->password);
             $newUser->present_username = $userWithPresentCode->username;
             $newUser->parent_id = $userWithPresentCode->id;
+            $newUser->verified = 1;
             $newUser->save();
             $newUser->createMoney();
             $newUser->createBankInfo();
 
-            $token = sprintf("%06d", mt_rand(1, 999999));
-            Otps::insert([
-                'user_id' => $newUser->id,
-                'token' => $token,
-                'type' => Otps::VERIFY_ACCOUNT,
-                'ttl' => Carbon::now()->addMinutes(10)->timestamp
-            ]);
+            //add point to parent
+            $totalAkgPoint = Configs::get('total_akg', 0, Format::Double);
+            if ($userWithPresentCode->total_buy == 0) {
+                if ($totalAkgPoint >= 1) {
+                    $userWithPresentCode->user_money->akg_point += 1;
+                    $userWithPresentCode->user_money->save();
+                    TotalAkgLog::insert([
+                        'user_id' => $userWithPresentCode->id,
+                        'date' => Carbon::now()->format('Y-m-d H:i:s'),
+                        'amount' => 1,
+                        'type' => TotalAkgLog::TYPE_GIOI_THIEU,
+                        'note' => 'Khách chưa vào gói',
+                        'content' => 'Giới thiệu khách hàng'
+                    ]);
+                    $totalAkgPoint -= 1;
+                }
+            } else {
+                $akgMinus = 0;
+                if ($totalAkgPoint == 1) {
+                    $userWithPresentCode->user_money->akg_point += 1;
+                    $userWithPresentCode->user_money->save();
+                    $totalAkgPoint -= 1;
+                    $akgMinus = 1;
+                } else if ($totalAkgPoint > 1) {
+                    $userWithPresentCode->user_money->akg_point += 2;
+                    $userWithPresentCode->user_money->save();
+                    $totalAkgPoint -= 2;
+                    $akgMinus = 2;
+                }
+                TotalAkgLog::insert([
+                    'user_id' => $userWithPresentCode->id,
+                    'date' => Carbon::now()->format('Y-m-d H:i:s'),
+                    'amount' => $akgMinus,
+                    'type' => TotalAkgLog::TYPE_GIOI_THIEU,
+                    'note' => 'Khách đã vào gói',
+                    'content' => 'Giới thiệu khách hàng'
+                ]);
+            }
+            Configs::set('total_akg', $totalAkgPoint, Format::Double);
 
-            Mail::to($newUser->email)->send(new MailVerifyAccount($token));
+            // $token = sprintf("%06d", mt_rand(1, 999999));
+            // Otps::insert([
+            //     'user_id' => $newUser->id,
+            //     'token' => $token,
+            //     'type' => Otps::VERIFY_ACCOUNT,
+            //     'ttl' => Carbon::now()->addMinutes(10)->timestamp
+            // ]);
+
             // SendMailVerifyAccount::dispatch($newUser->email, $token);
 
             DB::commit();
             return Response::success([
-                'message' => 'Tạo tài khoản thành công! Kiểm tra email và điền mã xác nhận',
+                'message' => 'Tạo tài khoản thành công!',
                 'user_id' => $newUser->id
             ], 201);
         } catch (Exception | PDOException $e) {
