@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use App\Models\BankInfo;
 use App\Models\Orders;
 use App\Models\UserMoney;
 use App\Models\Users;
@@ -41,6 +42,12 @@ class RefactorUserDeleted extends Command
         foreach(UserMoney::select(['id', 'user_id'])->get() as $userMoney) {
             if (in_array($userMoney->user_id, $aryUserId)) continue;
             $userMoney->delete();
+        }
+
+        //clear bank info
+        foreach(BankInfo::select(['id', 'user_id'])->get() as $bankInfo) {
+            if (in_array($bankInfo->user_id, $aryUserId)) continue;
+            $bankInfo->delete();
         }
     }
 }
