@@ -15,6 +15,7 @@ class Kernel extends ConsoleKernel
         $schedule->command('value-of-akg:update')->cron('0 0 */3 * *');
         $schedule->command('user:calc-bonus-monthly')->dailyAt('00:00');
         $schedule->command('app:auto-update-total-akg')->dailyAt('00:00');
+        $schedule->command('app:refactor-user-deleted')->dailyAt('00:10');
     }
 
     /**

@@ -72,8 +72,8 @@ class OrdersExport implements FromCollection, WithMapping, WithHeadings, ShouldA
 
         return [
             Carbon::parse($row->created_at)->format('Y-m-d H:i:s'),
-            $row->user->username,
-            $row->user->fullname,
+            $row->user->username ?? '',
+            $row->user->fullname ?? '',
             $row->code,
             $textProductBuy,
             number_format($row->total_price),
