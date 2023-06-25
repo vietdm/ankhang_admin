@@ -185,6 +185,26 @@
                 </div>
             </div>
         </div>
+        {{-- <div class="col-md-4">
+            <div class="block block-bordered block-rounded">
+                <div class="block-content block-content-full">
+                    <div class="py-20 text-center">
+                        <div class="mb-15">
+                            <i class="si si-wallet fa-3x text-info"></i>
+                        </div>
+                        <div class="loading-data">
+                            <div></div>
+                            <div></div>
+                            <div></div>
+                            <div></div>
+                        </div>
+                        <div class="font-size-h4 font-w600 data-dashboard" data-item="total_withdraw">
+                            {{ number_format($dashboard->total_withdraw) }}</div>
+                        <div class="font-size-h5 font-w600">điểm xem video</div>
+                    </div>
+                </div>
+            </div>
+        </div> --}}
     </div>
 @endsection
 @section('script')

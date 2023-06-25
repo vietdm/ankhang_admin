@@ -25,6 +25,7 @@ use PDOException;
 use App\Mail\Withdraw as MailWithdraw;
 use App\Models\Configs;
 use App\Models\JoinCashbackEvent;
+use App\Models\PayProductInMonth;
 
 class UserController extends Controller
 {
@@ -144,79 +145,46 @@ class UserController extends Controller
     public function moneyCanWithdraw(Request $request)
     {
         $userMoney = UserMoney::whereUserId($request->user->id)->first();
-        $priceOfOneProduct = 500000;
-        $productKeep = [
-            Users::LEVEL_NOMAL => 0,
-            Users::LEVEL_CHUYEN_VIEN => 2,
-            Users::LEVEL_TRUONG_PHONG => 3,
-            Users::LEVEL_PHO_GIAM_DOC => 4,
-            Users::LEVEL_GIAM_DOC => 5,
-            Users::LEVEL_GIAM_DOC_CAP_CAO => 6
-        ];
-        $priceKeep = $priceOfOneProduct * $productKeep[$request->user->level];
-        $priceCanWithdraw = $userMoney->money_bonus - $priceKeep;
         return Response::success([
-            'money' => $priceCanWithdraw
+            'money' => $userMoney->money_bonus
         ]);
     }
 
     public function withdrawRequest(Request $request)
     {
         $user = $request->user;
-        $userMoney = UserMoney::whereUserId($request->user->id)->first();
+        $userMoney = UserMoney::whereUserId($user->id)->first();
         $moneyWithdraw = (int)$request->money;
         $minWithdraw = 100000;
+        $priceOfOneProduct = 500000;
+
         if ($moneyWithdraw < $minWithdraw) {
             return Response::badRequest([
                 'message' => 'Số tiền rút tối thiểu là 100.000đ'
             ]);
         }
 
-        $priceOfOneProduct = 500000;
-        if ($user->level == Users::LEVEL_CHUYEN_VIEN) {
-            $priceKeep = $priceOfOneProduct * 2;
-            $priceCanWithdraw = $userMoney->money_bonus - $priceKeep;
-            if ($moneyWithdraw > $priceCanWithdraw) {
+        if ($moneyWithdraw > $userMoney->money_bonus) {
+            return Response::badRequest([
+                'message' => 'Không đủ tiền rút vì: Số tiền rút tối đang lớn hơn số tiền có thể rút'
+            ]);
+        }
+
+        $numberProductNeededBuy = [
+            Users::LEVEL_CHUYEN_VIEN => 1,
+            Users::LEVEL_TRUONG_PHONG => 2,
+            Users::LEVEL_PHO_GIAM_DOC => 4,
+            Users::LEVEL_GIAM_DOC => 5,
+            Users::LEVEL_GIAM_DOC_CAP_CAO => 6,
+        ];
+
+        if ($user->level != Users::LEVEL_NOMAL) {
+            $numberProductNeed = $numberProductNeededBuy[$user->level];
+            $priceNeededBuy = $priceOfOneProduct * $numberProductNeed;
+            $payProductInMonth = PayProductInMonth::get($user->id);
+            if ($priceNeededBuy > $payProductInMonth->money) {
                 return Response::badRequest([
-                    'message' => 'Không đủ tiền rút vì: Cấp bậc chuyên viên phải giữ tiền quay vòng tối thiểu 2 gói!'
-                ]);
-            }
-        } else if ($user->level == Users::LEVEL_TRUONG_PHONG) {
-            $priceKeep = $priceOfOneProduct * 3;
-            $priceCanWithdraw = $userMoney->money_bonus - $priceKeep;
-            if ($moneyWithdraw > $priceCanWithdraw) {
-                return Response::badRequest([
-                    'message' => 'Không đủ tiền rút vì: Cấp bậc trưởng phòng phải giữ tiền quay vòng tối thiểu 3 gói!'
-                ]);
-            }
-        } else if ($user->level == Users::LEVEL_PHO_GIAM_DOC) {
-            $priceKeep = $priceOfOneProduct * 4;
-            $priceCanWithdraw = $userMoney->money_bonus - $priceKeep;
-            if ($moneyWithdraw > $priceCanWithdraw) {
-                return Response::badRequest([
-                    'message' => 'Không đủ tiền rút vì: Cấp bậc phó giám đốc phải giữ tiền quay vòng tối thiểu 4 gói!'
-                ]);
-            }
-        } else if ($user->level == Users::LEVEL_GIAM_DOC) {
-            $priceKeep = $priceOfOneProduct * 5;
-            $priceCanWithdraw = $userMoney->money_bonus - $priceKeep;
-            if ($moneyWithdraw > $priceCanWithdraw) {
-                return Response::badRequest([
-                    'message' => 'Không đủ tiền rút vì: Cấp bậc giám đốc phải giữ tiền quay vòng tối thiểu 5 gói!'
-                ]);
-            }
-        } else if ($user->level == Users::LEVEL_GIAM_DOC_CAP_CAO) {
-            $priceKeep = $priceOfOneProduct * 6;
-            $priceCanWithdraw = $userMoney->money_bonus - $priceKeep;
-            if ($moneyWithdraw > $priceCanWithdraw) {
-                return Response::badRequest([
-                    'message' => 'Không đủ tiền rút vì: Cấp bậc giám đốc cấp cao phải giữ tiền quay vòng tối thiểu 6 gói!'
-                ]);
-            }
-        } else {
-            if ($moneyWithdraw > $userMoney->money_bonus) {
-                return Response::badRequest([
-                    'message' => 'Không đủ tiền rút vì: Số tiền rút tối đang lớn hơn số tiền có thể rút'
+                    'message' => "Bạn cần hoàn thành mua tối thiểu $numberProductNeed sản phẩm!",
                 ]);
             }
         }

@@ -98,6 +98,9 @@ class Orders extends Model
         $levelCalc = Users::LEVEL_NOMAL;
         $percentLevel = 0;
 
+        //add money to PayProductInMonth
+        PayProductInMonth::add($this->user_id, $this->total_price_pay);
+
         //cộng điểm mua hàng nếu có
         if ($this->total_price_pay > $this->total_price) {
             $productPoint = $this->total_price_pay - $this->total_price;
