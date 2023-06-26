@@ -15,7 +15,7 @@ class PayProductInMonth extends Model
         return $this->belongsTo(Users::class, 'user_id', 'id');
     }
 
-    public static function createDefaultRecord($userId, $month = null, $year = null) {
+    private static function createDefaultRecord($userId, $month = null, $year = null) {
         if (is_null($month)) {
             $month = now()->format('m');
         }
