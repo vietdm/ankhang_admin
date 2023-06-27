@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 
 $aryHackedRoute = [
     'wp-includes/wlwmanifest.xml',
+    'view-source',
     'view-source:',
     'misc/ajax.js',
     'wordpress',
