@@ -1,5 +1,7 @@
 @php
     use Carbon\Carbon;
+    $isPoint = !empty($isPoint) && $isPoint === true;
+    $showLink = !empty($showLink) && $showLink === true;
 @endphp
 
 Có đơn hàng mới!
@@ -17,11 +19,11 @@ Số lượng: {{ $or['quantity'] }}
 ==============
 @endforeach
 Tổng giá: {{ number_format($order->total_price) }}
-@if (!empty($isPoint) && $isPoint === true)
+@if ($isPoint)
 ==============
 Sản phẩm đổi bằng điểm
 @endif
-@if (!empty($showLink) && $showLink === true)
+@if ($showLink && !$isPoint)
 ==============
 <a href="https://dashboard.ankhangmilk.com/order/confirm">Bấm vào đây để xác nhận</a>
 @endif

