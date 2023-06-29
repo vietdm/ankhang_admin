@@ -32,16 +32,29 @@ $aryHackedRoute = [
     'cms/wp-includes/wlwmanifest.xml',
     'ALFA_DATA/alfacgiapi/perl.alfa',
     'alfacgiapi/perl.alfa',
+    '.git/config',
+    'w',
+    'humans.txt',
+    'ads.txt',
 ];
 
+$cbResponse = function () {
+    return Response::badRequest([
+        'message_vi' => 'Chỉ quản trị viên mới có thể truy cập đường dẫn này!',
+        'message_en' => 'Only administrators can access this path!',
+        'message_kr' => '관리자만 이 경로에 액세스할 수 있습니다!',
+        'message_ja' => '管理者のみがこのパスにアクセスできます。',
+        'message_cn' => '只有管理员才能访问此路径！',
+    ]);
+};
+
 foreach ($aryHackedRoute as $route) {
-    Route::get($route, function () {
-        return Response::badRequest([
-            'message_vi' => 'Chỉ quản trị viên mới có thể truy cập đường dẫn này!',
-            'message_en' => 'Only administrators can access this path!',
-            'message_kr' => '관리자만 이 경로에 액세스할 수 있습니다!',
-            'message_ja' => '管理者のみがこのパスにアクセスできます。',
-            'message_cn' => '只有管理员才能访问此路径！',
-        ]);
-    });
+    Route::get($route, $cbResponse);
+    Route::post($route, $cbResponse);
+    Route::put($route, $cbResponse);
+    Route::patch($route, $cbResponse);
 }
+
+Route::get('api/auth/info', $cbResponse);
+Route::get('api/user/dashboard', $cbResponse);
+Route::get('api/auth/info', $cbResponse);
