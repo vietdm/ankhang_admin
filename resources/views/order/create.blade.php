@@ -27,7 +27,7 @@
                     data-placeholder="===chọn một tài khoản===">
                     <option value=""></option>
                     @foreach ($users as $user)
-                        <option value="{{ $user->id }}">{{ strtolower($user->username) }}: {{ $user->fullname }}
+                        <option value="{{ $user->id }}">{{ strtolower($user->username) }}{{ !empty($user->fullname) ? ": " . $user->fullname : $user->fullname }}
                         </option>
                     @endforeach
                 </select>
@@ -79,6 +79,9 @@
                     phone: '',
                     address: ''
                 }
+            }
+            if (user.fullname == '' || user.fullname == null) {
+                user.fullname = '[Chưa đặt tên]';
             }
             $('[name="fullname"]').val(user.fullname);
             $('[name="phone"]').val(user.phone);
