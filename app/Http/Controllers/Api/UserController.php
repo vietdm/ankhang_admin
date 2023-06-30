@@ -275,6 +275,7 @@ text;
         $fullname = trim($request->fullname ?? '');
         $cccd = trim($request->cccd ?? '');
         $email = trim($request->email ?? '');
+        $email = strtolower($email);
         if (empty($fullname)) {
             return Response::badRequest("Họ và tên không được trống");
         }
