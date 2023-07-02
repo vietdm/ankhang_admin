@@ -42,6 +42,11 @@
             </div>
             <div class="form-group">
                 <label for="address" class="font-weight-bold">Địa chỉ:</label>
+                <div class="mb-2">
+                    <button type="button" class="btn btn-alt-primary btn-address btn-address-customer" data-address="">Địa chỉ khách hàng</button>
+                    <button type="button" class="btn btn-alt-info btn-address" data-address="33 Mạc Thái Tổ, Yên Hoà, Cầu Giấy, Hà Nội">Chi nhánh Hà Nội</button>
+                    <button type="button" class="btn btn-alt-success btn-address" data-address="Số 199 Lương Thế Vinh, TP Hải Dương">Chi nhánh Hải Dương</button>
+                </div>
                 <input type="text" class="form-control" name="address">
             </div>
             <div class="form-group">
@@ -86,6 +91,12 @@
             $('[name="fullname"]').val(user.fullname);
             $('[name="phone"]').val(user.phone);
             $('[name="address"]').val(user.address);
+            $('.btn-address-customer').attr('data-address', user.address);
+        });
+
+        $('.btn-address').on('click', function() {
+            const address = $(this).attr('data-address');
+            $('[name="address"]').val(address);
         });
 
         $('.btn-create-order').on('click', function() {
