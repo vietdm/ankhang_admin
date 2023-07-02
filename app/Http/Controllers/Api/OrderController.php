@@ -33,11 +33,16 @@ class OrderController extends Controller
         DB::beginTransaction();
         try {
             $userId = $request->user_id;
+            $deliveryAddressType = $request->delivery_address_type ?? 'home';
             $requestOrder = json_decode($request->order, 1);
             $isComboOrder = false;
             $totalPrice = 0;
             $ignoreImage = false;
             $newUuidComboOrder = Str::uuid();
+
+            if ($deliveryAddressType == 'home' && empty($request->address)) {
+                return Response::badRequest('Hãy nhập địa chỉ nhận hàng');
+            }
 
             if (count($requestOrder) > 1) {
                 $isComboOrder = true;
@@ -148,12 +153,23 @@ class OrderController extends Controller
                 $code = Str::random(6);
             } while (Orders::whereCode($code)->first() != null);
 
+            //check address
+            if ($deliveryAddressType == 'branch') {
+                if ($request->delivery_address == 'hd') {
+                    $request->address = 'Số 199 Lương Thế Vinh, TP Hải Dương';
+                }
+                if ($request->delivery_address == 'hn') {
+                    $request->address = '33 Mạc Thái Tổ, Yên Hoà, Cầu Giấy, Hà Nội';
+                }
+            }
+
             $order = new Orders();
             $order->code = $code;
             $order->user_id = $request->user_id;
             $order->name = $request->name;
             $order->phone = $request->phone;
             $order->address = $request->address;
+            $order->delivery_address_type = $deliveryAddressType;
             $order->note = $request->note ?? '';
             $order->quantity = $quantity;
             $order->product_id = $productId;
@@ -164,7 +180,7 @@ class OrderController extends Controller
             $order->image_url = $ignoreImage ? '' : "/bank_result/$newName.$ext";
             $order->save();
 
-            if ($user) {
+            if ($user && $deliveryAddressType == 'home') {
                 $user->address = $order->address;
                 $user->save();
             }
@@ -174,7 +190,8 @@ class OrderController extends Controller
                 'user' => $user,
                 'requestOrder' => $requestOrder,
                 'isPoint' => $isPointPayment,
-                'showLink' => true
+                'showLink' => true,
+                'deliveryAddressType' => $deliveryAddressType
             ])->render();
 
             if ($isPointPayment) {

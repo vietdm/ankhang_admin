@@ -13,8 +13,10 @@ class OrderRequest extends BaseRequest
             'user_id' => 'required',
             'name' => 'required',
             'phone' => ['required', 'regex:/^(03|05|07|08|09|01[2|6|8|9])+([0-9]{8})$/', 'min:10'],
-            'address' => 'required',
+            'address' => 'nullable',
             'note' => 'nullable',
+            'delivery_address_type' => 'nullable',
+            'delivery_address' => 'nullable',
             'total_price_pay' => 'nullable|integer'
         ];
     }
@@ -24,8 +26,7 @@ class OrderRequest extends BaseRequest
         return [
             'phone.regex' => 'Số điện thoại không đúng định dạng!',
             'phone.min' => 'Số điện thoại không đúng định dạng!',
-            'address.required' => 'Hãy nhập địa chỉ nhận hàng',
-            'total_price_pay.integer' => 'Định dàng dữ liệu của tổng tiền thanh toán không hợp lệ'
+            'total_price_pay.integer' => 'Định dạng dữ liệu của tổng tiền thanh toán không hợp lệ'
         ];
     }
 }

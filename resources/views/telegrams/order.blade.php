@@ -2,6 +2,7 @@
     use Carbon\Carbon;
     $isPoint = !empty($isPoint) && $isPoint === true;
     $showLink = !empty($showLink) && $showLink === true;
+    $deliveryAddressType = !isset($deliveryAddressType) ? 'home' : $deliveryAddressType;
 @endphp
 
 Có đơn hàng mới!
@@ -13,6 +14,10 @@ Số điện thoại: {{ $order->phone }}
 Địa chỉ: {{ $order->address }}
 Ghi chú: {{ $order->note }}
 ==============
+@if ($deliveryAddressType == 'branch')
+Nhận hàng tại chi nhánh
+==============
+@endif
 @foreach ($requestOrder as $or)
 Tên sản phẩm: {{ $or['product']->title }}
 Số lượng: {{ $or['quantity'] }}

@@ -66,7 +66,8 @@ class OrderController extends Controller
                     'order' => $order,
                     'user' => $order->user,
                     'requestOrder' => $requestOrder,
-                    'isPoint' => false
+                    'isPoint' => false,
+                    'deliveryAddressType' => $order->delivery_address_type
                 ])->render();
 
                 Telegram::pushMgs($messageTelegram, Telegram::CHAT_STORE);
