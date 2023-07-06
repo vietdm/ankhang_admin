@@ -25,12 +25,17 @@ class EventUtil
             if ($cashbackEvent->order % 11 === 0) {
                 $orderMakeCashback = $cashbackEvent->order / 11;
                 $rowMakeCashback = JoinCashbackEvent::whereOrder($orderMakeCashback)->first();
-                $userCashback = Users::with(['user_money'])->whereId($rowMakeCashback->user_id)->first();
-                $userCashback->user_money->cashback_point += 3000000;
-                $rowMakeCashback->cashbacked = 1;
+                //check 19/6
+                $date1906 = Carbon::parse('2023-06-19 23:59:59');
+                $dateJoinCashback = $rowMakeCashback->datetime_join;
+                if ($date1906->gt($dateJoinCashback)) {
+                    $userCashback = Users::with(['user_money'])->whereId($rowMakeCashback->user_id)->first();
+                    $userCashback->user_money->cashback_point += 3000000;
+                    $rowMakeCashback->cashbacked = 1;
 
-                $userCashback->user_money->save();
-                $rowMakeCashback->save();
+                    $userCashback->user_money->save();
+                    $rowMakeCashback->save();
+                }
             }
             Configs::setInt('last_order_cashback_event', $lastOrderJoin + 1);
             DB::commit();
