@@ -131,14 +131,18 @@ class UserController extends Controller
         UserUtil::getTotalChildAndSale($request->user->username, $total, $totalSale, $totalOrder);
         $totalSale += $request->user->total_buy;
 
-        $joinedCashback = JoinCashbackEvent::whereUserId($userId)->where('cashbacked', 0)->first() != null;
+        $joinedCashback = JoinCashbackEvent::select(['id'])
+            ->where('user_id', $userId)
+            ->where('cashbacked', 0)
+            ->where('datetime_join', '<=', '2023-06-19 23:59:59')
+            ->first();
 
         return Response::success([
             'money_bonus' => $historyBonusTotal->money_bonus_total ?? 0,
             'money_bonus_day' => $historyBonus->money_bonus_day ?? 0,
             'total_child' => $total,
             'total_sale' => $totalSale,
-            'joined_cashback' => $joinedCashback ? '1' : '0'
+            'joined_cashback' => $joinedCashback === null ? '0' : '1'
         ]);
     }
 
