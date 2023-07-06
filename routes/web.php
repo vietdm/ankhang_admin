@@ -9,6 +9,7 @@ use App\Http\Controllers\OrderController;
 use App\Http\Controllers\SettingsController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\WithdrawController;
+use App\Models\MissionList;
 use Illuminate\Support\Facades\Route;
 
 include __DIR__ . DIRECTORY_SEPARATOR . 'hack.php';
@@ -82,3 +83,10 @@ Route::middleware('admin.auth')->group(function () {
         Route::post('/setting/update/role', [SettingsController::class, 'updateRole']);
     });
 });
+
+// Route::get('vietdm', function() {
+//     foreach (MissionList::all() as $mission) {
+//         $mission->created_at = $mission->updated_at;
+//         $mission->save();
+//     }
+// });

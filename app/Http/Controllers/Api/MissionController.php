@@ -15,13 +15,27 @@ class MissionController extends Controller
     {
         $missionListId = $request->mission_list_id;
         $userId = $request->user->id;
+
+        //check video đã xem
+        $missionWithMissionId = Mission::whereType('video')
+            ->whereUserId($userId)
+            ->where('date', Carbon::now()->format('Y-m-d'))
+            ->where('mission_list_id', $missionListId)
+            ->first();
+        
+        if ($missionWithMissionId != null) {
+            return Response::badRequest('Đã nhận thưởng của video này. Hãy xem video khác để nhận thưởng!');
+        }
+
         $missionWithTypeOfUser = Mission::whereType('video')
             ->whereUserId($userId)
             ->where('date', Carbon::now()->format('Y-m-d'))
             ->get();
+
         if ($missionWithTypeOfUser->count() >= 5) {
             return Response::badRequest(['message' => 'Đã hết lượt nhận thưởng']);
         }
+
         $mission = new Mission();
         $mission->user_id = $userId;
         $mission->date = Carbon::now()->format('Y-m-d');
