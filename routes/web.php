@@ -82,7 +82,3 @@ Route::middleware('admin.auth')->group(function () {
         Route::post('/setting/update/role', [SettingsController::class, 'updateRole']);
     });
 });
-
-// Route::get('vietdm', function() {
-//     // 
-// });
