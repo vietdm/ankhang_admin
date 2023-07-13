@@ -218,6 +218,12 @@ class Orders extends Model
             }
         }
 
+        //join lucky event
+        LuckyEvent::insert([
+            "user_id" => $this->user_id,
+            "order_id" => $this->id,
+        ]);
+
         //rebuild total buy
         UpdateTotalBuyOfUserJob::dispatch($userOrder->id)->delay(now()->addSeconds(3));
     }
