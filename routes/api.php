@@ -66,4 +66,8 @@ Route::middleware('api.auth')->group(function () {
     Route::post('/user/can/transfer-akg', [ApiUserController::class, 'checkCanTransferAkg']);
 
     Route::post('/user/kyc', [ApiKycController::class, 'uploadKyc']);
+    
+    Route::get('/random-lucky-event', [ApiEventController::class, 'getNumberLuckyEvent']);
+    Route::post('/random-lucky-event', [ApiEventController::class, 'randomLuckyEvent']);
+    Route::post('/random-lucky-event/update', [ApiEventController::class, 'updateLuckyEvent']);
 });
