@@ -94,6 +94,14 @@
     @endif
     @if (admin()->allow('all'))
         <li>
+            <a href="/lucky-event" class="{{ $activeWhen('/lucky-event') }}">
+                <i class="fa fa-gift"></i>
+                <span class="sidebar-mini-hide">Vòng quay may mắn</span>
+            </a>
+        </li>
+    @endif
+    @if (admin()->allow('all'))
+        <li>
             <a href="/accounts" class="{{ $activeWhen('/accounts') }}">
                 <i class="si si-user"></i>
                 <span class="sidebar-mini-hide">Quản lý tài khoản ADMIN</span>

@@ -20,5 +20,11 @@ return [
             'MM' => 0,
             'BM' => 1
         ]
+    ],
+    'lucky_name' => [
+        'SK' => 'Vé sức khỏe',
+        'TT' => 'Hộp tri thức',
+        'MM' => 'Chúc may mắn',
+        'BM' => 'Hộp bí mật'
     ]
 ];

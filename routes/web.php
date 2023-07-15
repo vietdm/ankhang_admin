@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AccountController;
 use App\Http\Controllers\AkgController;
+use App\Http\Controllers\EventController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\HomeController;
@@ -38,6 +39,10 @@ Route::middleware('admin.auth')->group(function () {
     Route::middleware('admin.role:all')->group(function () {
         Route::get('/accounts', [AccountController::class, 'accounts']);
         Route::post('/account/create', [AccountController::class, 'createAccount']);
+        Route::prefix('lucky-event')->group(function() {
+            Route::get('/', [EventController::class, 'lucky']);
+            Route::post('/update', [EventController::class, 'luckyUpdate']);
+        });
     });
 
     Route::middleware('admin.role:view_user')->prefix('user')->group(function () {
