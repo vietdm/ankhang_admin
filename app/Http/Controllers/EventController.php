@@ -12,7 +12,7 @@ use PDOException;
 class EventController extends Controller
 {
     public function lucky() {
-        $events = LuckyEvent::with(['user'])->whereSpinned(1)->where('gift', '!=', 'MM')->get();
+        $events = LuckyEvent::with(['user'])->whereSpinned(1)->orderByDesc('id')->get();
         return view('event.lucky', compact('events'));
     }
 
@@ -24,6 +24,9 @@ class EventController extends Controller
         $event = LuckyEvent::whereId($eventId)->whereSpinned(1)->first();
         if (!$event) {
             return Response::badRequest('Không tồn tại yêu cầu này!');
+        }
+        if ($event->is_given === 1 || $event->gift === 'MM') {
+            return Response::badRequest('Yêu cầu này không thể xác nhận!');
         }
         DB::beginTransaction();
         try {
