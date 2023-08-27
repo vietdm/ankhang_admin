@@ -5,7 +5,10 @@ namespace App\Http\Controllers;
 use App\Helpers\Response;
 use App\Models\Users;
 use App\Utils\UserUtil;
+use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use PDOException;
 
 class UserController extends Controller
 {
@@ -36,6 +39,33 @@ class UserController extends Controller
             'totalSale',
             'totalOrder',
         ]));
+    }
+
+    public function changePassword(Request $request)
+    {
+        $userId = $request->user_id ?? null;
+        $password = $request->password ?? null;
+
+        if (empty($userId) || empty($password)) {
+            return Response::badRequest('Data không chính xác!');
+        }
+
+        $user = Users::whereId($userId)->first();
+        if ($user == null) {
+            return Response::badRequest('Người dùng không tồn tại!');
+        }
+
+        DB::beginTransaction();
+        try {
+            $user->password = bcrypt($password);
+            $user->save();
+            DB::commit();
+            return Response::success('Thành công!');
+        } catch (Exception | PDOException $e) {
+            ReportHandle($e);
+            DB::rollBack();
+            return Response::badRequest('Không thể đổi mật khẩu! Vui lòng liên hệ bộ phận IT');
+        }
     }
 
     public function children($id)

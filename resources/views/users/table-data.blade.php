@@ -1,3 +1,6 @@
+@php
+    $is_total = $is_total ?? false;
+@endphp
 <table id="table-order" class="table table-bordered table-responsive table-striped table-vcenter js-dataTable-full">
     <thead>
         <tr>
@@ -8,7 +11,7 @@
             <th class="text-center no-sort">Số ĐT</th>
             <th class="text-center no-sort">CCCD</th>
             <th class="text-center" style="width: 150px">Level</th>
-            <th class="text-center" style="width: 100px">Action</th>
+            <th class="text-center" style="width: 150px">Action</th>
         </tr>
     </thead>
     <tbody>
@@ -33,7 +36,10 @@
                         </div>
                     @endif
                     <div class="d-block text-center ">
-                        <a href="/user/{{ $user->id }}" class="text-primary">Chi tiết</a>
+                        <a href="/user/{{ $user->id }}" class="text-primary d-block">Chi tiết</a>
+                        @if ($is_total === true)
+                            <a href="#" data-id="{{ $user->id }}" data-username="{{ $user->username }}" data-fullname="{{ $user->fullname }}" class="d-block textlink-change-password" style="color: #0d5132">Đổi mật khẩu</a>
+                        @endif
                     </div>
                 </td>
             </tr>

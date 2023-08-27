@@ -47,6 +47,7 @@ Route::middleware('admin.auth')->group(function () {
 
     Route::middleware('admin.role:view_user')->prefix('user')->group(function () {
         Route::get('/all', [UserController::class, 'all']);
+        Route::post('/change_password', [UserController::class, 'changePassword']);
         Route::get('/{id}', [UserController::class, 'detail']);
         Route::post('/{id}/children', [UserController::class, 'children']);
     });
