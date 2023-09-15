@@ -7,13 +7,13 @@ use GuzzleHttp\Client;
 
 class Telegram
 {
-    const CHAT_WITHDRAW = "-1001867661516";
-    const CHAT_STORE = "-1001800834360";
-    const CHAT_CHECK_STORE = "-965190018";
-    const CHAT_REPORT_BUG = "-1001514640947";
+    const CHAT_WITHDRAW = env('CHAT_WITHDRAW');
+    const CHAT_STORE = env('CHAT_STORE');
+    const CHAT_CHECK_STORE = env('CHAT_CHECK_STORE');
+    const CHAT_REPORT_BUG = env('CHAT_REPORT_BUG');
 
-    const BOT_TOKEN_DEFAULT = '5320940669:AAHqFlgn0RxP7xCKxhTrRQZRoPxKT0bp5pg';
-    const BOT_TOKEN_REPORT_BUG = '6043441821:AAFP7MBo9S6bWviIBGYMuFyzDeDqKxMiaKE';
+    const BOT_TOKEN_DEFAULT = env('BOT_TOKEN_DEFAULT');
+    const BOT_TOKEN_REPORT_BUG = env('BOT_TOKEN_REPORT_BUG');
 
     public static function pushMgs($mgs, $chat_id, $bot_token = self::BOT_TOKEN_DEFAULT)
     {
